@@ -1,0 +1,16 @@
+carpet.api.settings.Rule carpet.settings.Rule
+carpet.api.settings.CarpetRule carpet.settings.ParsedRule
+carpet.api.settings.CarpetRule value() carpet.settings.ParsedRule get()
+carpet.api.settings.RuleCategory carpet.settings.RuleCategory
+carpet.api.settings.SettingsManager carpet.settings.SettingsManager
+carpet.api.settings.Validator carpet.settings.Validator
+carpet.api.settings.SettingsManager getCarpetRule() carpet.api.settings.SettingsManager getRule()
+carpet.api.settings.SettingsManager registerRuleObserver() carpet.CarpetServer.settingsManager addRuleObserver()
+
+carpet.script.Module carpet.script.bundled.BundledModule
+carpet.helpers.BlockRotator flipBlock() flip_block()
+
+net.minecraft.text.MutableText net.minecraft.text.BaseText
+net.minecraft.world.dimension.DimensionType ultrawarm() isUltrawarm()
+net.minecraft.server.command.CommandManager executeWithPrefix() execute()
+net.minecraft.registry.Registries net.minecraft.registry.Registry

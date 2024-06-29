@@ -1,103 +1,56 @@
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT'
-    id 'maven-publish'
+	id 'maven-publish'
+	id 'com.github.hierynomus.license' version '0.16.1' apply false
+	id 'fabric-loom' version '1.6-SNAPSHOT' apply false
+	id 'com.replaymod.preprocess' version '7fa8d51'
 }
 
-version = project.mod_version
+preprocess {
+//	def mc116 = createNode('1.16.5', 1_16_05, 'yarn')
+	def mc117 = createNode('1.17.1', 1_17_01, 'yarn')
+	def mc118 = createNode('1.18.2', 1_18_02, 'yarn')
+	def mc119 = createNode('1.19.4', 1_19_04, 'yarn')
+	def mc120 = createNode('1.20', 1_20_00, 'yarn')
+	def mc1201 = createNode('1.20.1', 1_20_01, 'yarn')
+	def mc1202 = createNode('1.20.2', 1_20_02, 'yarn')
+	def mc1203 = createNode('1.20.3', 1_20_03, 'yarn')
+	def mc1204 = createNode('1.20.4', 1_20_04, 'yarn')
+	def mc1205 = createNode('1.20.5', 1_20_05, 'yarn')
+	def mc1206 = createNode('1.20.6', 1_20_06, 'yarn')
+	def mc121 = createNode('1.21', 1_21_00, 'yarn')
 
-repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    maven {
-        url "https://www.cursemaven.com"
-    }
+//	mc117.link(mc116, file('versions/mapping-1.17-1.16.txt'))
+	mc118.link(mc117, file('versions/mapping-1.18-1.17.txt'))
+	mc119.link(mc118, file('versions/mapping-1.19-1.18.txt'))
+	mc120.link(mc119, file('versions/mapping-1.20-1.19.txt'))
+	mc1201.link(mc120, file('versions/mapping-1.20.1-1.20.txt'))
+	mc1201.link(mc1202, file('versions/mapping-1.20.1-1.20.2.txt'))
+	mc1202.link(mc1203, file('versions/mapping-1.20.2-1.20.3.txt'))
+	mc1203.link(mc1204, file('versions/mapping-1.20.3-1.20.4.txt'))
+	mc1204.link(mc1205, file('versions/mapping-1.20.4-1.20.5.txt'))
+	mc1205.link(mc1206, file('versions/mapping-1.20.5-1.20.6.txt'))
+	mc1206.link(mc121, file('versions/mapping-1.20.6-1.21.txt'))
 }
 
-dependencies {
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    // 不使用Fabric API
-    // modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    // fabric-carpet
-    modImplementation("curse.maven:carpet-349239:${project.carpet_core_version}")
-    // MixinExtras
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
-}
-processResources {
-    inputs.property "version", project.version
-    inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "loader_version", project.loader_version
-    filteringCharset "UTF-8"
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-                "minecraft_version": project.minecraft_version,
-                "loader_version": project.loader_version
-    }
-}
-
-def targetJavaVersion = 17
-tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        //noinspection GroovyAssignabilityCheck,GroovyAccessibility
-        it.options.release = targetJavaVersion
-    }
-}
-
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    archivesBaseName = "${project.archives_base_name}-mc${project.minecraft_version}"
-    // 时间戳
-    def timeStamp = DateTimeFormatter.ofPattern("yyMMddHHmm").format(LocalDateTime.now())
-    version = "v${project.mod_version}-${timeStamp}"
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
-    version = project.version
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        //noinspection GroovyAssignabilityCheck
-        mavenJava(MavenPublication) {
-            //noinspection GroovyAssignabilityCheck
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
-    }
+tasks.register('buildAndGather') {
+	subprojects {
+		dependsOn project.name + ':build'
+	}
+	doFirst {
+		println 'Gathering builds'
+		delete fileTree(project.projectDir.toPath().resolve('build/libs')) {
+			include '*'
+		}
+		copy {
+			subprojects {
+				def libDir = project.projectDir.toPath().resolve('build/libs')
+				from(libDir) {
+					include '*.jar'
+					exclude '*-dev.jar', '*-sources.jar'
+				}
+				into 'build/libs/'
+				duplicatesStrategy DuplicatesStrategy.INCLUDE
+			}
+		}
+	}
 }

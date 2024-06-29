@@ -1,3 +1,28 @@
+/*
+ * This file is part of the Carpet Org Addition project, licensed under the
+ * MIT License
+ *
+ * Copyright (c) 2024 cdqtzrc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.carpet_org_addition.util.fakeplayer.actiondata;
 
 import carpet.patches.EntityPlayerMPFake;
@@ -51,7 +76,8 @@ public class TradeData extends AbstractActionData {
         ArrayList<MutableText> list = new ArrayList<>();
         // 获取按钮的索引，从1开始
         list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.trade.item", fakePlayer.getDisplayName(), index));
-        if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler merchantScreenHandler) {
+        if (fakePlayer.currentScreenHandler instanceof MerchantScreenHandler) {
+            MerchantScreenHandler merchantScreenHandler = (MerchantScreenHandler) fakePlayer.currentScreenHandler;
             // 获取当前交易内容的对象，因为按钮索引从1开始，所以此处减去1
             TradeOffer tradeOffer = merchantScreenHandler.getRecipes().get(index - 1);
             // 将“交易选项”文本信息添加到集合中

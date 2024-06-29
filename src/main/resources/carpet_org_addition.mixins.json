@@ -74,10 +74,11 @@
     "rule.respawnblocksexplode.BedBlockMixin",
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
     "util.CraftingScreenHandlerMixin",
+    "util.ForgingScreenHandlerAccessor",
     "util.ItemPredicateArgumentTypeMixin",
-    "util.RegisterCarpetCommandsMixin",
     "util.PlayerManagerMixin",
-    "util.TranslatableTextContentMixin"
+    "util.RegisterCarpetCommandsMixin",
+    "util.SmithingScreenHandlerAccessor"
   ],
   "client": [
     "rule.client.carpet.SettingsManagerMixin"

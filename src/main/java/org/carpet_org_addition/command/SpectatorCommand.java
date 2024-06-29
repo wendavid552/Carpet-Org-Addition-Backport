@@ -1,3 +1,28 @@
+/*
+ * This file is part of the Carpet Org Addition project, licensed under the
+ * MIT License
+ *
+ * Copyright (c) 2024 cdqtzrc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.carpet_org_addition.command;
 
 import carpet.utils.CommandHelper;
@@ -163,22 +188,29 @@ public class SpectatorCommand {
     private static void loadPlayerPos(MinecraftServer server, ServerPlayerEntity player) {
         WorldFormat worldFormat = new WorldFormat(server, SPECTATOR);
         File file = worldFormat.file(player.getUuidAsString() + WorldFormat.JSON_EXTENSION);
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = WorldFormat.toReader(file);
-            try (reader) {
-                Gson gson = new Gson();
-                JsonObject json = gson.fromJson(reader, JsonObject.class);
-                double x = json.get("x").getAsDouble();
-                double y = json.get("y").getAsDouble();
-                double z = json.get("z").getAsDouble();
-                float yaw = json.get("yaw").getAsFloat();
-                float pitch = json.get("pitch").getAsFloat();
-                String dimension = json.get("dimension").getAsString();
-                ServerWorld world = WorldUtils.getWorld(server, dimension);
-                player.teleport(world, x, y, z, yaw, pitch);
-            }
+            reader = WorldFormat.toReader(file);
+            Gson gson = new Gson();
+            JsonObject json = gson.fromJson(reader, JsonObject.class);
+            double x = json.get("x").getAsDouble();
+            double y = json.get("y").getAsDouble();
+            double z = json.get("z").getAsDouble();
+            float yaw = json.get("yaw").getAsFloat();
+            float pitch = json.get("pitch").getAsFloat();
+            String dimension = json.get("dimension").getAsString();
+            ServerWorld world = WorldUtils.getWorld(server, dimension);
+            player.teleport(world, x, y, z, yaw, pitch);
         } catch (IOException | NullPointerException e) {
             CarpetOrgAddition.LOGGER.warn("无法正常读取{}的位置信息", GameUtils.getPlayerName(player));
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                CarpetOrgAddition.LOGGER.warn("无法正常关闭文件读取器", e);
+            }
         }
     }
 

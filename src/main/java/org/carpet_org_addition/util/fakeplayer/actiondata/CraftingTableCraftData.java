@@ -1,3 +1,28 @@
+/*
+ * This file is part of the Carpet Org Addition project, licensed under the
+ * MIT License
+ *
+ * Copyright (c) 2024 cdqtzrc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.carpet_org_addition.util.fakeplayer.actiondata;
 
 import carpet.patches.EntityPlayerMPFake;
@@ -54,7 +79,8 @@ public class CraftingTableCraftData extends AbstractActionData {
                 " -> ", getHoverText(getCraftOutPut(fakePlayer, matchers))));
         list.add(TextUtils.appendAll("    ", getHoverText(matchers[6]), " ", getHoverText(matchers[7]), " ", getHoverText(matchers[8])));
         // 判断假玩家是否打开了一个工作台
-        if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler currentScreenHandler) {
+        if (fakePlayer.currentScreenHandler instanceof CraftingScreenHandler) {
+            CraftingScreenHandler currentScreenHandler = (CraftingScreenHandler) fakePlayer.currentScreenHandler;
             // 将可变文本“<玩家>当前合成物品的状态:”添加到集合中
             list.add(TextUtils.getTranslate("carpet.commands.playerAction.info.craft.state", fakePlayer.getDisplayName()));
             // 如果打开了，将每一个合成槽位（包括输出槽位）中的物品的名称和堆叠数组装成一个可变文本对象并添加到集合

@@ -26,7 +26,9 @@
 package org.carpet_org_addition.mixin.util;
 
 import com.mojang.brigadier.CommandDispatcher;
+//#if MC>11900
 import net.minecraft.command.CommandRegistryAccess;
+//#endif
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.command.RegisterCarpetCommands;
@@ -46,7 +48,14 @@ public abstract class RegisterCarpetCommandsMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onRegister(CommandManager.RegistrationEnvironment commandSelection,
-                            CommandRegistryAccess commandBuildContext, CallbackInfo ci) {
-        RegisterCarpetCommands.registerCarpetCommands(this.dispatcher, commandSelection, commandBuildContext);
+                            //#if MC>11900
+                            CommandRegistryAccess commandBuildContext,
+                            //#endif
+                            CallbackInfo ci) {
+        RegisterCarpetCommands.registerCarpetCommands(this.dispatcher, commandSelection
+                //#if MC>11900
+                ,commandBuildContext
+                //#endif
+                );
     }
 }

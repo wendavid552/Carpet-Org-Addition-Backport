@@ -25,15 +25,18 @@
 
 package org.carpet_org_addition.command;
 
+import carpet.helpers.ParticleDisplay;
+//#if MC>11900
 import carpet.script.utils.ParticleParser;
-import carpet.utils.CommandHelper;
+import net.minecraft.registry.RegistryKeys;
+//#endif
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.particle.ParticleEffect;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -42,13 +45,14 @@ import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.task.DrawParticleLineTask;
 import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
 
 public class ParticleLineCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("particleLine")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandParticleLine))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandParticleLine))
                 .then(CommandManager.argument("from", Vec3ArgumentType.vec3())
                         .then(CommandManager.argument("to", Vec3ArgumentType.vec3())
                                 .executes(ParticleLineCommand::draw))));
@@ -62,8 +66,13 @@ public class ParticleLineCommand {
         Vec3d from = Vec3ArgumentType.getVec3(context, "from");
         Vec3d to = Vec3ArgumentType.getVec3(context, "to");
         // 获取粒子的效果类型
-        ParticleEffect mainParticle = ParticleParser.getEffect("dust 0 0 0 1",
+        ParticleEffect mainParticle =
+        //#if MC>11900
+        ParticleParser.getEffect("dust 0 0 0 1",
                 player.getWorld().createCommandRegistryWrapper(RegistryKeys.PARTICLE_TYPE));
+        //#else
+        //$$ ParticleDisplay.getEffect("dust 0 0 0 1");
+        //#endif
         // 计算粒子线的长度（平方）
         double distanceTo = from.squaredDistanceTo(to);
         // 计算粒子线长度
@@ -97,9 +106,9 @@ public class ParticleLineCommand {
         double f = -vec3d2.dotProduct(vec3d5);
         if (f <= 0.5) {
             if (verticalAngle > 0.0) {
-                MessageUtils.sendTextMessageToHud(player, Text.literal("-->"));
+                MessageUtils.sendTextMessageToHud(player, TextUtils.literal("-->"));
             } else if (verticalAngle < 0.0) {
-                MessageUtils.sendTextMessageToHud(player, Text.literal("<--"));
+                MessageUtils.sendTextMessageToHud(player, TextUtils.literal("<--"));
             }
         }
     }

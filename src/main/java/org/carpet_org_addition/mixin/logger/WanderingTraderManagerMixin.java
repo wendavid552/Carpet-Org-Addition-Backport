@@ -26,7 +26,7 @@
 package org.carpet_org_addition.mixin.logger;
 
 import carpet.logging.Logger;
-import carpet.utils.CommandHelper;
+
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.passive.WanderingTraderEntity;
@@ -102,7 +102,7 @@ public class WanderingTraderManagerMixin {
                     continue;
                 }
                 // 广播流浪商人生成成功
-                MessageUtils.sendTextMessage(player, CommandHelper.canUseCommand(player.getCommandSource(),
+                MessageUtils.sendTextMessage(player, CommandUtils.canUseCommand(player.getCommandSource(),
                         CarpetOrgAdditionSettings.commandNavigate) ? canClickMessage : message);
                 // 播放音效通知流浪商人生成
                 WorldUtils.playSound(trader.getWorld(), player.getBlockPos(), trader.getYesSound(), trader.getSoundCategory());

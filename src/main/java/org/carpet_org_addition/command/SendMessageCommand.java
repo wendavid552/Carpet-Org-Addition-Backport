@@ -25,14 +25,17 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+//#if MC>11900
 import net.minecraft.command.CommandRegistryAccess;
+//#endif
 import net.minecraft.command.argument.ColorArgumentType;
 import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -45,9 +48,18 @@ import org.carpet_org_addition.util.*;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class SendMessageCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher
+                                //#if MC>11900
+                                ,CommandRegistryAccess commandBuildContext
+                                //#endif
+    ) {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
+                //#if MC>11900
+                commandBuildContext
+                //#endif
+        );
         dispatcher.register(CommandManager.literal("sendMessage")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandSendMessage))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandSendMessage))
                 .then(CommandManager.literal("copy")
                         .then(CommandManager.argument("text", StringArgumentType.string())
                                 .executes(SendMessageCommand::sendReplicableText)))
@@ -68,7 +80,7 @@ public class SendMessageCommand {
                                 .executes(SendMessageCommand::sendFormattingText)))
                 .then(CommandManager.literal("item")
                         .executes(context -> SendMessageCommand.sendItemHoverableText(context, true))
-                        .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
+                        .then(CommandManager.argument("itemStack", commandNodeFactory.itemStack())
                                 .executes(context -> sendItemHoverableText(context, false)))));
     }
 
@@ -179,12 +191,13 @@ public class SendMessageCommand {
 
     // 在文本前添加玩家名（如果玩家不为null）
     private static MutableText appendPlayerName(ServerCommandSource source, MutableText text) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) {
-            return text;
+        Entity sourceEntity = source.getEntity();
+        if (sourceEntity instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) sourceEntity;
+            // 如果玩家不为null，则发送消息时在文本前添加玩家名
+            return TextUtils.appendAll(player.getDisplayName(), ": ", text);
         }
-        // 如果玩家不为null，则发送消息时在文本前添加玩家名
-        return TextUtils.appendAll(player.getDisplayName(), ": ", text);
+        return text;
     }
 
     // 发送手上的物品的悬停文本

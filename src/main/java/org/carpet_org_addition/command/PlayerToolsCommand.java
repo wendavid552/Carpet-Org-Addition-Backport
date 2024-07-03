@@ -26,7 +26,7 @@
 package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -55,7 +55,7 @@ import org.carpet_org_addition.util.fakeplayer.PlayerInventoryScreenHandler;
 public class PlayerToolsCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("playerTools")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerTools))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("enderChest")
                                 .executes(context -> openEnderChest(context, CommandUtils.getArgumentPlayer(context))))
@@ -146,7 +146,12 @@ public class PlayerToolsCommand {
 
     //获取维度名称
     private static Text getDimensionText(World world) {
-        Identifier value = world.getDimensionKey().getValue();
+        Identifier value =world.
+                //#if MC>11900
+                getDimensionKey().getValue();
+                //#else
+                //$$ getDimension();
+                //#endif
         if (value.equals(DimensionTypes.OVERWORLD_ID)) {
             return TextUtils.getTranslate("carpet.commands.playerTools.pos.overworld");
         } else if (value.equals(DimensionTypes.THE_NETHER_ID)) {

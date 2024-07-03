@@ -27,22 +27,40 @@ package org.carpet_org_addition.command;
 
 import carpet.CarpetServer;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+//#if MC>11900
+import net.minecraft.command.CommandRegistryAccess;
+//#endif
 
 public class RegisterCarpetCommands {
     //注册Carpet命令
     @SuppressWarnings("unused")
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher,
-                                              CommandManager.RegistrationEnvironment environment,
-                                              CommandRegistryAccess commandBuildContext) {
+                                              CommandManager.RegistrationEnvironment environment
+                                              //#if MC>11900
+                                              ,CommandRegistryAccess commandBuildContext
+                                              //#endif
+                                              ) {
         if (CarpetServer.settingsManager != null) {
-            CarpetServer.settingsManager.registerCommand(dispatcher, commandBuildContext);
+            CarpetServer.settingsManager.registerCommand(dispatcher
+                    //#if MC>11900
+                    ,commandBuildContext
+                    //#endif
+            );
             CarpetServer.extensions.forEach((e) -> {
-                carpet.api.settings.SettingsManager sm = e.extensionSettingsManager();
+                carpet.api.settings.SettingsManager sm =
+                        //#if MC>11900
+                        e.extensionSettingsManager();
+                        //#else
+                        //$$ e.customSettingsManager();
+                        //#endif
                 if (sm != null) {
-                    sm.registerCommand(dispatcher, commandBuildContext);
+                    sm.registerCommand(dispatcher
+                            //#if MC>11900
+                            ,commandBuildContext
+                            //#endif
+                            );
                 }
             });
             //物品分身命令

@@ -75,10 +75,8 @@
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
     "util.CraftingScreenHandlerMixin",
     "util.ForgingScreenHandlerAccessor",
-    "util.ItemPredicateArgumentTypeMixin",
     "util.PlayerManagerMixin",
-    "util.RegisterCarpetCommandsMixin",
-    "util.SmithingScreenHandlerAccessor"
+    "util.RegisterCarpetCommandsMixin"
   ],
   "client": [
     "rule.client.carpet.SettingsManagerMixin"

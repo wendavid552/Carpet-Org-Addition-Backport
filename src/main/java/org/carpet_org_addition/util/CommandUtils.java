@@ -120,4 +120,21 @@ public class CommandUtils {
         CommandManager commandManager = source.getServer().getCommandManager();
         commandManager.executeWithPrefix(source, command);
     }
+
+    /**
+     * 搬运自carpet，判断玩家是否有权限使用命令
+     */
+    public static boolean canUseCommand(ServerCommandSource source, Object commandLevel)
+    {
+        if (commandLevel instanceof Boolean) return (Boolean) commandLevel;
+        String commandLevelString = commandLevel.toString();
+        return switch (commandLevelString)
+        {
+            case "true"  -> true;
+            case "false" -> false;
+            case "ops"   -> source.hasPermissionLevel(2); // typical for other cheaty commands
+            case "0", "1", "2", "3", "4" -> source.hasPermissionLevel(Integer.parseInt(commandLevelString));
+            default -> false;
+        };
+    }
 }

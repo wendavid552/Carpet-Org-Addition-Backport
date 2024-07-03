@@ -26,7 +26,7 @@
 package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
-import carpet.utils.CommandHelper;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
@@ -78,7 +78,7 @@ public class PlayerManagerCommand {
                     .executes(context -> addDelayedLogoutTask(context, unit)));
         }
         dispatcher.register(CommandManager.literal("playerManager")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerManager))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerManager))
                 .then(CommandManager.literal("save")
                         .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                                 .executes(context -> savePlayer(context, false))

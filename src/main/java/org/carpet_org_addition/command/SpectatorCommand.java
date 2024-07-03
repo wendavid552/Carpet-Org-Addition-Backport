@@ -25,7 +25,7 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -63,7 +63,7 @@ public class SpectatorCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("spectator")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandSpectator))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandSpectator))
                 .executes(context -> setGameMode(context, false))
                 .then(CommandManager.argument(CommandUtils.PLAYER, EntityArgumentType.player())
                         .executes(context -> setGameMode(context, true)))

@@ -27,8 +27,10 @@ package org.carpet_org_addition.command;
 
 import carpet.CarpetServer;
 import carpet.api.settings.CarpetRule;
+//#if MC>11900
 import carpet.api.settings.RuleHelper;
-import carpet.utils.CommandHelper;
+//#endif
+
 import carpet.utils.Messenger;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -38,6 +40,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.mixin.rule.carpet.SettingsManagerAccessor;
+import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.TextUtils;
 
 import java.util.List;
@@ -45,7 +48,7 @@ import java.util.List;
 public class RuleSearchCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("ruleSearch")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandRuleSearch))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandRuleSearch))
                 .then(CommandManager.argument("rule", StringArgumentType.string())
                         .executes(RuleSearchCommand::listRule)));
     }
@@ -67,7 +70,13 @@ public class RuleSearchCommand {
         //#endif
         int ruleCount = 0;
         for (CarpetRule<?> carpet : list) {
-            if (RuleHelper.translatedName(carpet).contains(rule)) {
+            String translatedName =
+                    //#if MC>11900
+                    RuleHelper.translatedName(carpet);
+                    //#else
+                    //$$ carpet.translatedName();
+                    //#endif
+            if (translatedName.contains(rule)) {
                 Messenger.m(context.getSource(),
                         ((SettingsManagerAccessor) CarpetServer.settingsManager).displayInteractiveSettings(carpet));
                 ruleCount++;

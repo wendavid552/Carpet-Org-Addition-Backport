@@ -25,17 +25,14 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -43,6 +40,13 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+//#if MC>11900
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.registry.RegistryKeys;
+//#else
+//$$ import net.minecraft.command.argument.EnchantmentArgumentType;
+//#endif
+
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
@@ -68,18 +72,30 @@ public class FinderCommand {
      */
     public static final int MAXIMUM_STATISTICS = 300000;
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher
+                                //#if MC>11900
+                                ,CommandRegistryAccess commandBuildContext
+                                //#endif
+                                ) {
         dispatcher.register(CommandManager.literal("finder")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
                 .then(CommandManager.literal("block")
-                        .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(commandBuildContext))
+                        .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(
+                                //#if MC>11900
+                                commandBuildContext
+                                //#endif
+                                ))
                                 .executes(context -> blockFinder(context, 32, 10))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                         .executes(context -> blockFinder(context, -1, 10))
                                         .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
                                                 .executes(context -> blockFinder(context, -1, -1))))))
                 .then(CommandManager.literal("item")
-                        .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                        .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(
+                                //#if MC>11900
+                                commandBuildContext
+                                //#endif
+                                ))
                                 .executes(context -> findItem(context, 32, 10))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                         .executes(context -> findItem(context, -1, 10))
@@ -87,15 +103,24 @@ public class FinderCommand {
                                                 .executes(context -> findItem(context, -1, -1))))))
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
-                                .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(
+                                        //#if MC>11900
+                                        commandBuildContext
+                                        //#endif
+                                        ))
                                         .executes(context -> findTradeItem(context, 32, 10))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                                 .executes(context -> findTradeItem(context, -1, 10))
                                                 .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
                                                         .executes(context -> findTradeItem(context, -1, -1))))))
                         .then(CommandManager.literal("enchantedBook")
-                                .then(CommandManager.argument("enchantment", RegistryEntryArgumentType.registryEntry(commandBuildContext, RegistryKeys.ENCHANTMENT))
-                                        .executes(context -> findEnchantedBookTrade(context, 32, 10))
+                                .then(CommandManager.argument("enchantment",
+                                        //#if MC>11900
+                                        RegistryEntryArgumentType.registryEntry(commandBuildContext,RegistryKeys.ENCHANTMENT)
+                                        //#else
+                                        //$$ EnchantmentArgumentType.enchantment()
+                                        //#endif
+                                        ).executes(context -> findEnchantedBookTrade(context, 32, 10))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                                 .executes(context -> findEnchantedBookTrade(context, -1, 10))
                                                 .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
@@ -216,7 +241,11 @@ public class FinderCommand {
             maxCount = IntegerArgumentType.getInteger(context, "maxCount");
         }
         // 获取需要查找的附魔
+        //#if MC>11900
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
+        //#else
+        //$$ Enchantment enchantment = EnchantmentArgumentType.getEnchantment(context, "enchantment").value();
+        //#endif
         // 获取玩家所在的位置
         BlockPos sourcePos = player.getBlockPos();
         EnchantedBookTradeFinder enchantedBookTradeFinder = new EnchantedBookTradeFinder(player.getWorld(), sourcePos, range, enchantment);

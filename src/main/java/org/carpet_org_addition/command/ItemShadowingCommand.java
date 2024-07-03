@@ -25,7 +25,7 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -44,7 +44,7 @@ public class ItemShadowingCommand {
     //注册用于制作物品分身的/itemshadowing命令
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("itemshadowing")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandItemShadowing))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandItemShadowing))
                 .executes(ItemShadowingCommand::itemShadowing));
     }
 

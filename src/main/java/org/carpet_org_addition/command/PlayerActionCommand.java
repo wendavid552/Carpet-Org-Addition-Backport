@@ -27,13 +27,12 @@ package org.carpet_org_addition.command;
 
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemStackArgumentType;
@@ -48,7 +47,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
+//#if MC>11900
+import net.minecraft.command.CommandRegistryAccess;
+//#endif
+
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.util.CommandNodeFactory;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -65,46 +69,55 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
-        dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher
+                                //#if MC>11900
+                                ,CommandRegistryAccess commandBuildContext
+                                //#endif
+    ) {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
+                //#if MC>11900
+                commandBuildContext
+                //#endif
+        );
+        dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting")
-                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .then(CommandManager.argument("item", commandNodeFactory.itemStack())
                                         .then(CommandManager.argument("this", Vec3ArgumentType.vec3())
                                                 .then(CommandManager.argument("other", Vec3ArgumentType.vec3())
                                                         .executes(PlayerActionCommand::setSorting)))))
                         .then(CommandManager.literal("clean")
                                 .executes(context -> setClean(context, true))
-                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .then(CommandManager.argument("item", commandNodeFactory.itemStack())
                                         .executes(context -> setClean(context, false))))
                         .then(CommandManager.literal("fill")
                                 .executes(context -> setFIll(context, true))
-                                .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                                .then(CommandManager.argument("item", commandNodeFactory.itemStack())
                                         .executes(context -> setFIll(context, false))))
                         .then(CommandManager.literal("stop").executes(PlayerActionCommand::setStop))
                         .then(CommandManager.literal("craft")
-                                .then(CommandManager.literal("one").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                .then(CommandManager.literal("one").then(CommandManager.argument("item", commandNodeFactory.itemPredicate())
                                         .executes(PlayerActionCommand::setOneCraft)))
-                                .then(CommandManager.literal("nine").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                .then(CommandManager.literal("nine").then(CommandManager.argument("item", commandNodeFactory.itemPredicate())
                                         .executes(PlayerActionCommand::setNineCraft)))
-                                .then(CommandManager.literal("four").then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                .then(CommandManager.literal("four").then(CommandManager.argument("item", commandNodeFactory.itemPredicate())
                                         .executes(PlayerActionCommand::setFourCraft)))
                                 .then(CommandManager.literal("3x3")
-                                        .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                        .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                        .then(CommandManager.argument("item5", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                .then(CommandManager.argument("item6", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                        .then(CommandManager.argument("item7", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                .then(CommandManager.argument("item8", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                                                        .then(CommandManager.argument("item9", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                        .then(CommandManager.argument("item1", commandNodeFactory.itemPredicate())
+                                                .then(CommandManager.argument("item2", commandNodeFactory.itemPredicate())
+                                                        .then(CommandManager.argument("item3", commandNodeFactory.itemPredicate())
+                                                                .then(CommandManager.argument("item4", commandNodeFactory.itemPredicate())
+                                                                        .then(CommandManager.argument("item5", commandNodeFactory.itemPredicate())
+                                                                                .then(CommandManager.argument("item6", commandNodeFactory.itemPredicate())
+                                                                                        .then(CommandManager.argument("item7", commandNodeFactory.itemPredicate())
+                                                                                                .then(CommandManager.argument("item8", commandNodeFactory.itemPredicate())
+                                                                                                        .then(CommandManager.argument("item9", commandNodeFactory.itemPredicate())
                                                                                                                 .executes(PlayerActionCommand::setCraftingTableCraft)))))))))))
                                 .then(CommandManager.literal("2x2")
-                                        .then(CommandManager.argument("item1", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                .then(CommandManager.argument("item2", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                        .then(CommandManager.argument("item3", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
-                                                                .then(CommandManager.argument("item4", ItemPredicateArgumentType.itemPredicate(commandBuildContext))
+                                        .then(CommandManager.argument("item1", commandNodeFactory.itemPredicate())
+                                                .then(CommandManager.argument("item2", commandNodeFactory.itemPredicate())
+                                                        .then(CommandManager.argument("item3", commandNodeFactory.itemPredicate())
+                                                                .then(CommandManager.argument("item4", commandNodeFactory.itemPredicate())
                                                                         .executes(PlayerActionCommand::setInventoryCraft))))))
                                 .then(CommandManager.literal("gui").executes(PlayerActionCommand::openFakePlayerCraftGui)))
                         .then(CommandManager.literal("trade")
@@ -113,10 +126,10 @@ public class PlayerActionCommand {
                                         .then(CommandManager.literal("void_trade")
                                                 .executes(context -> setTrade(context, true)))))
                         .then(CommandManager.literal("info").executes(PlayerActionCommand::getAction))
-                        .then(CommandManager.literal("rename").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                        .then(CommandManager.literal("rename").then(CommandManager.argument("item", commandNodeFactory.itemStack())
                                 .then(CommandManager.argument("name", StringArgumentType.string())
                                         .executes(PlayerActionCommand::setRename))))
-                        .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", ItemStackArgumentType.itemStack(commandBuildContext))
+                        .then(CommandManager.literal("stonecutting").then(CommandManager.argument("item", commandNodeFactory.itemStack())
                                 .then(CommandManager.argument("button", IntegerArgumentType.integer(1))
                                         .executes(PlayerActionCommand::setStonecutting))))));
     }

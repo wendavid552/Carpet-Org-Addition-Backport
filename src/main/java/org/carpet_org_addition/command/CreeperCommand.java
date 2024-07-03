@@ -25,7 +25,6 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -36,6 +35,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.CommandUtils;
@@ -44,7 +44,7 @@ import org.carpet_org_addition.util.MathUtils;
 public class CreeperCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("creeper")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandCreeper))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandCreeper))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .executes(CreeperCommand::creeperExplosion)));
     }
@@ -56,11 +56,20 @@ public class CreeperCommand {
         // 创建苦力怕对象
         CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
         // 产生爆炸
+        //#if MC<11900
+        //$$ Explosion.DestructionType destructionType = this.world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) ? DestructionType.DESTROY : DestructionType.NONE;
+        //$$ targetPlayer.getWorld().createExplosion(creeper,
+        //$$                targetPlayer.getX() + MathUtils.randomInt(-3, 3),
+        //$$                targetPlayer.getY() + MathUtils.randomInt(-1, 1),
+        //$$                targetPlayer.getZ() + MathUtils.randomInt(-3, 3),
+        //$$                3F, false, Explosion.DestructionType.NONE);
+        //#else
         targetPlayer.getWorld().createExplosion(creeper,
                 targetPlayer.getX() + MathUtils.randomInt(-3, 3),
                 targetPlayer.getY() + MathUtils.randomInt(-1, 1),
                 targetPlayer.getZ() + MathUtils.randomInt(-3, 3),
                 3F, false, World.ExplosionSourceType.NONE);
+        //#endif
         // 删除这只苦力怕
         creeper.discard();
         ServerPlayerEntity sourcePlayer = context.getSource().getPlayer();

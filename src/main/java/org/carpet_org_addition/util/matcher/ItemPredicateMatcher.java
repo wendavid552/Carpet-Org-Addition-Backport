@@ -28,11 +28,11 @@ package org.carpet_org_addition.util.matcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.predicate.AbstractItemStackPredicate;
 
 import java.util.function.Predicate;
 
@@ -55,23 +55,27 @@ public class ItemPredicateMatcher implements Matcher {
 
     @Override
     public boolean isItem() {
-        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
-            // “#”开头的是物品标签
-            return !itemStackPredicate.toString().startsWith("#");
-        }
+//        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
+//            // “#”开头的是物品标签
+//            return !itemStackPredicate.toString().startsWith("#");
+//        }
+
         return false;
     }
 
     @Override
     public Item getItem() {
-        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
-            String itemOrTag = itemStackPredicate.toString();
-            if (itemOrTag.startsWith("#")) {
-                return Items.AIR;
-            }
-            return Matcher.asItem(itemOrTag);
+//        if (this.predicate instanceof ItemPredicate) {
+//            String itemOrTag = (this.predicate).toString();
+//            if (itemOrTag.startsWith("#")) {
+//                return Items.AIR;
+//            }
+//            return Matcher.asItem(itemOrTag);
+//        }
+//        return Items.AIR;
+        if (this.predicate instanceof ItemPredicate) {
+            return ((ItemPredicate) this.predicate).
         }
-        return Items.AIR;
     }
 
     @Override

@@ -36,7 +36,9 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+//#if MC>11900
 import net.minecraft.registry.tag.DamageTypeTags;
+//#endif
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
@@ -79,7 +81,13 @@ public class LivingEntityMixin {
         // 在一开始就对规则是否开启进行判断，这样当其他Mod也修改了此段代码时，就可以通过关闭改规则来保障其他Mod的正常运行
         if (CarpetOrgAdditionSettings.betterTotemOfUndying) {
             LivingEntity thisLivingEntity = (LivingEntity) (Object) this;
-            if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            if (source.
+                    //#if MC>11900
+                    isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)
+                    //#else
+                    //$$ isOutOfWorld()
+                    //#endif
+            ) {
                 cir.setReturnValue(false);
                 return;
             }

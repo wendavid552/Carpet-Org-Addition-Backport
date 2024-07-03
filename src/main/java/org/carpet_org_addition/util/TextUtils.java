@@ -42,13 +42,43 @@ public class TextUtils {
     }
 
     /**
+     * 兼容用
+     */
+    public static MutableText translatableText(String key) {
+        return
+        //#if MC>11900
+        Text.translatable(key);
+        //#else
+        //$$ new TranslatableText(key);
+        //#endif
+    }
+
+    public static MutableText translatableText(String key, Object... obj) {
+        return
+        //#if MC>11900
+        Text.translatable(key, obj);
+        //#else
+        //$$ new TranslatableText(key, obj);
+        //#endif
+    }
+
+    public static MutableText literal(String text) {
+        return
+        //#if MC>11900
+        Text.literal(text);
+        //#else
+        //$$ new LiteralText(text);
+        //#endif
+    }
+
+    /**
      * 获取一个方块坐标的可变文本对象，并带有点击复制、悬停文本，颜色效果
      *
      * @param color 文本的颜色，如果为null，不修改颜色
      */
     @SuppressWarnings("ExtractMethodRecommender")
     public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
-        MutableText pos = Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+        MutableText pos = Texts.bracketed(translatableText("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         //添加单击事件，复制方块坐标
         pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, WorldUtils.toPosString(blockPos))));
         //添加光标悬停事件：单击复制到剪贴板
@@ -70,7 +100,7 @@ public class TextUtils {
      * 返回一个简单的没有任何样式的方块坐标可变文本对象
      */
     public static MutableText simpleBlockPos(BlockPos blockPos) {
-        return Texts.bracketed(Text.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+        return Texts.bracketed(translatableText("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
     }
 
     /**
@@ -254,7 +284,7 @@ public class TextUtils {
      * @param block 要获取名称的方块
      */
     public static MutableText getBlockName(Block block) {
-        return Text.translatable(block.getTranslationKey());
+        return translatableText(block.getTranslationKey());
     }
 
     /**
@@ -278,7 +308,7 @@ public class TextUtils {
      */
     @SuppressWarnings("unused")
     public static MutableText getItemName(Item item) {
-        return Text.translatable(item.getTranslationKey());
+        return translatableText(item.getTranslationKey());
     }
 
     /**

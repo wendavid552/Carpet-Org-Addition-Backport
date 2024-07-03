@@ -42,8 +42,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextContent;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
@@ -110,18 +108,6 @@ public class ReLoginTask extends PlayerScheduleTask {
             }
         }
         // 退出游戏
-        TextContent var3 = reason.getContent();
-        if (var3 instanceof TranslatableTextContent text) {
-            if (text.getKey().equals("multiplayer.disconnect.duplicate_login")) {
-                try {
-                    CarpetOrgAddition.hiddenLoginMessages = true;
-                    fakePlayer.networkHandler.onDisconnected(reason);
-                } finally {
-                    CarpetOrgAddition.hiddenLoginMessages = false;
-                }
-                return;
-            }
-        }
         this.server.send(new ServerTask(this.server.getTicks(), () -> {
             try {
                 CarpetOrgAddition.hiddenLoginMessages = true;

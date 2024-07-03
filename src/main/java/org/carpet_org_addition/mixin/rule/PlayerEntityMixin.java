@@ -26,7 +26,7 @@
 package org.carpet_org_addition.mixin.rule;
 
 import carpet.patches.EntityPlayerMPFake;
-import carpet.utils.CommandHelper;
+
 import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -72,7 +72,7 @@ public abstract class PlayerEntityMixin {
     @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
     private void interact(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (thisPlayer instanceof ServerPlayerEntity && !thisPlayer.isSpectator()
-                && CommandHelper.canUseCommand(thisPlayer.getCommandSource(),
+                && CommandUtils.canUseCommand(thisPlayer.getCommandSource(),
                 CarpetOrgAdditionSettings.commandPlayerAction)) {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) thisPlayer;
             switch (CarpetOrgAdditionSettings.quickSettingFakePlayerCraft) {

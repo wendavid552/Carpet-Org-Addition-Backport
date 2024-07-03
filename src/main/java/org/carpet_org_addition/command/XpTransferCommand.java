@@ -26,7 +26,7 @@
 package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
 public class XpTransferCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("xpTransfer")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandXpTransfer))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandXpTransfer))
                 .then(CommandManager.argument("outputPlayer", EntityArgumentType.player())
                         .then(CommandManager.argument("inputPlayer", EntityArgumentType.player())
                                 .then(CommandManager.literal("all")

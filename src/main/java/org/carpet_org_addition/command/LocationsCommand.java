@@ -25,7 +25,7 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -55,7 +55,7 @@ import java.util.Optional;
 public class LocationsCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("locations")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandLocations))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandLocations))
                 .then(CommandManager.literal("add")
                         .then(CommandManager.argument("name", StringArgumentType.string())
                                 .executes(context -> addWayPoint(context, null))

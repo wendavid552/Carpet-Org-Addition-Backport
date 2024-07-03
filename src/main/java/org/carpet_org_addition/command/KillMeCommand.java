@@ -25,7 +25,7 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -41,7 +41,7 @@ import org.carpet_org_addition.util.TextUtils;
 public class KillMeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("killMe")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandKillMe))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandKillMe))
                 .executes(KillMeCommand::killMe));
     }
 

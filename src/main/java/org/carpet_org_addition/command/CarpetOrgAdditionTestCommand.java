@@ -25,6 +25,7 @@
 
 package org.carpet_org_addition.command;
 
+//#if MC>=12000
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -48,12 +49,14 @@ import org.carpet_org_addition.util.TextUtils;
 
 import java.util.List;
 import java.util.function.Predicate;
+//#endif
 
 /**
  * 测试用，不会添加到游戏
  */
 @SuppressWarnings("unused")
 public class CarpetOrgAdditionTestCommand {
+    //#if MC>=12000
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandBuildContext) {
         dispatcher.register(CommandManager.literal("carpetOrgAdditionTest")
                 .requires(source -> FabricLoader.getInstance().isDevelopmentEnvironment())
@@ -165,4 +168,5 @@ public class CarpetOrgAdditionTestCommand {
         // FakePlayerCraftRecipeInterface.flag.setValue(!FakePlayerCraftRecipeInterface.flag.getValue());
         return 1;
     }
+    //#endif
 }

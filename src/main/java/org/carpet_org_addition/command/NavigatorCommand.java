@@ -26,7 +26,7 @@
 package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
-import carpet.utils.CommandHelper;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -63,14 +63,14 @@ public class NavigatorCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("navigate")
-                .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandNavigate))
+                .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandNavigate))
                 .then(CommandManager.literal("entity")
                         .then(CommandManager.argument("entity", EntityArgumentType.entity())
                                 .executes(context -> navigateToEntity(context, false))
                                 .then(CommandManager.literal("continue")
                                         .executes(context -> navigateToEntity(context, true)))))
                 .then(CommandManager.literal("waypoint")
-                        .requires(source -> CommandHelper.canUseCommand(source, CarpetOrgAdditionSettings.commandLocations))
+                        .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandLocations))
                         .then(CommandManager.argument("waypoint", StringArgumentType.string())
                                 .suggests(LocationsCommand.suggestion())
                                 .executes(NavigatorCommand::navigateToWaypoint)))

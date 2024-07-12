@@ -23,39 +23,38 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.util;
+package org.carpet_org_addition.util.predicate;
 
-//#if MC>11900
-import net.minecraft.command.CommandRegistryAccess;
-//#endif
-import net.minecraft.command.argument.ItemPredicateArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandNodeFactory {
-        //#if MC>11900
-        private final CommandRegistryAccess context;
+import java.util.Optional;
 
-        public CommandNodeFactory(CommandRegistryAccess context) {
-            this.context = context;
-        }
-        //#else
-        //$$ public CommandNodeFactory() {
-        //$$ }
-        //#endif
+public class RegistryItemEntryPredicate extends AbstractRegistryEntryPredicate {
+    private final ItemResult itemResult;
 
-        public ItemStackArgumentType itemStack() {
-            return ItemStackArgumentType.itemStack(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
-
-        public ItemPredicateArgumentType itemPredicate() {
-            return ItemPredicateArgumentType.itemPredicate(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
+    public RegistryItemEntryPredicate(ItemResult itemResult) {
+        this.itemResult = itemResult;
     }
+
+    @Override
+    public boolean test(RegistryEntry<Item> itemRegistryEntry) {
+        return itemRegistryEntry == itemResult.item();
+    }
+
+    @Override
+    public String toString() {
+        Optional<RegistryKey<Item>> key = this.itemResult.item().getKey();
+        if (key.isPresent()) {
+            return key.get().getValue().toString();
+        }
+        return Items.AIR.getName().getString();
+    }
+
+    public static record ItemResult(RegistryEntry<Item> item, @Nullable NbtCompound nbt) {
+    }
+}

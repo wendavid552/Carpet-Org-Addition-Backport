@@ -15,5 +15,7 @@ carpet.fakes.ServerPlayerInterface carpet.fakes.ServerPlayerEntityInterface
 net.minecraft.text.MutableText net.minecraft.text.BaseText
 net.minecraft.world.dimension.DimensionType ultrawarm() isUltrawarm()
 net.minecraft.server.command.CommandManager executeWithPrefix() execute()
+net.minecraft.registry.RegistryKeys net.minecraft.util.registry.Registry
 net.minecraft.registry.Registries net.minecraft.util.registry.Registry
+net.minecraft.util.registry.Registry WORLD WORLD_KEYS
 net.minecraft.world.dimension.DimensionTypes net.minecraft.world.dimension.DimensionType

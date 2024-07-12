@@ -33,6 +33,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.util.TextUtils;
+import org.carpet_org_addition.util.predicate.AbstractItemStackPredicate;
 
 import java.util.function.Predicate;
 
@@ -65,17 +66,14 @@ public class ItemPredicateMatcher implements Matcher {
 
     @Override
     public Item getItem() {
-//        if (this.predicate instanceof ItemPredicate) {
-//            String itemOrTag = (this.predicate).toString();
-//            if (itemOrTag.startsWith("#")) {
-//                return Items.AIR;
-//            }
-//            return Matcher.asItem(itemOrTag);
-//        }
-//        return Items.AIR;
         if (this.predicate instanceof ItemPredicate) {
-            return ((ItemPredicate) this.predicate).
+            String itemOrTag = (this.predicate).toString();
+            if (itemOrTag.startsWith("#")) {
+                return Items.AIR;
+            }
+            return Matcher.asItem(itemOrTag);
         }
+        return Items.AIR;
     }
 
     @Override

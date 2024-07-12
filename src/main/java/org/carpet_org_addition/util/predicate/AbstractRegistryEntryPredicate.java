@@ -23,39 +23,12 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.util;
+package org.carpet_org_addition.util.predicate;
 
-//#if MC>11900
-import net.minecraft.command.CommandRegistryAccess;
-//#endif
-import net.minecraft.command.argument.ItemPredicateArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.item.Item;
+import net.minecraft.registry.entry.RegistryEntry;
 
-public class CommandNodeFactory {
-        //#if MC>11900
-        private final CommandRegistryAccess context;
+import java.util.function.Predicate;
 
-        public CommandNodeFactory(CommandRegistryAccess context) {
-            this.context = context;
-        }
-        //#else
-        //$$ public CommandNodeFactory() {
-        //$$ }
-        //#endif
-
-        public ItemStackArgumentType itemStack() {
-            return ItemStackArgumentType.itemStack(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
-
-        public ItemPredicateArgumentType itemPredicate() {
-            return ItemPredicateArgumentType.itemPredicate(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
-    }
+public abstract class AbstractRegistryEntryPredicate implements Predicate<RegistryEntry<Item>> {
+}

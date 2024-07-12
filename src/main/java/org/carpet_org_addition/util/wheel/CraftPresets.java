@@ -29,7 +29,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+//#if MC>=11900
 import net.minecraft.command.CommandRegistryAccess;
+//#endif
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -38,6 +40,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.util.CommandNodeFactory;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
@@ -122,7 +125,16 @@ public class CraftPresets {
     }
 
     // 根据字符串数组获取物品匹配器数组
-    public Matcher[] getItemMarcher(CommandRegistryAccess commandRegistryAccess, String fileName) throws CommandSyntaxException {
+    public Matcher[] getItemMatcher(
+            //#if MC>=11900
+            CommandRegistryAccess commandRegistryAccess,
+            //#endif
+            String fileName) throws CommandSyntaxException {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
+                //#if MC>=11900
+                commandRegistryAccess
+                //#endif
+        );
         Matcher[] itemMatchersArr = new Matcher[9];
         for (int index = 0; index < itemMatchersArr.length; index++) {
             // 获取字符串中的每一个元素
@@ -145,7 +157,7 @@ public class CraftPresets {
                 StringReader stringReader = new StringReader(itemOrTag);
                 // 从字符串读取器获取物品标签
                 ItemPredicateArgumentType.ItemStackPredicateArgument parse =
-                        new ItemPredicateArgumentType(commandRegistryAccess).parse(stringReader);
+                        commandNodeFactory.itemPredicate().parse(stringReader);
                 // 创建一个以物品标签匹配物品的物品匹配器对象并添加进数组
                 itemMatchersArr[index] = new ItemPredicateMatcher(parse);
             } else {

@@ -23,39 +23,37 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.util;
+package org.carpet_org_addition.util.predicate;
 
-//#if MC>11900
-import net.minecraft.command.CommandRegistryAccess;
-//#endif
-import net.minecraft.command.argument.ItemPredicateArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.command.argument.ItemStringReader;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.tag.TagKey;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandNodeFactory {
-        //#if MC>11900
-        private final CommandRegistryAccess context;
+import java.util.Optional;
 
-        public CommandNodeFactory(CommandRegistryAccess context) {
-            this.context = context;
-        }
-        //#else
-        //$$ public CommandNodeFactory() {
-        //$$ }
-        //#endif
+public class RegistryTagEntryPredicate extends AbstractRegistryEntryPredicate {
+    private final TagResult tagResult;
 
-        public ItemStackArgumentType itemStack() {
-            return ItemStackArgumentType.itemStack(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
-
-        public ItemPredicateArgumentType itemPredicate() {
-            return ItemPredicateArgumentType.itemPredicate(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
+    public RegistryTagEntryPredicate(TagResult tagResult) {
+        this.tagResult = tagResult;
     }
+
+    @Override
+    public boolean test(RegistryEntry<Item> itemRegistryEntry) {
+        return this.tagResult.tag().contains(itemRegistryEntry);
+    }
+
+    @Override
+    public String toString() {
+        Optional<TagKey<Item>> tagKey = this.tagResult.tag().getTagKey();
+        return tagKey.map(itemTagKey -> "#" + itemTagKey.id().toString()).orElse("#");
+    }
+
+    public static record TagResult(RegistryEntryList<Item> tag, @Nullable NbtCompound nbt) {
+
+    }
+}

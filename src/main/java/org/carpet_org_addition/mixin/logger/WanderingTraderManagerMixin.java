@@ -41,6 +41,7 @@ import net.minecraft.world.WanderingTraderManager;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger.SpawnCountdown;
+import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;

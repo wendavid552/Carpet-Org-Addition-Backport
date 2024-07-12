@@ -23,39 +23,20 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.util;
+package org.carpet_org_addition.util.predicate;
 
-//#if MC>11900
-import net.minecraft.command.CommandRegistryAccess;
-//#endif
-import net.minecraft.command.argument.ItemPredicateArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandNodeFactory {
-        //#if MC>11900
-        private final CommandRegistryAccess context;
-
-        public CommandNodeFactory(CommandRegistryAccess context) {
-            this.context = context;
-        }
-        //#else
-        //$$ public CommandNodeFactory() {
-        //$$ }
-        //#endif
-
-        public ItemStackArgumentType itemStack() {
-            return ItemStackArgumentType.itemStack(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
-
-        public ItemPredicateArgumentType itemPredicate() {
-            return ItemPredicateArgumentType.itemPredicate(
-                    //#if MC>11900
-                    this.context
-                    //#endif
-            );
-        }
+public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
+    public WithNbtItemStackPredicate(AbstractRegistryEntryPredicate predicate, @Nullable NbtCompound nbt) {
+        super(predicate, nbt);
     }
+
+    @Override
+    public boolean test(ItemStack itemStack) {
+        return itemStack.itemMatches(predicate) && NbtHelper.matches(nbt, itemStack.getNbt(), true);
+    }
+}

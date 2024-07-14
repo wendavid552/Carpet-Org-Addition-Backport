@@ -32,6 +32,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
+import org.carpet_org_addition.settings.CarpetRuleRegistrar;
 import org.carpet_org_addition.translate.Translate;
 import org.carpet_org_addition.util.AutoMixinAuditExecutor;
 import org.carpet_org_addition.util.wheel.Waypoint;
@@ -66,7 +67,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     @Override
     public void onGameStarted() {
         // 解析Carpet设置
-        CarpetServer.settingsManager.parseSettingsClass(CarpetOrgAdditionSettings.class);
+        CarpetRuleRegistrar.register(CarpetServer.settingsManager, CarpetOrgAdditionSettings.class);
     }
 
     // 当玩家登录时

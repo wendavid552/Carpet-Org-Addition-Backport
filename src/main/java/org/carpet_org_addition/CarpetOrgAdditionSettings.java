@@ -25,18 +25,13 @@
 
 package org.carpet_org_addition;
 
-import carpet.api.settings.Rule;
 import carpet.api.settings.RuleCategory;
 import org.carpet_org_addition.rulevalidator.*;
-import org.carpet_org_addition.rulevalue.MobWhetherOrNotCanPickItem;
-import org.carpet_org_addition.rulevalue.QuickSettingFakePlayerCraft;
-import org.carpet_org_addition.rulevalue.WetSpongeImmediatelyDry;
+import org.carpet_org_addition.rulevalue.*;
+import org.carpet_org_addition.settings.Rule;
 
 @SuppressWarnings("CanBeFinal")
 public class CarpetOrgAdditionSettings {
-    private CarpetOrgAdditionSettings() {
-    }
-
     public static final String ORG = "Org";
 
     // 制作物品分身

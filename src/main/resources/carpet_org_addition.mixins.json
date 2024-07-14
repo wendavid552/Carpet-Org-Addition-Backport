@@ -73,13 +73,14 @@
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",
     "rule.respawnblocksexplode.BedBlockMixin",
     "rule.respawnblocksexplode.RespawnAnchorBlockMixin",
+    "setting.ParsedRuleAccessor",
+    "setting.SettingsManagerAccessor",
     "util.CraftingScreenHandlerMixin",
     "util.ForgingScreenHandlerAccessor",
     "util.PlayerManagerMixin",
     "util.RegisterCarpetCommandsMixin"
   ],
   "client": [
-    "rule.client.carpet.SettingsManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

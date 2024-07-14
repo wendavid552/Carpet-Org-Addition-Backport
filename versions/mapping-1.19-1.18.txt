@@ -13,6 +13,7 @@ carpet.helpers.BlockRotator flipBlock() flip_block()
 carpet.fakes.ServerPlayerInterface carpet.fakes.ServerPlayerEntityInterface
 
 net.minecraft.text.MutableText net.minecraft.text.BaseText
+net.minecraft.text.TranslatableTextContent net.minecraft.text.TranslatableText
 net.minecraft.world.dimension.DimensionType ultrawarm() isUltrawarm()
 net.minecraft.server.command.CommandManager executeWithPrefix() execute()
 net.minecraft.registry.RegistryKeys net.minecraft.util.registry.Registry

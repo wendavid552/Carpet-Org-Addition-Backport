@@ -38,9 +38,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Translate {
     private static final HashMap<String, Map<String, String>> TRANSLATE = new HashMap<>();
+    private static final String TRANSLATE_KEY_PREFIX = "carpet.";
 
     // 获取翻译
     public static Map<String, String> getTranslate() {
@@ -72,6 +74,14 @@ public class Translate {
         Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
         Map<String, String> translate = gson.fromJson(translateJson, new TypeToken<Map<String, String>>() {
         }.getType());
+
+        //修复1.19.4+的carpet. prefix问题
+        //#if MC<11904
+        //$$ translate = translate.entrySet().stream()
+        //$$         .filter(entry -> entry.getKey().startsWith(TRANSLATE_KEY_PREFIX))
+        //$$         .collect(Collectors.toMap(entry -> entry.getKey().substring(TRANSLATE_KEY_PREFIX.length()), Map.Entry::getValue));
+        //#endif
+
         TRANSLATE.put(CarpetSettings.language, translate);
         return translate;
     }

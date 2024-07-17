@@ -64,21 +64,14 @@ import org.carpet_org_addition.util.fakeplayer.actiondata.*;
 import org.carpet_org_addition.util.matcher.ItemMatcher;
 import org.carpet_org_addition.util.matcher.ItemPredicateMatcher;
 import org.carpet_org_addition.util.matcher.Matcher;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher
-                                //#if MC>11900
-                                ,CommandRegistryAccess commandBuildContext
-                                //#endif
-    ) {
-        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
-                //#if MC>11900
-                commandBuildContext
-                //#endif
-        );
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,@Nullable Object commandBuildContext) {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(commandBuildContext);
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting")

@@ -45,19 +45,12 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.*;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class SendMessageCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher
-                                //#if MC>11900
-                                ,CommandRegistryAccess commandBuildContext
-                                //#endif
-    ) {
-        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
-                //#if MC>11900
-                commandBuildContext
-                //#endif
-        );
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, @Nullable Object commandBuildContext) {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(commandBuildContext);
         dispatcher.register(CommandManager.literal("sendMessage")
                 .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandSendMessage))
                 .then(CommandManager.literal("copy")

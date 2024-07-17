@@ -28,25 +28,23 @@ package org.carpet_org_addition.util;
 //#if MC>11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
+import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemStackArgumentType;
+import org.jetbrains.annotations.Nullable;
 
 public class CommandNodeFactory {
-        //#if MC>11900
-        private final CommandRegistryAccess context;
+        private final Object context;
 
-        public CommandNodeFactory(CommandRegistryAccess context) {
+        public CommandNodeFactory(@Nullable Object context) {
             this.context = context;
         }
-        //#else
-        //$$ public CommandNodeFactory() {
-        //$$ }
-        //#endif
+
 
         public ItemStackArgumentType itemStack() {
             return ItemStackArgumentType.itemStack(
                     //#if MC>11900
-                    this.context
+                    (CommandRegistryAccess) this.context
                     //#endif
             );
         }
@@ -54,7 +52,15 @@ public class CommandNodeFactory {
         public ItemPredicateArgumentType itemPredicate() {
             return ItemPredicateArgumentType.itemPredicate(
                     //#if MC>11900
-                    this.context
+                    (CommandRegistryAccess) this.context
+                    //#endif
+            );
+        }
+
+        public BlockStateArgumentType blockState() {
+            return BlockStateArgumentType.blockState(
+                    //#if MC>11900
+                    (CommandRegistryAccess) this.context
                     //#endif
             );
         }

@@ -98,7 +98,7 @@ public class CarpetOrgAdditionTestCommand {
         DefaultedList<ItemStack> main = player.getInventory().main;
         for (int index = 0; index < main.size(); index++) {
             if (item.test(main.get(index))) {
-                MessageUtils.sendTextMessage(player, Text.literal(main.get(index).getName().getString() + "在索引" + index));
+                MessageUtils.sendTextMessage(player, TextUtils.literal(main.get(index).getName().getString() + "在索引" + index));
                 return index;
             }
         }

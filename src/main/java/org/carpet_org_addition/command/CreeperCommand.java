@@ -35,6 +35,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.explosion.Explosion;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -57,7 +58,7 @@ public class CreeperCommand {
         CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
         // 产生爆炸
         //#if MC<11900
-        //$$ Explosion.DestructionType destructionType = this.world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) ? DestructionType.DESTROY : DestructionType.NONE;
+        //$$ Explosion.DestructionType destructionType = world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) ? Explosion.DestructionType.DESTROY : Explosion.DestructionType.NONE;
         //$$ targetPlayer.getWorld().createExplosion(creeper,
         //$$                targetPlayer.getX() + MathUtils.randomInt(-3, 3),
         //$$                targetPlayer.getY() + MathUtils.randomInt(-1, 1),

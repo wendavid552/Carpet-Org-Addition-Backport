@@ -38,6 +38,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 //#if MC>11900
@@ -48,6 +49,7 @@ import net.minecraft.registry.RegistryKeys;
 //#endif
 
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.util.CommandNodeFactory;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -72,30 +74,20 @@ public class FinderCommand {
      */
     public static final int MAXIMUM_STATISTICS = 300000;
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher
-                                //#if MC>11900
-                                ,CommandRegistryAccess commandBuildContext
-                                //#endif
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, Object commandBuildContext
                                 ) {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(commandBuildContext);
         dispatcher.register(CommandManager.literal("finder")
                 .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandFinder))
                 .then(CommandManager.literal("block")
-                        .then(CommandManager.argument("blockState", BlockStateArgumentType.blockState(
-                                //#if MC>11900
-                                commandBuildContext
-                                //#endif
-                                ))
+                        .then(CommandManager.argument("blockState", commandNodeFactory.blockState())
                                 .executes(context -> blockFinder(context, 32, 10))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                         .executes(context -> blockFinder(context, -1, 10))
                                         .then(CommandManager.argument("maxCount", IntegerArgumentType.integer(1))
                                                 .executes(context -> blockFinder(context, -1, -1))))))
                 .then(CommandManager.literal("item")
-                        .then(CommandManager.argument("itemStack", ItemPredicateArgumentType.itemPredicate(
-                                //#if MC>11900
-                                commandBuildContext
-                                //#endif
-                                ))
+                        .then(CommandManager.argument("itemStack", commandNodeFactory.itemPredicate())
                                 .executes(context -> findItem(context, 32, 10))
                                 .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                         .executes(context -> findItem(context, -1, 10))
@@ -103,11 +95,7 @@ public class FinderCommand {
                                                 .executes(context -> findItem(context, -1, -1))))))
                 .then(CommandManager.literal("trade")
                         .then(CommandManager.literal("item")
-                                .then(CommandManager.argument("itemStack", ItemStackArgumentType.itemStack(
-                                        //#if MC>11900
-                                        commandBuildContext
-                                        //#endif
-                                        ))
+                                .then(CommandManager.argument("itemStack", commandNodeFactory.itemStack())
                                         .executes(context -> findTradeItem(context, 32, 10))
                                         .then(CommandManager.argument("range", IntegerArgumentType.integer(0, 128))
                                                 .executes(context -> findTradeItem(context, -1, 10))
@@ -116,7 +104,7 @@ public class FinderCommand {
                         .then(CommandManager.literal("enchantedBook")
                                 .then(CommandManager.argument("enchantment",
                                         //#if MC>11900
-                                        RegistryEntryArgumentType.registryEntry(commandBuildContext,RegistryKeys.ENCHANTMENT)
+                                        RegistryEntryArgumentType.registryEntry((CommandRegistryAccess) commandBuildContext, RegistryKeys.ENCHANTMENT)
                                         //#else
                                         //$$ EnchantmentArgumentType.enchantment()
                                         //#endif
@@ -244,7 +232,7 @@ public class FinderCommand {
         //#if MC>11900
         Enchantment enchantment = RegistryEntryArgumentType.getEnchantment(context, "enchantment").value();
         //#else
-        //$$ Enchantment enchantment = EnchantmentArgumentType.getEnchantment(context, "enchantment").value();
+        //$$ Enchantment enchantment = EnchantmentArgumentType.getEnchantment(context, "enchantment");
         //#endif
         // 获取玩家所在的位置
         BlockPos sourcePos = player.getBlockPos();
@@ -253,7 +241,7 @@ public class FinderCommand {
         ArrayList<TradeEnchantedBookResult> list = enchantedBookTradeFinder.startSearch();
         // 找不到出售指定物品的村民，直接结束方法
         if (list.isEmpty()) {
-            MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
+            MutableText mutableText = TextUtils.translatableText(enchantment.getTranslationKey());
             // 如果是诅咒附魔，设置为红色
             if (enchantment.isCursed()) {
                 mutableText.formatted(Formatting.RED);
@@ -279,7 +267,7 @@ public class FinderCommand {
         // 计算物品余几个
         int remainder = count % maxCount;
         String value = String.valueOf(count);
-        MutableText text = Text.literal(value);
+        MutableText text = TextUtils.literal(value);
         if (inTheShulkerBox) {
             // 如果包含在潜影盒内找到的物品，在数量上添加斜体效果
             text = TextUtils.regularStyle(value, Formatting.WHITE, false, true, false, false);

@@ -33,6 +33,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.util.MessageUtils;
+import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.wheel.CraftPresets;
 
 import java.io.File;
@@ -74,7 +75,7 @@ public class PresetsCommand {
                 }
                 String fileName = CraftPresets.extractFileName(files[i].getName());
                 // 列出目录下的每一个文件
-                MessageUtils.sendTextMessage(context.getSource(), Text.literal(fileName));
+                MessageUtils.sendTextMessage(context.getSource(), TextUtils.literal(fileName));
             }
         }
         return i;

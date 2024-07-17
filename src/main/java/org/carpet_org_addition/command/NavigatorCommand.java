@@ -45,6 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.mixin.compat.minecraft.PlayerEntityLastDeathPosition.PlayerEntityLastDeathPositionRecorder;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -206,7 +207,12 @@ public class NavigatorCommand {
     private static int navigateToLastDeathLocation(CommandContext<ServerCommandSource> context, boolean self) throws CommandSyntaxException {
         ServerPlayerEntity player = CommandUtils.getSourcePlayer(context);
         ServerPlayerEntity target = self ? player : CommandUtils.getArgumentPlayer(context);
-        Optional<GlobalPos> lastDeathPos = target.getLastDeathPos();
+        Optional<GlobalPos> lastDeathPos =
+                //#if MC>=11904
+                target.getLastDeathPos();
+                //#else
+                //$$ ((PlayerEntityLastDeathPositionRecorder)target).org$getLastDeathPos();
+                //#endif
         // 导航器目标的名称
         MutableText lastDeathLocation = TextUtils.getTranslate("carpet.commands.navigate.name.last_death_location");
         // 非空判断

@@ -150,7 +150,7 @@ public class PlayerToolsCommand {
                 //#if MC>11900
                 getDimensionKey().getValue();
                 //#else
-                //$$ getDimension();
+                //$$ getDimension().getEffects();
                 //#endif
         if (value.equals(DimensionTypes.OVERWORLD_ID)) {
             return TextUtils.getTranslate("carpet.commands.playerTools.pos.overworld");

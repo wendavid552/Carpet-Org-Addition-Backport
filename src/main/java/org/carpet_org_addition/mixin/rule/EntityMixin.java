@@ -60,7 +60,7 @@ public abstract class EntityMixin {
                     target = "Lnet/minecraft/entity/Entity;getStepHeight()F"
                     //#else
                     //$$ value = "FIELD",
-                    //$$ target = "stepHeight"
+                    //$$ target = "Lnet/minecraft/entity/Entity;stepHeight:F"
                     //#endif
             )
     )

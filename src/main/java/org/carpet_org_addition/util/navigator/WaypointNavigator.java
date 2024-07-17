@@ -29,6 +29,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
@@ -66,7 +67,7 @@ public class WaypointNavigator extends AbstractNavigator {
         String playerDimension = WorldUtils.getDimensionId(this.player.getWorld());
         if (playerDimension.equals(waypointDimension)) {
             // 玩家和路径点在相同的维度
-            Text text = this.getHUDText(blockPos.toCenterPos(), getIn(blockPos), getDistance(playerBlockPos, blockPos));
+            Text text = this.getHUDText(Vec3d.of(blockPos).add(0.5,0.5,0.5), getIn(blockPos), getDistance(playerBlockPos, blockPos));
             MessageUtils.sendTextMessageToHud(this.player, text);
         } else if (((playerDimension.equals(WorldUtils.OVERWORLD) && waypointDimension.equals(WorldUtils.THE_NETHER))
                 || (playerDimension.equals(WorldUtils.THE_NETHER) && waypointDimension.equals(WorldUtils.OVERWORLD)))
@@ -75,7 +76,7 @@ public class WaypointNavigator extends AbstractNavigator {
             // 将坐标设置为斜体
             Text in = TextUtils.getTranslate(IN, waypoint.getName(),
                     TextUtils.toItalic(TextUtils.simpleBlockPos(blockPos)));
-            Text text = this.getHUDText(this.waypoint.getAnotherBlockPos().toCenterPos(), in,
+            Text text = this.getHUDText(Vec3d.of(this.waypoint.getAnotherBlockPos()).add(0.5,0.5,0.5), in,
                     getDistance(playerBlockPos, this.waypoint.getAnotherBlockPos()));
             MessageUtils.sendTextMessageToHud(this.player, text);
         } else {

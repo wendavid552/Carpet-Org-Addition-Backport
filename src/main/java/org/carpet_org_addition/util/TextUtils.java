@@ -78,7 +78,7 @@ public class TextUtils {
      */
     @SuppressWarnings("ExtractMethodRecommender")
     public static MutableText blockPos(BlockPos blockPos, @Nullable Formatting color) {
-        MutableText pos = Texts.bracketed(translatableText("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+        MutableText pos = (MutableText) Texts.bracketed(translatableText("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         //添加单击事件，复制方块坐标
         pos.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, WorldUtils.toPosString(blockPos))));
         //添加光标悬停事件：单击复制到剪贴板
@@ -100,7 +100,7 @@ public class TextUtils {
      * 返回一个简单的没有任何样式的方块坐标可变文本对象
      */
     public static MutableText simpleBlockPos(BlockPos blockPos) {
-        return Texts.bracketed(translatableText("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+        return (MutableText) Texts.bracketed(translatableText("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
     }
 
     /**
@@ -112,7 +112,7 @@ public class TextUtils {
      * @param color     文本的颜色，如果为null，默认为白色
      */
     public static MutableText suggest(@NotNull String original, @Nullable String input, @Nullable Text hoverText, @Nullable Formatting color) {
-        MutableText text = Text.literal(original);
+        MutableText text = TextUtils.literal(original);
         if (input != null) {
             //添加单击事件
             text.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, input)));
@@ -137,7 +137,7 @@ public class TextUtils {
      * @return 可以单击复制内容的可变文本组件
      */
     public static MutableText copy(@NotNull String original, @Nullable String copy, @Nullable Text hoverText, @Nullable Formatting color) {
-        MutableText text = Text.literal(original);
+        MutableText text = TextUtils.literal(original);
         if (copy != null) {
             text.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, copy)));
         }
@@ -160,14 +160,14 @@ public class TextUtils {
      * @return 可以单击打开网页链接的可变文本组件
      */
     public static MutableText url(@NotNull String original, @Nullable String url, @Nullable String hoverText, @Nullable Formatting color) {
-        MutableText text = Text.literal(original);
+        MutableText text = TextUtils.literal(original);
         //添加下划线
         text.styled(style -> style.withUnderline(true));
         if (url != null) {
             text.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
         }
         if (hoverText != null) {
-            text.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hoverText))));
+            text.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.literal(hoverText))));
         }
         if (color != null) {
             text.styled(style -> style.withColor(color));
@@ -206,8 +206,8 @@ public class TextUtils {
      * @param hover 显示在文本上的悬浮文字
      */
     public static MutableText hoverText(String text, String hover) {
-        return Text.literal(text).styled(style
-                -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal(hover))));
+        return (MutableText) TextUtils.literal(text).styled(style
+                -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.literal(hover))));
     }
 
     public static MutableText hoverText(MutableText initialText, Text hover, @Nullable Formatting color) {
@@ -221,7 +221,7 @@ public class TextUtils {
 
     public static MutableText hoverText(Object obj, Text hover) {
         if (obj instanceof Text text) {
-            return hoverText((text instanceof MutableText ? (MutableText) text : text.copy()), hover, null);
+            return hoverText((text instanceof MutableText ? (MutableText) text : (MutableText) text.copy()), hover, null);
         } else {
             MutableText mutableText = createEmpty();
             mutableText.append(obj.toString())
@@ -240,7 +240,7 @@ public class TextUtils {
      * @return 只带有一些普通样式的可变文本对象
      */
     public static MutableText regularStyle(String original, Formatting color, boolean bold, boolean italic, boolean underlined, boolean strikethrough) {
-        MutableText text = Text.literal(original);
+        MutableText text = TextUtils.literal(original);
         text.styled(style -> style.withColor(color)
                 .withBold(bold)
                 .withItalic(italic)
@@ -256,7 +256,7 @@ public class TextUtils {
      */
     @SuppressWarnings("unused")
     public static MutableText regularStyle(String original, Formatting color) {
-        MutableText text = Text.literal(original);
+        MutableText text = TextUtils.literal(original);
         text.styled(style -> style.withColor(color));
         return text;
     }
@@ -268,14 +268,14 @@ public class TextUtils {
      * @return 一个新的不包含任何样式的可变文本对象
      */
     public static MutableText createText(String text) {
-        return Text.literal(text);
+        return TextUtils.literal(text);
     }
 
     /**
      * 创建一个不包含任何内容的可变文本对象
      */
     public static MutableText createEmpty() {
-        return Text.literal("");
+        return TextUtils.literal("");
     }
 
     /**
@@ -291,14 +291,14 @@ public class TextUtils {
      * 将一个可变文本对象设置为斜体
      */
     public static MutableText toItalic(MutableText mutableText) {
-        return mutableText.styled(style -> style.withItalic(true));
+        return (MutableText) mutableText.styled(style -> style.withItalic(true));
     }
 
     /**
      * 设置一个可变文本对象的颜色
      */
     public static MutableText setColor(MutableText mutableText, Formatting formatting) {
-        return mutableText.styled(style -> style.withColor(formatting));
+        return (MutableText) mutableText.styled(style -> style.withColor(formatting));
     }
 
     /**
@@ -321,7 +321,7 @@ public class TextUtils {
         MutableText mutableText = TextUtils.createEmpty();
         for (Object object : objects) {
             if (object instanceof String str) {
-                mutableText.append(Text.literal(str));
+                mutableText.append(TextUtils.literal(str));
             } else if (object instanceof Text text) {
                 mutableText.append(text);
             } else {
@@ -344,6 +344,6 @@ public class TextUtils {
         } catch (NullPointerException e) {
             value = null;
         }
-        return Text.translatableWithFallback(key, value, obj);
+        return (MutableText) translatableText(key, value, obj);
     }
 }

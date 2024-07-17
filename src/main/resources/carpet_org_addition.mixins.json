@@ -7,6 +7,9 @@
     "command.EntityPlayerMPFakeMixin",
     "command.MinecraftServerMixin",
     "command.ServerPlayerEntityMixin",
+    "compat.carpet.EntityPlayerMPFakeManiplater.EntityPlayerMPFakeInvoker",
+    "compat.minecraft.PlayerEntityLastDeathPosition.EntityInvoker",
+    "compat.minecraft.PlayerEntityLastDeathPosition.PlayerEntityMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",
@@ -77,8 +80,7 @@
     "setting.SettingsManagerAccessor",
     "util.CraftingScreenHandlerMixin",
     "util.ForgingScreenHandlerAccessor",
-    "util.PlayerManagerMixin",
-    "util.RegisterCarpetCommandsMixin"
+    "util.PlayerManagerMixin"
   ],
   "client": [
   ],

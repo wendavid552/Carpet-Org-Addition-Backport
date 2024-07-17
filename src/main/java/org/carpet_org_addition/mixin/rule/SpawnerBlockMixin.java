@@ -30,7 +30,9 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,9 +61,17 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
     @SuppressWarnings("deprecation")
     @Inject(method = "onStacksDropped", at = @At("HEAD"), cancellable = true)
     // 使用精准采集工具挖掘时不会掉落经验
-    private void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack tool, boolean dropExperience, CallbackInfo ci) {
-        if (CarpetOrgAdditionSettings.canMineSpawner && EnchantmentHelper.hasSilkTouch(tool)) {
-            super.onStacksDropped(state, world, pos, tool, dropExperience);
+    private void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack tool
+                //#if MC>=11904
+                ,boolean dropExperience
+                //#endif
+            , CallbackInfo ci) {
+        if (CarpetOrgAdditionSettings.canMineSpawner && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH,tool) > 0) {
+            super.onStacksDropped(state, world, pos, tool
+                    //#if MC>=11904
+                    ,dropExperience
+                    //#endif
+            );
             ci.cancel();
         }
     }
@@ -70,7 +80,7 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
     // 使用精准采集挖掘时掉落带NBT的物品
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBreak(world, pos, state, player);
-        if (CarpetOrgAdditionSettings.canMineSpawner && !player.isCreative() && EnchantmentHelper.hasSilkTouch(player.getMainHandStack())) {
+        if (CarpetOrgAdditionSettings.canMineSpawner && !player.isCreative() && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH,player.getMainHandStack()) > 0) {
             if (world.getBlockEntity(pos) instanceof MobSpawnerBlockEntity) {
                 MobSpawnerBlockEntity mobSpawnerBlock = (MobSpawnerBlockEntity) world.getBlockEntity(pos);
                 ItemStack itemStack = new ItemStack(Items.SPAWNER);

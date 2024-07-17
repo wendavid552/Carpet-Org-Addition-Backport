@@ -29,6 +29,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
@@ -54,7 +55,7 @@ public class HasNamePosNavigator extends BlockPosNavigator {
         // 玩家与目的地是否在同一维度
         if (this.player.getWorld().equals(this.world)) {
             MutableText distance = TextUtils.getTranslate(DISTANCE, MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos));
-            text = getHUDText(this.blockPos.toCenterPos(), TextUtils.getTranslate(IN, this.name, posText), distance);
+            text = getHUDText(Vec3d.of(this.blockPos).add(0.5,0.5,0.5), TextUtils.getTranslate(IN, this.name, posText), distance);
         } else {
             text = TextUtils.getTranslate(IN, this.name, TextUtils.appendAll(WorldUtils.getDimensionName(this.world), posText));
         }

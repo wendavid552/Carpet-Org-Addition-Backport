@@ -96,15 +96,15 @@ public class SpectatorCommand {
             if (isFakePlayer) {
                 // 让假玩家切换旁观模式时向上移动0.2格
                 // Mojang真的修复MC-146582了吗？（https://bugs.mojang.com/browse/MC-146582）
-                player.requestTeleportOffset(0.0, 0.2, 0.0);
+                player.requestTeleport(player.getX(), player.getY()+0.2, player.getZ());
             } else {
                 savePlayerPos(player.getServer(), player);
             }
         }
         player.changeGameMode(gameMode);
         // 发送命令反馈
-        MutableText text = Text.translatable("gameMode." + gameMode.getName());
-        player.sendMessage(Text.translatable("commands.gamemode.success.self", text), true);
+        MutableText text = TextUtils.translatableText("gameMode." + gameMode.getName());
+        player.sendMessage(TextUtils.translatableText("commands.gamemode.success.self", text), true);
         return gameMode == GameMode.SURVIVAL ? 1 : 0;
     }
 
@@ -159,7 +159,7 @@ public class SpectatorCommand {
             return;
         }
         throw CommandUtils.createException("carpet.commands.spectator.teleport.fail",
-                Text.translatable("gameMode." + GameMode.SPECTATOR.getName()));
+                TextUtils.translatableText("gameMode." + GameMode.SPECTATOR.getName()));
     }
 
     // 将玩家位置保存到文件

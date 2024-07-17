@@ -52,31 +52,31 @@ public abstract class AbstractActionData implements JsonSerial {
     // 获取物品的可变文本形式
     protected static MutableText getHoverText(Item item) {
         if (item == Items.AIR || item == null) {
-            return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
+            return TextUtils.hoverText(TextUtils.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
         }
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
         String capitalizeFirstLetter = "[" + String.valueOf(item.toString().charAt(0)).toUpperCase() + "]";
-        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), item.getName(), null);
+        return TextUtils.hoverText(TextUtils.literal(capitalizeFirstLetter), item.getName(), null);
     }
 
     // 获取物品的可变文本形式
     protected static MutableText getHoverText(Matcher matcher) {
         if (matcher.isEmpty()) {
-            return TextUtils.hoverText(Text.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
+            return TextUtils.hoverText(TextUtils.literal("[A]"), Items.AIR.getName(), Formatting.DARK_GRAY);
         }
         // 获取物品ID的首字母，然后转为大写，再放进中括号里
         String capitalizeFirstLetter = "[" + String.valueOf(matcher.toString().charAt(0)).toUpperCase() + "]";
-        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter), matcher.getName(), null);
+        return TextUtils.hoverText(TextUtils.literal(capitalizeFirstLetter), matcher.getName(), null);
     }
 
     // 获取物品堆栈的可变文本形式：物品名称x堆叠数量
     protected static MutableText getWithCountHoverText(@NotNull ItemStack itemStack) {
         if (itemStack.isEmpty()) {
-            return TextUtils.hoverText(Text.literal("[A]"), TextUtils.appendAll(Items.AIR.getName()), Formatting.DARK_GRAY);
+            return TextUtils.hoverText(TextUtils.literal("[A]"), TextUtils.appendAll(Items.AIR.getName()), Formatting.DARK_GRAY);
         }
         // 获取物品堆栈对应的物品ID的首字母，然后转为大写，再放进中括号里
         String capitalizeFirstLetter = "[" + String.valueOf(itemStack.getItem().toString().charAt(0)).toUpperCase() + "]";
-        return TextUtils.hoverText(Text.literal(capitalizeFirstLetter),
+        return TextUtils.hoverText(TextUtils.literal(capitalizeFirstLetter),
                 TextUtils.appendAll(itemStack.getItem().getName(), "x", String.valueOf(itemStack.getCount())), null);
     }
 
@@ -93,7 +93,11 @@ public abstract class AbstractActionData implements JsonSerial {
         World world = fakePlayer.getWorld();
         // 获取配方的输出
         Optional<CraftingRecipe> optional = fakePlayer.getCommandSource().getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
-        return optional.map(craftingRecipe -> craftingRecipe.craft(craftingInventory, world.getRegistryManager()).getItem()).orElse(Items.AIR);
+        return optional.map(craftingRecipe -> craftingRecipe.craft(craftingInventory
+                //#if MC>=11904
+                ,world.getRegistryManager()
+                //#endif
+        ).getItem()).orElse(Items.AIR);
     }
 
     @NotNull

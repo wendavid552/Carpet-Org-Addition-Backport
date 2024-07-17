@@ -75,7 +75,7 @@ public class ItemStackMatcher implements Matcher {
 
     @Override
     public MutableText toText() {
-        return this.itemStack.toHoverableText().copy();
+        return (MutableText) this.itemStack.toHoverableText().copy();
     }
 
     @Override

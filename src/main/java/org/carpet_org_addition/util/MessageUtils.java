@@ -27,10 +27,12 @@ package org.carpet_org_addition.util;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import org.carpet_org_addition.CarpetOrgAddition;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class MessageUtils {
      * @param message 发送文本消息的内容
      */
     public static void sendTextMessage(PlayerEntity player, Text message) {
-        player.sendMessage(message);
+        player.sendMessage(message, false);
     }
 
     /**
@@ -67,7 +69,32 @@ public class MessageUtils {
      * @param message 发送文本消息的内容
      */
     public static void sendTextMessage(ServerCommandSource source, Text message) {
-        source.sendMessage(message);
+        source.sendFeedback(
+                //#if MC>=12000
+                () -> message
+                //#else
+                //$$ message
+                //#endif
+                , false
+        );
+    }
+
+    // Send system message to server
+    public static void sendSystemMessage(MinecraftServer server, Text text) {
+        //#if MC<11900
+        //$$ server.sendSystemMessage(text, Util.NIL_UUID);
+        //#else
+        server.sendMessage(text);
+        //#endif
+    }
+
+    // Send system message to player
+    public static void sendSystemMessage(PlayerEntity player, Text text) {
+        //#if MC<11900
+        //$$ player.sendSystemMessage(text, Util.NIL_UUID);
+        //#else
+        player.sendMessage(text);
+        //#endif
     }
 
     /**
@@ -78,7 +105,13 @@ public class MessageUtils {
      */
     @Deprecated
     public static void sendStringMessage(ServerCommandSource source, String message) {
-        source.sendMessage(Text.literal(message));
+        sendTextMessage(source, TextUtils.literal(message));
+    }
+
+    public static void broadcastServerTextMessage(MinecraftServer server, Text text) {
+        Objects.requireNonNull(server, "无法获取服务器对象");
+        sendSystemMessage(server, text);
+        server.getPlayerManager().getPlayerList().forEach(player -> sendSystemMessage(player, text));
     }
 
     /**
@@ -91,15 +124,8 @@ public class MessageUtils {
      */
     @Deprecated
     public static void broadcastStringMessage(PlayerEntity player, String message, boolean containPlayerName) {
-        try {
-            PlayerManager playerManager = Objects.requireNonNull(player.getServer()).getPlayerManager();
-            playerManager.broadcast(
-                    containPlayerName ? TextUtils.appendAll(player.getDisplayName(), message)
-                            : Text.literal(message), false
-            );
-        } catch (NullPointerException e) {
-            CarpetOrgAddition.LOGGER.error("无法通过玩家获取服务器对象", e);
-        }
+        broadcastTextMessage(player, containPlayerName ? TextUtils.appendAll(player.getDisplayName(), message)
+                            : TextUtils.literal(message));
     }
 
     /**
@@ -109,12 +135,7 @@ public class MessageUtils {
      * @param message 要广播消息的内容
      */
     public static void broadcastTextMessage(PlayerEntity player, Text message) {
-        try {
-            PlayerManager playerManager = Objects.requireNonNull(player.getServer()).getPlayerManager();
-            playerManager.broadcast(message, false);
-        } catch (NullPointerException e) {
-            CarpetOrgAddition.LOGGER.error("无法通过玩家获取服务器对象", e);
-        }
+        broadcastServerTextMessage(player.getServer(), message);
     }
 
     /**
@@ -124,27 +145,7 @@ public class MessageUtils {
      * @param message 要广播消息的内容
      */
     public static void broadcastTextMessage(ServerCommandSource source, Text message) {
-        try {
-            PlayerManager playerManager = source.getServer().getPlayerManager();
-            playerManager.broadcast(message, false);
-        } catch (NullPointerException e) {
-            CarpetOrgAddition.LOGGER.error("无法通过服务器命令源获取服务器对象", e);
-        }
-    }
-
-    /**
-     * 广播一条带有特殊样式的文本消息
-     *
-     * @param manager 通过这个玩家管理器对象发送消息
-     * @param message 要广播消息的内容
-     */
-    @SuppressWarnings("unused")
-    public static void broadcastTextMessage(PlayerManager manager, Text message) {
-        try {
-            manager.broadcast(message, false);
-        } catch (NullPointerException e) {
-            CarpetOrgAddition.LOGGER.error("无法通过服务器命令源获取服务器对象", e);
-        }
+        broadcastServerTextMessage(source.getServer(), message);
     }
 
     /**

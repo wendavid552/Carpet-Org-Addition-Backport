@@ -67,7 +67,7 @@ public interface Matcher extends SimpleMatcher{
      * @return 如果是物品，返回默认堆栈的{@link ItemStack#toHoverableText()}，如果是物品标签，返回物品标签字符串的可变文本形式
      */
     default MutableText toText() {
-        return this.getName().copy();
+        return (MutableText) this.getName().copy();
     }
 
     /**

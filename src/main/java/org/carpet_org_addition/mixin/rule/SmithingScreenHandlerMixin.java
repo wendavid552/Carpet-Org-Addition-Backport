@@ -51,6 +51,7 @@ public abstract class SmithingScreenHandlerMixin {
     // 可重复使用的锻造模板
     @Inject(method = "decrementStack", at = @At("HEAD"), cancellable = true)
     private void decrement(int slot, CallbackInfo ci) {
+        //#if MC>=11904
         if (CarpetOrgAdditionSettings.reusableSmithingTemplate && slot == 0) {
             //#if MC>=12000
             ItemStack itemStack = this.getInputStacks().get(slot);
@@ -61,5 +62,6 @@ public abstract class SmithingScreenHandlerMixin {
                 ci.cancel();
             }
         }
+        //#endif
     }
 }

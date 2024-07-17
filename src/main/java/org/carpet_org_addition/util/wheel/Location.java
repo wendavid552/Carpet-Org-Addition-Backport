@@ -182,9 +182,9 @@ public class Location {
                     TextUtils.blockPos(getTheEndPos(), Formatting.DARK_PURPLE));
         }
         if (illustrate != null) {
-            mutableText = TextUtils.hoverText(name, illustrate).append(mutableText);
+            mutableText = (MutableText) TextUtils.hoverText(name, illustrate).append(mutableText);
         } else {
-            mutableText = Text.literal(name).append(mutableText);
+            mutableText = (MutableText) TextUtils.literal(name).append(mutableText);
         }
         return mutableText;
     }
@@ -212,7 +212,12 @@ public class Location {
         }
         MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_player_name", creatorPlayerName);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.locations.text.info.creator_time", creatorTime);
-        Identifier value = player.getWorld().getDimensionKey().getValue();
+        Identifier value =
+        //#if MC>=11904
+                player.getWorld().getDimensionKey().getValue();
+        //#else
+        //$$        player.getWorld().getDimension().getEffects();
+        //#endif
         if (value.equals(DimensionTypes.OVERWORLD_ID)
                 && (locType == LocationType.OVERWORLD
                 || locType == LocationType.OVERWORLD_AND_THE_NETHER

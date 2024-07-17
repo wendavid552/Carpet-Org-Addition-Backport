@@ -52,6 +52,7 @@ public class GameRendererMixin {
     private final GameRenderer thisGameRenderer = (GameRenderer) (Object) this;
 
     //最大方块交互距离适用于实体
+    //TODO: 改成WarpOperation
     @Inject(method = "updateTargetedEntity", at = @At("HEAD"), cancellable = true)
     private void updateTargetedEntity(float tickDelta, CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.maxBlockPlaceDistanceReferToEntity) {
@@ -65,21 +66,23 @@ public class GameRendererMixin {
                 }
                 thisGameRenderer.getClient().getProfiler().push("pick");
                 thisGameRenderer.getClient().targetedEntity = null;
+                //*
                 double d = Objects.requireNonNull(thisGameRenderer.getClient().interactionManager).getReachDistance();
                 thisGameRenderer.getClient().crosshairTarget = entity2.raycast(d, tickDelta, false);
                 Vec3d vec3d = entity2.getCameraPosVec(tickDelta);
                 boolean flag = false;
-                double e = d;
+
+                //*
                 if (thisGameRenderer.getClient().interactionManager.hasExtendedReach()) {
-                    d = e = 6.0;
+                    d  = 6.0;
                 } else {
                     // 服务器最大交互距离
-                    if (e > MathUtils.getPlayerMaxInteractionDistance()) {
+                    if (d > MathUtils.getPlayerMaxInteractionDistance()) {
                         flag = true;
                     }
-                    d = e;
                 }
-                e *= e;
+                double e = d;
+                e *= e; //e = 最大交互距离^2
                 if (thisGameRenderer.getClient().crosshairTarget != null) {
                     e = thisGameRenderer.getClient().crosshairTarget.getPos().squaredDistanceTo(vec3d);
                 }
@@ -93,7 +96,13 @@ public class GameRendererMixin {
                     double g = vec3d.squaredDistanceTo(vec3d4);
                     // 服务器最大交互平方距离
                     if (flag && g > MathUtils.getMaxBreakSquaredDistance()) {
-                        thisGameRenderer.getClient().crosshairTarget = BlockHitResult.createMissed(vec3d4, Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z), BlockPos.ofFloored(vec3d4));
+                        thisGameRenderer.getClient().crosshairTarget = BlockHitResult.createMissed(vec3d4, Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z),
+                                //#if MC>=11904
+                                BlockPos.ofFloored(vec3d4)
+                                //#else
+                                //$$ new BlockPos(vec3d4)
+                                //#endif
+                        );
                     } else if (g < e || thisGameRenderer.getClient().crosshairTarget == null) {
                         thisGameRenderer.getClient().crosshairTarget = entityHitResult;
                         if (entity22 instanceof LivingEntity || entity22 instanceof ItemFrameEntity) {

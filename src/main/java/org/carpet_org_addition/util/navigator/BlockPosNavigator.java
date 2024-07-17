@@ -28,6 +28,7 @@ package org.carpet_org_addition.util.navigator;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.carpet_org_addition.util.MathUtils;
 import org.carpet_org_addition.util.MessageUtils;
@@ -54,7 +55,7 @@ public class BlockPosNavigator extends AbstractNavigator {
         if (this.player.getWorld().equals(this.world)) {
             MutableText in = TextUtils.simpleBlockPos(this.blockPos);
             MutableText distance = TextUtils.getTranslate(DISTANCE, MathUtils.getBlockIntegerDistance(this.player.getBlockPos(), this.blockPos));
-            text = getHUDText(this.blockPos.toCenterPos(),in,distance);
+            text = getHUDText(Vec3d.of(this.blockPos).add(0.5,0.5,0.5),in,distance);
         } else {
             text = TextUtils.appendAll(WorldUtils.getDimensionName(this.world), TextUtils.simpleBlockPos(this.blockPos));
         }

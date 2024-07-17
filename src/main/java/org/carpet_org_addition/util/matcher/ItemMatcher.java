@@ -79,7 +79,7 @@ public class ItemMatcher implements Matcher {
 
     @Override
     public MutableText toText() {
-        return this.item.getDefaultStack().toHoverableText().copy();
+        return (MutableText) this.item.getDefaultStack().toHoverableText().copy();
     }
 
     @Override

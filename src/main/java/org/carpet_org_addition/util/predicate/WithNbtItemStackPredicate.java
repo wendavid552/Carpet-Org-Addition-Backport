@@ -37,6 +37,6 @@ public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return itemStack.itemMatches(predicate) && NbtHelper.matches(nbt, itemStack.getNbt(), true);
+        return predicate.test(itemStack.getItem().getRegistryEntry()) && NbtHelper.matches(nbt, itemStack.getNbt(), true);
     }
 }

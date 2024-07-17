@@ -25,6 +25,7 @@
 
 package org.carpet_org_addition.util.task;
 
+import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import carpet.patches.FakeClientConnection;
 import carpet.utils.Messenger;
@@ -46,11 +47,14 @@ import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.mixin.compat.carpet.EntityPlayerMPFakeManiplater.EntityPlayerMPFakeInvoker;
 import org.carpet_org_addition.mixin.rule.EntityAccessor;
 import org.carpet_org_addition.mixin.rule.PlayerEntityAccessor;
 import org.carpet_org_addition.util.GameUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
+
+import static org.carpet_org_addition.CarpetOrgAddition.LOGGER;
 
 public class ReLoginTask extends PlayerScheduleTask {
     private final String name;
@@ -161,6 +165,7 @@ public class ReLoginTask extends PlayerScheduleTask {
         UserCache.setUseRemote(false);
         GameProfile gameprofile;
         try {
+            //TODO: 此处缺少兼容语句，如白名单玩家是否生成，shadow的玩家的例外情况等等
             UserCache userCache = server.getUserCache();
             if (userCache == null) {
                 return;
@@ -170,10 +175,14 @@ public class ReLoginTask extends PlayerScheduleTask {
             UserCache.setUseRemote(server.isDedicated() && server.isOnlineMode());
         }
         if (gameprofile == null) {
-            gameprofile = new GameProfile(Uuids.getOfflinePlayerUuid(username), username);
+            LOGGER.warn("Failed to find profile with name {}. Skip respawning.", username);
+            return;
         }
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.respawnFake(server, worldIn, gameprofile);
+        EntityPlayerMPFake fakePlayer = EntityPlayerMPFakeInvoker.createFakePlayer(server, worldIn, gameprofile, false);
         fakePlayer.fixStartingPosition = GameUtils::pass;
+
+
+
         try {
             CarpetOrgAddition.hiddenLoginMessages = true;
             server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer);
@@ -181,9 +190,17 @@ public class ReLoginTask extends PlayerScheduleTask {
             // 假玩家加入游戏后，这个变量必须重写设置为false，防止影响其它广播消息的方法
             CarpetOrgAddition.hiddenLoginMessages = false;
         }
+
+
+
+
         fakePlayer.setHealth(20.0F);
         ((EntityAccessor) fakePlayer).cancelRemoved();
+        //#if MC>=11904
         fakePlayer.setStepHeight(0.6F);
+        //#else
+        //$$ fakePlayer.stepHeight = 0.6F;
+        //#endif
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(fakePlayer, (byte) ((int) (fakePlayer.headYaw * 256.0F / 360.0F))), dimensionId);
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(fakePlayer), dimensionId);
         fakePlayer.getDataTracker().set(PlayerEntityAccessor.getPlayerModelParts(), (byte) 127);

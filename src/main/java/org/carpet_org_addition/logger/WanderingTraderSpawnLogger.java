@@ -29,6 +29,7 @@ import carpet.logging.HUDLogger;
 import carpet.logging.Logger;
 import carpet.logging.LoggerRegistry;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameRules;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -80,13 +81,13 @@ public class WanderingTraderSpawnLogger {
                         ? TextUtils.getTranslate("carpet.logger.wanderingTrader.time.second", spawnCountdown.countdown)
                         : TextUtils.getTranslate("carpet.logger.wanderingTrader.time.minutes_and_seconds",
                         spawnCountdown.countdown / 60, spawnCountdown.countdown % 60);
-                LoggerRegistry.getLogger(LOGGER_NAME).log((s, playerEntity) -> new Text[]{
+                LoggerRegistry.getLogger(LOGGER_NAME).log((s, playerEntity) -> new MutableText[]{
                         TextUtils.getTranslate("carpet.logger.wanderingTrader.hud", time, (String.format("%.1f", chance) + "%"))
                 });
             }
         } else {
             LoggerRegistry.getLogger(LOGGER_NAME).log((s, playerEntity)
-                    -> new Text[]{TextUtils.getTranslate("carpet.logger.wanderingTrader.gamerule.not_enabled",
+                    -> new MutableText[]{TextUtils.getTranslate("carpet.logger.wanderingTrader.gamerule.not_enabled",
                     TextUtils.getTranslate(GameRules.DO_TRADER_SPAWNING.getTranslationKey()))});
         }
     }

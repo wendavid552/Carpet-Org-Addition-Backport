@@ -26,6 +26,7 @@
 package org.carpet_org_addition.util.predicate;
 
 import net.minecraft.command.argument.ItemPredicateArgumentType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +41,7 @@ import java.util.function.Predicate;
  * @see org.carpet_org_addition.mixin.util.ItemPredicateArgumentTypeMixin
  */
 @SuppressWarnings("JavadocReference")
-public abstract class AbstractItemStackPredicate implements ItemPredicateArgumentType.ItemStackPredicateArgument {
+public abstract class AbstractItemStackPredicate implements Predicate<ItemStack> {
     protected AbstractRegistryEntryPredicate predicate;
     protected @Nullable NbtCompound nbt;
 

@@ -89,7 +89,11 @@ public class StonecuttingData extends AbstractActionData {
             StonecuttingRecipe stonecuttingRecipe = world.getRecipeManager().getAllMatches(RecipeType.STONECUTTING,
                     simpleInventory, world).get(button);
             // 获取与配方对应的物品
-            outputItemStack = stonecuttingRecipe.craft(simpleInventory, world.getRegistryManager());
+            outputItemStack = stonecuttingRecipe.craft(simpleInventory
+                    //#if MC>=11904
+                    ,world.getRegistryManager()
+                    //#endif
+            );
         } catch (IndexOutOfBoundsException e) {
             // 如果索引越界了，将输出物品设置为空
             outputItemStack = ItemStack.EMPTY;

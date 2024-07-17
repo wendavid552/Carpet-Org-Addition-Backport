@@ -82,8 +82,8 @@ public class ItemFindResult extends AbstractFindResult {
     @Override
     public MutableText toText() {
         String command = "/particleLine ~ ~1 ~ " + blockCentreString();
-        return TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
-                TextUtils.command(name.copy(), command, null, null, true),
+        return (MutableText) TextUtils.getTranslate("carpet.commands.finder.item.each", TextUtils.blockPos(blockPos, Formatting.GREEN),
+                TextUtils.command((MutableText) name.copy(), command, null, null, true),
                 matcher.isItem() ? FinderCommand.showCount(matcher.getDefaultStack(), count, inTheBox)
                         : matcher.toText());
     }

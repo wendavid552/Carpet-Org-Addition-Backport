@@ -25,6 +25,8 @@ import carpet.api.settings.SettingsManager;
 import carpet.api.settings.Validator;
 import com.google.common.collect.Lists;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.carpet_org_addition.mixin.setting.ParsedRuleAccessor;
+import org.carpet_org_addition.mixin.setting.SettingsManagerAccessor;
 import org.carpet_org_addition.translate.Translate;
 import org.jetbrains.annotations.Nullable;
 
@@ -218,7 +220,7 @@ public class CarpetRuleRegistrar {
         //$$ for (ParsedRule<?> rule : this.rules) {
         //$$     Object existingRule = ((SettingsManagerAccessor) this.settingsManager).getRules$AMS().put(rule.name, rule);
         //$$     if (existingRule != null) {
-        //$$         AmsServer.LOGGER.warn("Overwriting existing rule {}", existingRule);
+        //$$         CarpetOrgAddition.LOGGER.warn("Overwriting existing rule {}", existingRule);
         //$$     }
         //$$ }
         //#endif

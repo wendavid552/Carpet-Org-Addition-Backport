@@ -36,6 +36,6 @@ public class ItemStackPredicate extends AbstractItemStackPredicate {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return itemStack.itemMatches(predicate);
+        return predicate.test(itemStack.getItem().getRegistryEntry());
     }
 }

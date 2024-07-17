@@ -49,7 +49,7 @@ public class RegistryTagEntryPredicate extends AbstractRegistryEntryPredicate {
 
     @Override
     public String toString() {
-        Optional<TagKey<Item>> tagKey = this.tagResult.tag().getTagKey();
+        Optional<TagKey<Item>> tagKey = this.tagResult.tag().getStorage().left();
         return tagKey.map(itemTagKey -> "#" + itemTagKey.id().toString()).orElse("#");
     }
 

@@ -41,7 +41,7 @@ public abstract class AbstractTradeFindResult extends AbstractFindResult {
         this.tradeIndex = tradeIndex;
         this.merchant = merchant;
         String command = "/particleLine ~ ~1 ~ " + merchant.getX() + " " + (merchant.getY() + 1) + " " + merchant.getZ();
-        merchantName = TextUtils.command(merchant.getName().copy(), command, null, null, true);
+        merchantName = (MutableText) TextUtils.command((MutableText) merchant.getName().copy(), command, null, null, true);
     }
 
     public MerchantEntity getMerchant() {

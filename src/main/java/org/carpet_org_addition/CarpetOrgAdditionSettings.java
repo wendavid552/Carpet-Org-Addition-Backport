@@ -393,11 +393,13 @@ public class CarpetOrgAdditionSettings {
     )
     public static boolean climbingBoat = false;
 
+    //#if MC>=11904
     // 可重复使用的锻造模板
     @Rule(
             categories = {ORG, RuleCategory.SURVIVAL}
     )
     public static boolean reusableSmithingTemplate = false;
+    //#endif
 
     // 开放/tp命令权限
     @Rule(

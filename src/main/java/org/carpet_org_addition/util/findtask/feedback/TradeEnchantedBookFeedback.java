@@ -68,7 +68,7 @@ public class TradeEnchantedBookFeedback extends AbstractTradeFindFeedback<TradeE
 
     @Override
     protected MutableText getFindItemText() {
-        MutableText mutableText = Text.translatable(enchantment.getTranslationKey());
+        MutableText mutableText = TextUtils.translatableText(enchantment.getTranslationKey());
         // 如果是诅咒附魔，设置为红色
         if (enchantment.isCursed()) {
             mutableText.formatted(Formatting.RED);

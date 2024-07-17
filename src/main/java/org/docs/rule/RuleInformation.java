@@ -49,7 +49,12 @@ class RuleInformation {
         if (annotation == null) {
             throw new IllegalArgumentException();
         }
-        this.categories = annotation.categories();
+        this.categories = annotation.
+                //#if MC>=11904
+                categories();
+                //#else
+                //$$ category();
+                //#endif
         this.options = annotation.options();
     }
 

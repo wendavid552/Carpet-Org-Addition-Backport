@@ -104,12 +104,12 @@ public class ItemPredicateMatcher implements Matcher {
         if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
             String itemOrTag = itemStackPredicate.toString();
             if (itemOrTag.startsWith("#")) {
-                return TextUtils.createText(itemOrTag);
+                return (MutableText) TextUtils.createText(itemOrTag);
             } else {
-                return Matcher.asItem(itemOrTag).getDefaultStack().toHoverableText().copy();
+                return (MutableText) Matcher.asItem(itemOrTag).getDefaultStack().toHoverableText().copy();
             }
         }
-        return TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
+        return (MutableText) TextUtils.getTranslate("carpet.commands.playerAction.info.craft.item_tag");
     }
 
     @Override

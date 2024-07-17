@@ -64,7 +64,11 @@ public abstract class BlockMixin {
                     // 将部分物品放入物品栏后，剩下的物品直接掉落
                     Block.dropStack(world, pos, itemStack);
                 }
-                state.onStacksDropped(serverWorld, pos, tool, true);
+                state.onStacksDropped(serverWorld, pos, tool
+                //#if MC>=11904
+                        ,true
+                //#endif
+                );
             }
         } else {
             original.call(state, world, pos, blockEntity, entity, tool);

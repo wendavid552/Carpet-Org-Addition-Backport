@@ -64,7 +64,11 @@ public class TallPlantBlockMixin {
                     // 将部分物品放入物品栏后，剩下的物品直接掉落
                     Block.dropStack(world, blockPos, itemStack);
                 }
-                blockState.onStacksDropped(serverWorld, blockPos, tool, true);
+                blockState.onStacksDropped(serverWorld, blockPos, tool
+                        //#if MC>=11904
+                        ,true
+                        //#endif
+                );
             }
         } else {
             original.call(blockState, world, blockPos, blockEntity, entity, tool);

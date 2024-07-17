@@ -28,15 +28,18 @@ package org.carpet_org_addition.util.wheel;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 //#if MC>=11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -49,6 +52,7 @@ import org.carpet_org_addition.util.matcher.Matcher;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
 public class CraftPresets {
@@ -125,16 +129,8 @@ public class CraftPresets {
     }
 
     // 根据字符串数组获取物品匹配器数组
-    public Matcher[] getItemMatcher(
-            //#if MC>=11900
-            CommandRegistryAccess commandRegistryAccess,
-            //#endif
-            String fileName) throws CommandSyntaxException {
-        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
-                //#if MC>=11900
-                commandRegistryAccess
-                //#endif
-        );
+    public Matcher[] getItemMatcher(CommandContext<ServerCommandSource> commandRegistryAccess, String fileName) throws CommandSyntaxException {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(commandRegistryAccess);
         Matcher[] itemMatchersArr = new Matcher[9];
         for (int index = 0; index < itemMatchersArr.length; index++) {
             // 获取字符串中的每一个元素
@@ -156,8 +152,11 @@ public class CraftPresets {
                 // 创建一个字符串读取器对象
                 StringReader stringReader = new StringReader(itemOrTag);
                 // 从字符串读取器获取物品标签
-                ItemPredicateArgumentType.ItemStackPredicateArgument parse =
-                        commandNodeFactory.itemPredicate().parse(stringReader);
+                Predicate<ItemStack> parse = commandNodeFactory.itemPredicate().parse(stringReader)
+                        //#if MC<11904
+                        //$$ .create(commandRegistryAccess)
+                        //#endif
+                        ;
                 // 创建一个以物品标签匹配物品的物品匹配器对象并添加进数组
                 itemMatchersArr[index] = new ItemPredicateMatcher(parse);
             } else {
@@ -166,10 +165,10 @@ public class CraftPresets {
                 Item item;
                 if (split.length == 1) {
                     // 如果数组长度为1，获取一个命名空间为默认，物品名称为指定名称的物品
-                    item = Registries.ITEM.get(Identifier.of("minecraft", split[0]));
+                    item = Registries.ITEM.get(new Identifier("minecraft", split[0]));
                 } else if (split.length == 2) {
                     // 如果数组长度为2，返回一个命名空间和物品名称都为指定名称的物品
-                    item = Registries.ITEM.get(Identifier.of(split[0], split[1]));
+                    item = Registries.ITEM.get(new Identifier(split[0], split[1]));
                 } else {
                     // 否则抛出异常
                     throw CommandUtils.createException("carpet.commands.presets.parse.item.fail", extractFileName(fileName), (index + 1));

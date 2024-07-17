@@ -32,6 +32,7 @@ import net.minecraft.block.WetSpongeBlock;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -50,7 +51,13 @@ public class WetSpongeBlockMixin {
             case DISABLE:
                 break;
             case ARID:
-                if (world.getBiome(pos).value().hasPrecipitation()) {
+                if (world.getBiome(pos).value().
+                        //#if MC>=11904
+                        hasPrecipitation()
+                        //#else
+                        //$$ getPrecipitation() != Biome.Precipitation.NONE
+                        //#endif
+                ) {
                     break;
                 }
             case FALSE:

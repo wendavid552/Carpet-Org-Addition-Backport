@@ -66,7 +66,7 @@ public class ItemTagMatcher implements Matcher {
 
     @Override
     public MutableText toText() {
-        return this.getName().copy();
+        return (MutableText) this.getName().copy();
     }
 
     @Override

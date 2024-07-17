@@ -25,6 +25,11 @@
 
 package org.carpet_org_addition.mixin.util;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+//#if MC<11904
+//$$ import net.minecraft.network.MessageType;
+//#endif
 import net.minecraft.server.PlayerManager;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -33,12 +38,42 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.UUID;
+
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-    @Inject(method = "broadcast(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
-    private void broadcast(Text message, boolean overlay, CallbackInfo ci) {
+//    @Inject(method = "broadcast(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
+//    private void broadcast(Text message, boolean overlay, CallbackInfo ci) {
+//        if (CarpetOrgAddition.hiddenLoginMessages) {
+//            ci.cancel();
+//        }
+//    }
+    @WrapOperation(
+            method = "Lnet/minecraft/server/PlayerManager;onPlayerConnect(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target =
+                            //#if MC>=11904
+                            "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"
+                            //#else
+                            //$$ "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Lnet/minecraft/network/MessageType;Ljava/util/UUID;)V"
+                            //#endif
+            )
+    )
+    private void onPlayerConnect(PlayerManager instance,
+                                 //#if MC>=11904
+                                 Text message, boolean overlay,
+                                 //#else
+                                 //$$ Text message, MessageType type, UUID sender,
+                                 //#endif
+                                 Operation<Void> original) {
         if (CarpetOrgAddition.hiddenLoginMessages) {
-            ci.cancel();
+            return;
         }
+        //#if MC>=11904
+        original.call(instance, message, overlay);
+        //#else
+        //$$ original.call(instance, message, type, sender);
+        //#endif
     }
 }

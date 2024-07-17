@@ -25,6 +25,8 @@
 
 package org.carpet_org_addition.mixin.rule;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
@@ -32,7 +34,6 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 
@@ -42,12 +43,33 @@ public abstract class EntityMixin {
     private final Entity thisEntity = (Entity) (Object) this;
 
     // 登山船
-    @Inject(method = "getStepHeight", at = @At("HEAD"), cancellable = true)
-    private void getStepHeight(CallbackInfoReturnable<Float> cir) {
+//    @Inject(method = "getStepHeight", at = @At("HEAD"), cancellable = true)
+//    private void getStepHeight(CallbackInfoReturnable<Float> cir) {
+//        if (CarpetOrgAdditionSettings.climbingBoat
+//                && thisEntity instanceof BoatEntity
+//                && thisEntity.getControllingPassenger() instanceof PlayerEntity) {
+//            cir.setReturnValue(1.0F);
+//        }
+//    }
+
+    @WrapOperation(
+            method = "Lnet/minecraft/entity/Entity;adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;",
+            at = @At(
+                    //#if MC>=11904
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/Entity;getStepHeight()F"
+                    //#else
+                    //$$ value = "FIELD",
+                    //$$ target = "stepHeight"
+                    //#endif
+            )
+    )
+    private float adjustMovementForCollisions(Entity instance, Operation<Float> original) {
         if (CarpetOrgAdditionSettings.climbingBoat
                 && thisEntity instanceof BoatEntity
                 && thisEntity.getControllingPassenger() instanceof PlayerEntity) {
-            cir.setReturnValue(1.0F);
+            return 1.0F;
         }
+        return original.call(instance);
     }
 }

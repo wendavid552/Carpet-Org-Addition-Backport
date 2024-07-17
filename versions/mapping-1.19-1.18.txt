@@ -20,3 +20,4 @@ net.minecraft.registry.RegistryKeys net.minecraft.util.registry.Registry
 net.minecraft.registry.Registries net.minecraft.util.registry.Registry
 net.minecraft.util.registry.Registry WORLD WORLD_KEYS
 net.minecraft.world.dimension.DimensionTypes net.minecraft.world.dimension.DimensionType
+net.minecraft.entity.Entity getControllingPassenger() getFirstPassenger()

@@ -35,94 +35,72 @@ import net.minecraft.command.CommandRegistryAccess;
 
 public class RegisterCarpetCommands {
     //注册Carpet命令
-    @SuppressWarnings("unused")
-    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher,
-                                              CommandManager.RegistrationEnvironment environment
+    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher
                                               //#if MC>11900
                                               ,CommandRegistryAccess commandBuildContext
                                               //#endif
                                               ) {
-        if (CarpetServer.settingsManager != null) {
-            CarpetServer.settingsManager.registerCommand(dispatcher
-                    //#if MC>11900
-                    ,commandBuildContext
-                    //#endif
-            );
-            CarpetServer.extensions.forEach((e) -> {
-                carpet.api.settings.SettingsManager sm =
-                        //#if MC>11900
-                        e.extensionSettingsManager();
-                        //#else
-                        //$$ e.customSettingsManager();
-                        //#endif
-                if (sm != null) {
-                    sm.registerCommand(dispatcher
-                            //#if MC>11900
-                            ,commandBuildContext
-                            //#endif
-                            );
-                }
-            });
-            //物品分身命令
-            ItemShadowingCommand.register(dispatcher);
+        //#if MC<11904
+        //$$ Object commandBuildContext = null;
+        //#endif
 
-            // 保护假玩家命令
-            // ProtectCommand.register(dispatcher);
+        //物品分身命令
+        ItemShadowingCommand.register(dispatcher);
 
-            //假玩家工具命令
-            PlayerToolsCommand.register(dispatcher);
+        // 保护假玩家命令
+        // ProtectCommand.register(dispatcher);
 
-            //发送消息命令
-            SendMessageCommand.register(dispatcher, commandBuildContext);
+        //假玩家工具命令
+        PlayerToolsCommand.register(dispatcher);
 
-            //苦力怕音效命令
-            CreeperCommand.register(dispatcher);
+        //发送消息命令
+        SendMessageCommand.register(dispatcher, commandBuildContext);
 
-            //经验转移命令
-            XpTransferCommand.register(dispatcher);
+        //苦力怕音效命令
+        CreeperCommand.register(dispatcher);
 
-            //生存旁观切换命令
-            SpectatorCommand.register(dispatcher);
+        //经验转移命令
+        XpTransferCommand.register(dispatcher);
 
-            //查找器命令
-            FinderCommand.register(dispatcher, commandBuildContext);
+        //生存旁观切换命令
+        SpectatorCommand.register(dispatcher);
 
-            //自杀命令
-            KillMeCommand.register(dispatcher);
+        //查找器命令
+        FinderCommand.register(dispatcher, commandBuildContext);
 
-            //路径点管理器命令
-            LocationsCommand.register(dispatcher);
+        //自杀命令
+        KillMeCommand.register(dispatcher);
 
-            // 绘制粒子线命令
-            ParticleLineCommand.register(dispatcher);
+        //路径点管理器命令
+        LocationsCommand.register(dispatcher);
 
-            // 假玩家动作命令
-            PlayerActionCommand.register(dispatcher, commandBuildContext);
+        // 绘制粒子线命令
+        ParticleLineCommand.register(dispatcher);
 
-            // 预设管理器命令
-            // PresetsCommand.register(dispatcher);
+        // 假玩家动作命令
+        PlayerActionCommand.register(dispatcher, commandBuildContext);
 
-            // 规则搜索命令
-            RuleSearchCommand.register(dispatcher);
+        // 预设管理器命令
+        // PresetsCommand.register(dispatcher);
 
-            // 玩家管理器命令
-            PlayerManagerCommand.register(dispatcher);
+        // 规则搜索命令
+        RuleSearchCommand.register(dispatcher);
 
-            // 追踪器命令
-            NavigatorCommand.register(dispatcher);
+        // 玩家管理器命令
+        PlayerManagerCommand.register(dispatcher);
 
-            // 物品栏命令
-            // InventoryCommand.register(dispatcher);
+        // 追踪器命令
+        NavigatorCommand.register(dispatcher);
 
-            // 假玩家重复上下线
-            // ReloginCommand.register(dispatcher);
+        // 物品栏命令
+        // InventoryCommand.register(dispatcher);
 
-            /*
-              测试用命令
-             */
-            // CarpetOrgAdditionTestCommand.register(dispatcher, commandBuildContext);
+        // 假玩家重复上下线
+        // ReloginCommand.register(dispatcher);
 
-            CarpetServer.extensions.forEach((e) -> e.registerCommands(dispatcher, commandBuildContext));
-        }
+        /*
+          测试用命令
+         */
+        // CarpetOrgAdditionTestCommand.register(dispatcher, commandBuildContext);
     }
 }

@@ -28,14 +28,22 @@ package org.carpet_org_addition;
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
+import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+//#if MC>=11904
+import net.minecraft.command.CommandRegistryAccess;
+//#endif
+
+import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.settings.CarpetRuleRegistrar;
 import org.carpet_org_addition.translate.Translate;
 import org.carpet_org_addition.util.AutoMixinAuditExecutor;
 import org.carpet_org_addition.util.wheel.Waypoint;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,5 +112,19 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public void registerLoggers() {
         CarpetExtension.super.registerLoggers();
         WanderingTraderSpawnLogger.registerLoggers();
+    }
+
+    @Override
+    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher
+                //#if MC>=11904
+                ,final CommandRegistryAccess commandBuildContext
+                //#endif
+    ) {
+        // 注册Carpet命令
+        RegisterCarpetCommands.registerCarpetCommands(dispatcher
+                //#if MC>=11904
+                ,commandBuildContext
+                //#endif
+        );
     }
 }

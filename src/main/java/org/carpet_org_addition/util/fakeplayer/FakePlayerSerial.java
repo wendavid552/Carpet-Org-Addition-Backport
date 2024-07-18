@@ -115,13 +115,18 @@ public class FakePlayerSerial implements JsonSerial {
         boolean flying = json.get("flying").getAsBoolean();
         // 是否潜行
         boolean sneaking = json.get("sneaking").getAsBoolean();
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFake.createFake(playerName, server,
+        EntityPlayerMPFake.createFake(playerName, server,
                 //#if MC>=12000
                 vec3d
                 //#else
                 //$$ vec3d.x, vec3d.y, vec3d.z
                 //#endif
-                ,yaw, pitch, WorldUtils.getWorld(dimension), gamemode, flying);
+                ,yaw, pitch, WorldUtils.getWorld(dimension), gamemode, flying
+                //#if MC>=12002 && MC<12003
+                //$$ , () -> {CarpetOrgAddition.LOGGER.warn("无法生成名为{}的玩家", playerName);}
+                //#endif
+        );
+        EntityPlayerMPFake fakePlayer = (EntityPlayerMPFake) server.getPlayerManager().getPlayer(playerName);
         fakePlayer.setSneaking(sneaking);
         if (json.has("hand_action")) {
             EntityPlayerActionPackSerial.startAction(fakePlayer, json.get("hand_action").getAsJsonObject());

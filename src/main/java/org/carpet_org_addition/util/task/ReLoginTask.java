@@ -46,6 +46,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
+//#if MC>=12002
+//$$ import net.minecraft.server.network.ConnectedClientData;
+//#endif
+
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.mixin.compat.carpet.EntityPlayerMPFakeManiplater.EntityPlayerMPFakeInvoker;
 import org.carpet_org_addition.mixin.rule.EntityAccessor;
@@ -185,7 +189,11 @@ public class ReLoginTask extends PlayerScheduleTask {
 
         try {
             CarpetOrgAddition.hiddenLoginMessages = true;
-            server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer);
+            server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer
+                    //#if MC>=12002
+                    //$$ ,new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions())
+                    //#endif
+            );
         } finally {
             // 假玩家加入游戏后，这个变量必须重写设置为false，防止影响其它广播消息的方法
             CarpetOrgAddition.hiddenLoginMessages = false;

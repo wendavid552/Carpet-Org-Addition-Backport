@@ -37,7 +37,7 @@ import java.time.Instant;
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
     // 禁用聊天数据包顺序检测
-    //#if MC>=11904
+    //#if MC>=11904 && MC<=12002
     @Inject(method = "isInProperOrder", at = @At("HEAD"), cancellable = true)
     private void isInProperOrder(Instant timestamp, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.disableOutOfOrderChatCheck) {

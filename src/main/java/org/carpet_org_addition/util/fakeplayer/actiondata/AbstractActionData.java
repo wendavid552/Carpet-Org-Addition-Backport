@@ -33,6 +33,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeType;
+//#if MC>=12002
+//$$ import net.minecraft.recipe.RecipeEntry;
+//#endif
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -92,8 +95,14 @@ public abstract class AbstractActionData implements JsonSerial {
         }
         World world = fakePlayer.getWorld();
         // 获取配方的输出
-        Optional<CraftingRecipe> optional = fakePlayer.getCommandSource().getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
-        return optional.map(craftingRecipe -> craftingRecipe.craft(craftingInventory
+        Optional<?> optional = fakePlayer.getCommandSource().getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+        return optional.map(craftingRecipe -> (
+                //#if MC>=12002
+                //$$ ((RecipeEntry<CraftingRecipe>)craftingRecipe).value()
+                //#else
+                (CraftingRecipe)craftingRecipe
+                //#endif
+        ).craft(craftingInventory
                 //#if MC>=11904
                 ,world.getRegistryManager()
                 //#endif

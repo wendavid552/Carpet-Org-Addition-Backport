@@ -30,6 +30,10 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+//#if MC>=12002
+//$$ import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
+//#endif
+
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -42,8 +46,16 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity {
     @Unique
     private final EntityPlayerMPFake thisPlayer = (EntityPlayerMPFake) (Object) this;
 
-    private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile) {
-        super(server, world, profile);
+    private EntityPlayerMPFakeMixin(MinecraftServer server, ServerWorld world, GameProfile profile
+        //#if MC>=12002
+        //$$ ,SyncedClientOptions clientOptions
+        //#endif
+    ) {
+        super(server, world, profile
+                //#if MC>=12002
+                //$$ ,clientOptions
+                //#endif
+        );
     }
 
     @Inject(method = "tick", at = @At("HEAD"))

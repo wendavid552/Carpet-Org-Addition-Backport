@@ -42,14 +42,8 @@ import java.util.UUID;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
-//    @Inject(method = "broadcast(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), cancellable = true)
-//    private void broadcast(Text message, boolean overlay, CallbackInfo ci) {
-//        if (CarpetOrgAddition.hiddenLoginMessages) {
-//            ci.cancel();
-//        }
-//    }
     @WrapOperation(
-            method = "Lnet/minecraft/server/PlayerManager;onPlayerConnect(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V",
+            method = "onPlayerConnect",
             at = @At(
                     value = "INVOKE",
                     target =

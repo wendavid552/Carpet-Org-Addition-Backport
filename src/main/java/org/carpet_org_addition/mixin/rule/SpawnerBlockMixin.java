@@ -78,7 +78,13 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
 
     @Override
     // 使用精准采集挖掘时掉落带NBT的物品
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public
+    //#if MC<12003
+    void
+    //#else
+    //$$ BlockState
+    //#endif
+    onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBreak(world, pos, state, player);
         if (CarpetOrgAdditionSettings.canMineSpawner && !player.isCreative() && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH,player.getMainHandStack()) > 0) {
             if (world.getBlockEntity(pos) instanceof MobSpawnerBlockEntity) {
@@ -98,6 +104,9 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
                 world.spawnEntity(itemEntity);
             }
         }
+        //#if MC>=12003
+        //$$ return state;
+        //#endif
     }
 
     @Override

@@ -56,17 +56,17 @@ public class ItemPredicateMatcher implements Matcher {
 
     @Override
     public boolean isItem() {
-//        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
-//            // “#”开头的是物品标签
-//            return !itemStackPredicate.toString().startsWith("#");
-//        }
+        if (this.predicate instanceof AbstractItemStackPredicate itemStackPredicate) {
+            // “#”开头的是物品标签
+            return !itemStackPredicate.toString().startsWith("#");
+        }
 
         return false;
     }
 
     @Override
     public Item getItem() {
-        if (this.predicate instanceof ItemPredicate) {
+        if (this.predicate instanceof AbstractItemStackPredicate) {
             String itemOrTag = (this.predicate).toString();
             if (itemOrTag.startsWith("#")) {
                 return Items.AIR;

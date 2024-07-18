@@ -51,11 +51,14 @@ public class WetSpongeBlockMixin {
             case DISABLE:
                 break;
             case ARID:
-                if (world.getBiome(pos).value().
+                if (world.getBiome(pos)
+                        //#if MC>=11800
+                        .value()
+                        //#endif
                         //#if MC>=11904
-                        hasPrecipitation()
+                        .hasPrecipitation()
                         //#else
-                        //$$ getPrecipitation() != Biome.Precipitation.NONE
+                        //$$ .getPrecipitation() != Biome.Precipitation.NONE
                         //#endif
                 ) {
                     break;

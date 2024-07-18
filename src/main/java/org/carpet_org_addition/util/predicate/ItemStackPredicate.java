@@ -36,6 +36,12 @@ public class ItemStackPredicate extends AbstractItemStackPredicate {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return predicate.test(itemStack.getItem().getRegistryEntry());
+        return predicate.test(itemStack.getItem()
+                //#if MC>=11800
+                .getRegistryEntry()
+                //#else
+                //$$ .getGroup()
+                //#endif
+        );
     }
 }

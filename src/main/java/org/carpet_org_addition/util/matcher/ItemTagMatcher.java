@@ -50,12 +50,15 @@ public class ItemTagMatcher implements Matcher {
 
     @Override
     public boolean test(ItemStack itemStack) {
+        //TODO: 等待重构
+        //#if MC>=11800
         List<String> list = itemStack.streamTags().map(tag -> tag.id().toString()).toList();
         for (String tag : list) {
             if (Objects.equals(this.tag, tag)) {
                 return true;
             }
         }
+        //#endif
         return false;
     }
 

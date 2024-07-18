@@ -84,7 +84,15 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
             if (world.getBlockEntity(pos) instanceof MobSpawnerBlockEntity) {
                 MobSpawnerBlockEntity mobSpawnerBlock = (MobSpawnerBlockEntity) world.getBlockEntity(pos);
                 ItemStack itemStack = new ItemStack(Items.SPAWNER);
+                //#if MC>=11802
                 mobSpawnerBlock.setStackNbt(itemStack);
+                //#else
+                //$$ NbtCompound nbtCompound = mobSpawnerBlock.writeNbt(new NbtCompound());
+                //$$ if (!nbtCompound.isEmpty()) {
+                //$$     itemStack.setSubNbt("BlockEntityTag", nbtCompound);
+                //$$ }
+                //#endif
+
                 ItemEntity itemEntity = new ItemEntity(world, (double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5, itemStack);
                 itemEntity.setToDefaultPickupDelay();
                 world.spawnEntity(itemEntity);

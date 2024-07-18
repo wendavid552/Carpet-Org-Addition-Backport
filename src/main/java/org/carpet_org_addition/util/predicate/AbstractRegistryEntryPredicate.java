@@ -26,9 +26,20 @@
 package org.carpet_org_addition.util.predicate;
 
 import net.minecraft.item.Item;
+//#if MC>=11800
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
+//#else
+//$$ import net.minecraft.item.ItemGroup;
+//#endif
 
 import java.util.function.Predicate;
 
-public abstract class AbstractRegistryEntryPredicate implements Predicate<RegistryEntry<Item>> {
+public abstract class AbstractRegistryEntryPredicate implements Predicate<
+        //#if MC>=11800
+        RegistryEntry<Item>
+        //#else
+        //$$ItemGroup
+        //#endif
+        > {
 }

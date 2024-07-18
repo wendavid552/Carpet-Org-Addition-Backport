@@ -1,1 +1,4 @@
 net.minecraft.entity.Entity getWorld() getEntityWorld()
+
+net.minecraft.tag.TagKey net.minecraft.tag.Tag.Identified
+net.minecraft.util.registry.RegistryEntryList net.minecraft.tag.Tag.Identified

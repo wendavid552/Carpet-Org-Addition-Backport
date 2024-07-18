@@ -25,18 +25,38 @@
 
 package org.carpet_org_addition.util.predicate;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.tag.TagKey;
 import org.jetbrains.annotations.Nullable;
 
-public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
-    public WithNbtItemStackPredicate(AbstractRegistryEntryPredicate predicate, @Nullable NbtCompound nbt) {
-        super(predicate, nbt);
+
+public class RegistryTagEntryPredicate extends AbstractRegistryEntryPredicate {
+    private final TagResult tagResult;
+
+    public RegistryTagEntryPredicate(TagResult tagResult) {
+        this.tagResult = tagResult;
     }
 
     @Override
-    public boolean test(ItemStack itemStack) {
-        return predicate.test(itemStack) && NbtHelper.matches(nbt, itemStack.getNbt(), true);
+    public boolean test(ItemStack item) {
+        return item.isIn(tagResult.tag());
+    }
+
+    @Override
+    public String toString() {
+//        Optional<TagKey<Item>> tagKey = this.tagResult.tag().getStorage().left();
+//        return tagKey.map(itemTagKey -> "#" + itemTagKey.id().toString()).orElse("#");
+        return "#" + tagResult.tag().
+                //#if MC>=11800
+                id();
+                //#else
+                //$$ getId();
+                //#endif
+    }
+
+    public static record TagResult(TagKey<Item> tag, @Nullable NbtCompound nbt) {
+
     }
 }

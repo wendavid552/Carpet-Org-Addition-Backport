@@ -25,18 +25,32 @@
 
 package org.carpet_org_addition.util.predicate;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import org.jetbrains.annotations.Nullable;
 
-public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
-    public WithNbtItemStackPredicate(AbstractRegistryEntryPredicate predicate, @Nullable NbtCompound nbt) {
-        super(predicate, nbt);
+/*
+只包含一种物品的predicate
+ */
+
+public class RegistryItemEntryPredicate extends AbstractRegistryEntryPredicate {
+    private final ItemResult itemResult;
+
+    public RegistryItemEntryPredicate(ItemResult itemResult) {
+        this.itemResult = itemResult;
     }
 
     @Override
-    public boolean test(ItemStack itemStack) {
-        return predicate.test(itemStack) && NbtHelper.matches(nbt, itemStack.getNbt(), true);
+    public boolean test(ItemStack item) {
+        return item.isOf(itemResult.item());
+    }
+
+    @Override
+    public String toString() {
+        return itemResult.item().getName().getString();
+    }
+
+    public record ItemResult(Item item, @Nullable NbtCompound nbt) {
     }
 }

@@ -39,7 +39,7 @@ import java.util.function.Predicate;
  *
  * @see org.carpet_org_addition.mixin.util.ItemPredicateArgumentTypeMixin
  */
-
+@SuppressWarnings("JavadocReference")
 public abstract class AbstractItemStackPredicate implements Predicate<ItemStack> {
     protected AbstractRegistryEntryPredicate predicate;
     protected @Nullable NbtCompound nbt;

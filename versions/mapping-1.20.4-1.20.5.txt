@@ -1,0 +1,8 @@
+net.minecraft.util.math.GlobalPos getPos() pos()
+net.minecraft.util.math.GlobalPos getDimension() dimension()
+
+net.minecraft.item.ItemStack getNbt() getComponents()
+net.minecraft.item.ItemStack canCombine() areItemsAndComponentsEqual()
+
+net.minecraft.village.TradeOffer getAdjustedFirstBuyItem() getDisplayedFirstBuyItem()
+net.minecraft.village.TradeOffer getSecondBuyItem() getDisplayedSecondBuyItem()

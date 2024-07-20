@@ -25,6 +25,9 @@
 
 package org.carpet_org_addition.util.wheel;
 
+//#if MC>=12005
+//$$ import net.minecraft.component.DataComponentTypes;
+//#endif
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
@@ -42,7 +45,11 @@ public abstract class AbstractCustomSizeInventory implements Inventory {
 
     static {
         ItemStack itemStack = new ItemStack(Items.RED_STAINED_GLASS_PANE);
+        //#if MC>=12005
+        //$$ itemStack.set(DataComponentTypes.CUSTOM_NAME, TextUtils.setColor(TextUtils.getTranslate("carpet.inventory.item.placeholder"), Formatting.RED));
+        //#else
         itemStack.setCustomName(TextUtils.setColor(TextUtils.getTranslate("carpet.inventory.item.placeholder"), Formatting.RED));
+        //#endif
         PLACEHOLDER = itemStack;
     }
 

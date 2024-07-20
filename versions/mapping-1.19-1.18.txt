@@ -14,12 +14,15 @@ carpet.fakes.ServerPlayerInterface carpet.fakes.ServerPlayerEntityInterface
 
 net.minecraft.text.MutableText net.minecraft.text.BaseText
 net.minecraft.text.TranslatableTextContent net.minecraft.text.TranslatableText
+
 net.minecraft.world.dimension.DimensionType ultrawarm() isUltrawarm()
+net.minecraft.world.dimension.DimensionType effects() getEffects()
+net.minecraft.world.dimension.DimensionTypes net.minecraft.world.dimension.DimensionType
+
 net.minecraft.server.command.CommandManager executeWithPrefix() execute()
 net.minecraft.registry.RegistryKeys WORLD net.minecraft.util.registry.Registry WORLD_KEY
 net.minecraft.registry.RegistryKeys net.minecraft.util.registry.Registry
 net.minecraft.registry.Registries net.minecraft.util.registry.Registry
-net.minecraft.world.dimension.DimensionTypes net.minecraft.world.dimension.DimensionType
 
 net.minecraft.entity.Entity getControllingPassenger() getFirstPassenger()
 net.minecraft.entity.Entity canHit() collides()

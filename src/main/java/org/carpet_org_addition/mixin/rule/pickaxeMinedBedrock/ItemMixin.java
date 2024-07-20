@@ -23,38 +23,36 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.rule;
+package org.carpet_org_addition.mixin.rule.pickaxeMinedBedrock;
 
-import net.minecraft.enchantment.DamageEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EquipmentSlot;
-//#if MC<12005
-import net.minecraft.enchantment.EnchantmentTarget;
-//#endif
-
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//伤害类附魔兼容
-@Mixin(DamageEnchantment.class)
-public abstract class DamageEnchantmentMixin extends Enchantment {
-    //#if MC<12005
-    protected DamageEnchantmentMixin(Rarity weight, EnchantmentTarget target, EquipmentSlot[] slotTypes) {
-        super(weight, target, slotTypes);
-    }
-    //#else
-    //$$ public DamageEnchantmentMixin(Properties properties) {
-    //$$     super(properties);
+//#if MC>=12005
+//$$ import net.minecraft.component.DataComponentTypes;
+//$$ import net.minecraft.component.type.ToolComponent;
+//#endif
+
+@Mixin(Item.class)
+public abstract class ItemMixin {
+    // 将镐作为基岩的有效采集工具
+    //#if MC>=12005
+    //$$ @Inject(method = "getMiningSpeed", at = @At("HEAD"), cancellable = true)
+    //$$ private void miningSpeed(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir) {
+    //$$     if (CarpetOrgAdditionSettings.pickaxeMinedBedrock && state.getBlock() == Blocks.BEDROCK) {
+    //$$         ToolComponent tool = stack.get(DataComponentTypes.TOOL);
+    //$$         if (tool == null) {
+    //$$             return;
+    //$$         }
+    //$$         cir.setReturnValue(tool.getSpeed(Blocks.STONE.getDefaultState()));
+    //$$     }
     //$$ }
     //#endif
-
-    @Inject(method = "canAccept", at = @At("HEAD"), cancellable = true)
-    private void canAccept(Enchantment enchantment, CallbackInfoReturnable<Boolean> cir) {
-        if (CarpetOrgAdditionSettings.damageEnchantmentCompatible) {
-            cir.setReturnValue(super.canAccept(enchantment));
-        }
-    }
 }

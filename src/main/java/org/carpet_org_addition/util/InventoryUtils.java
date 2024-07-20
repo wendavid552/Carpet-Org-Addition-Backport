@@ -64,6 +64,7 @@ public class InventoryUtils {
      * @param shulkerBox 当前要操作的潜影盒
      * @return 潜影盒内第一个非空气物品，如果潜影盒内没有物品，返回ItemStack.EMPTY
      */
+    //TODO:堆叠潜影盒的兼容
     public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) throws NoNbtException {
         if (!InventoryUtils.isShulkerBoxItem(shulkerBox)) {
             // 物品不是潜影盒，自然不会有潜影盒的NBT
@@ -73,6 +74,9 @@ public class InventoryUtils {
         if (shulkerBox.getCount() != 1) {
             return ItemStack.EMPTY;
         }
+
+
+
         NbtCompound nbt = shulkerBox.getNbt();
         NbtList list;
         try {

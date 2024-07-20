@@ -69,7 +69,12 @@ public class ParticleLineCommand {
         ParticleEffect mainParticle =
         //#if MC>11900
         ParticleParser.getEffect("dust 0 0 0 1",
-                player.getWorld().createCommandRegistryWrapper(RegistryKeys.PARTICLE_TYPE));
+                //#if MC<12005
+                player.getWorld().createCommandRegistryWrapper(RegistryKeys.PARTICLE_TYPE)
+                //#else
+                //$$ player.server.getRegistryManager()
+                //#endif
+        );
         //#else
         //$$ ParticleDisplay.getEffect("dust 0 0 0 1");
         //#endif

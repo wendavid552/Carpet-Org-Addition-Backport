@@ -23,30 +23,38 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.rule;
+package org.carpet_org_addition.mixin.rule.pickaxeMinedBedrock;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.KnockbackEnchantment;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.PickaxeItem;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//击退棒
-@Mixin(KnockbackEnchantment.class)
-public class KnockbackEnchantmentMixin extends Enchantment {
+@Mixin(MiningToolItem.class)
+public abstract class MiningToolItemMixin {
+    //#if MC<12005
 
-    protected KnockbackEnchantmentMixin(Rarity weight, EnchantmentTarget target, EquipmentSlot[] slotTypes) {
-        super(weight, target, slotTypes);
-    }
+    @Shadow
+    @Final
+    protected float miningSpeed;
 
-    @Override
-    public boolean isAcceptableItem(ItemStack stack) {
-        if (CarpetOrgAdditionSettings.knockbackStick) {
-            return stack.getItem() == Items.STICK || super.isAcceptableItem(stack);
+    //将镐作为基岩的有效采集工具
+    @Inject(method = "getMiningSpeedMultiplier", at = @At("HEAD"), cancellable = true)
+    private void mining(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir) {
+        if (CarpetOrgAdditionSettings.pickaxeMinedBedrock && state.getBlock() == Blocks.BEDROCK) {
+            MiningToolItem toolItem = (MiningToolItem) (Object) this;
+            if (toolItem instanceof PickaxeItem) {
+                cir.setReturnValue(this.miningSpeed);
+            }
         }
-        return super.isAcceptableItem(stack);
     }
+    //#endif
 }

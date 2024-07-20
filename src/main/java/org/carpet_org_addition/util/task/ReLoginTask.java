@@ -31,6 +31,7 @@ import carpet.patches.FakeClientConnection;
 import carpet.utils.Messenger;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
@@ -191,7 +192,11 @@ public class ReLoginTask extends PlayerScheduleTask {
             CarpetOrgAddition.hiddenLoginMessages = true;
             server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), fakePlayer
                     //#if MC>=12002
-                    //$$ ,new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions())
+                    //$$ ,new ConnectedClientData(gameprofile, 0, fakePlayer.getClientOptions()
+                    //#if MC>=12005
+                    //$$ ,true
+                    //#endif
+                    //$$ )
                     //#endif
             );
         } finally {
@@ -200,11 +205,11 @@ public class ReLoginTask extends PlayerScheduleTask {
         }
 
 
-
-
         fakePlayer.setHealth(20.0F);
         ((EntityAccessor) fakePlayer).cancelRemoved();
-        //#if MC>=11904
+        //#if MC>=12005
+        //$$ fakePlayer.getAttributeInstance(EntityAttributes.GENERIC_STEP_HEIGHT).setBaseValue(0.6F);
+        //#elseif MC>=11904
         fakePlayer.setStepHeight(0.6F);
         //#else
         //$$ fakePlayer.stepHeight = 0.6F;

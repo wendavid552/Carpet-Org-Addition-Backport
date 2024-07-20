@@ -23,38 +23,21 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.rule;
+package org.carpet_org_addition.mixin.rule.canMineSpawner;
 
-import net.minecraft.enchantment.DamageEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EquipmentSlot;
-//#if MC<12005
-import net.minecraft.enchantment.EnchantmentTarget;
-//#endif
-
+import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//伤害类附魔兼容
-@Mixin(DamageEnchantment.class)
-public abstract class DamageEnchantmentMixin extends Enchantment {
-    //#if MC<12005
-    protected DamageEnchantmentMixin(Rarity weight, EnchantmentTarget target, EquipmentSlot[] slotTypes) {
-        super(weight, target, slotTypes);
-    }
-    //#else
-    //$$ public DamageEnchantmentMixin(Properties properties) {
-    //$$     super(properties);
-    //$$ }
-    //#endif
-
-    @Inject(method = "canAccept", at = @At("HEAD"), cancellable = true)
-    private void canAccept(Enchantment enchantment, CallbackInfoReturnable<Boolean> cir) {
-        if (CarpetOrgAdditionSettings.damageEnchantmentCompatible) {
-            cir.setReturnValue(super.canAccept(enchantment));
+@Mixin(MobSpawnerBlockEntity.class)
+public class MobSpawnerBlockEntityMixin {
+    @Inject(method = "copyItemDataRequiresOperator", at = @At("HEAD"), cancellable = true)
+    private void copyItemDataRequiresOperator(CallbackInfoReturnable<Boolean> cir) {
+        if (CarpetOrgAdditionSettings.canMineSpawner) {
+            cir.setReturnValue(false);
         }
     }
 }

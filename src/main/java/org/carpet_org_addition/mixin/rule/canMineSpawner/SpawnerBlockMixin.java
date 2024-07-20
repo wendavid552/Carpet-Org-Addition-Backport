@@ -23,14 +23,13 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.rule;
+package org.carpet_org_addition.mixin.rule.canMineSpawner;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.ItemEntity;
@@ -91,7 +90,11 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
                 MobSpawnerBlockEntity mobSpawnerBlock = (MobSpawnerBlockEntity) world.getBlockEntity(pos);
                 ItemStack itemStack = new ItemStack(Items.SPAWNER);
                 //#if MC>=11802
-                mobSpawnerBlock.setStackNbt(itemStack);
+                mobSpawnerBlock.setStackNbt(itemStack
+                //#if MC>=12005
+                //$$ ,player.getWorld().getRegistryManager()
+                //#endif
+                );
                 //#else
                 //$$ NbtCompound nbtCompound = mobSpawnerBlock.writeNbt(new NbtCompound());
                 //$$ if (!nbtCompound.isEmpty()) {
@@ -107,26 +110,5 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
         //#if MC>=12003
         //$$ return state;
         //#endif
-    }
-
-    @Override
-    // 放置刷怪笼时读取NBT
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
-        if (world.isClient) {
-            return;
-        }
-        if (CarpetOrgAdditionSettings.canMineSpawner && placer instanceof PlayerEntity player && !player.isCreative()) {
-            NbtCompound nbt;
-            try {
-                nbt = Objects.requireNonNull(itemStack.getNbt()).getCompound("BlockEntityTag");
-            } catch (NullPointerException e) {
-                return;
-            }
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof MobSpawnerBlockEntity) {
-                blockEntity.readNbt(nbt);
-            }
-        }
     }
 }

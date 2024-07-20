@@ -26,7 +26,9 @@
 package org.carpet_org_addition.mixin.rule;
 
 import net.minecraft.enchantment.Enchantment;
+//#if MC<12005
 import net.minecraft.enchantment.EnchantmentTarget;
+//#endif
 import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.EquipmentSlot;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
@@ -38,9 +40,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 // 保护类魔咒兼容
 @Mixin(ProtectionEnchantment.class)
 public class ProtectionEnchantmentMixin extends Enchantment {
+    //#if MC<12005
     protected ProtectionEnchantmentMixin(Rarity weight, EnchantmentTarget target, EquipmentSlot[] slotTypes) {
         super(weight, target, slotTypes);
     }
+    //#else
+    //$$ public ProtectionEnchantmentMixin(Properties properties) {
+    //$$     super(properties);
+    //$$ }
+    //#endif
 
     @Inject(method = "canAccept", at = @At("HEAD"), cancellable = true)
     private void canAccept(Enchantment enchantment, CallbackInfoReturnable<Boolean> cir) {

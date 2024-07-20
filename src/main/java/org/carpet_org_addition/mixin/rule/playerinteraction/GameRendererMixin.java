@@ -25,6 +25,8 @@
 
 package org.carpet_org_addition.mixin.rule.playerinteraction;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -32,6 +34,8 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -53,6 +57,12 @@ public class GameRendererMixin {
 
     //最大方块交互距离适用于实体
     //TODO: 改成WarpOperation
+    //#if MC>=12005
+    //$$ @WrapOperation(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getBlockInteractionRange()D"))
+    //$$ private double getPlayerBlockInteractionRange(ClientPlayerEntity clientPlayerEntity, Operation<Double> original) {
+    //$$     return clientPlayerEntity.getAttributeValue(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE);
+    //$$ }
+    //#else
     @Inject(method = "updateTargetedEntity", at = @At("HEAD"), cancellable = true)
     private void updateTargetedEntity(float tickDelta, CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.maxBlockPlaceDistanceReferToEntity) {
@@ -116,4 +126,5 @@ public class GameRendererMixin {
             }
         }
     }
+    //#endif
 }

@@ -37,11 +37,19 @@ import org.spongepowered.asm.mixin.injection.At;
 // 红石线不会连接到打开的活板门上的红石线
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneWireBlockMixin {
-    @WrapOperation(method = "getRenderConnectionType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Z)Lnet/minecraft/block/enums/WireConnection;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"))
+    //#if MC>11904
+    @WrapOperation(
+            method = "getRenderConnectionType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Z)Lnet/minecraft/block/enums/WireConnection;",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"
+            )
+    )
     private Block getBlock(BlockState instance, Operation<Block> original) {
         if (CarpetOrgAdditionSettings.simpleUpdateSkipper) {
             return null;
         }
         return original.call(instance);
     }
+    //#endif
 }

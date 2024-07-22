@@ -49,6 +49,7 @@ import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
 //#if MC>=12002
 //$$ import net.minecraft.server.network.ConnectedClientData;
+//$$ import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 //#endif
 
 import org.carpet_org_addition.CarpetOrgAddition;
@@ -183,7 +184,11 @@ public class ReLoginTask extends PlayerScheduleTask {
             LOGGER.warn("Failed to find profile with name {}. Skip respawning.", username);
             return;
         }
-        EntityPlayerMPFake fakePlayer = EntityPlayerMPFakeInvoker.createFakePlayer(server, worldIn, gameprofile, false);
+        EntityPlayerMPFake fakePlayer = EntityPlayerMPFakeInvoker.createFakePlayer(server, worldIn, gameprofile,
+                //#if MC>=12002
+                //$$ SyncedClientOptions.createDefault(),
+                //#endif
+                false);
         fakePlayer.fixStartingPosition = GameUtils::pass;
 
 

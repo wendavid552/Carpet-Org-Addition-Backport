@@ -31,11 +31,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
+//#if MC>=12002
+//$$ import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
+//#endif
 
 @Mixin(EntityPlayerMPFake.class)
 public interface EntityPlayerMPFakeInvoker {
     @Invoker("<init>")
-    static EntityPlayerMPFake createFakePlayer(MinecraftServer server, ServerWorld worldIn, GameProfile profile, boolean shadow) {
+    static EntityPlayerMPFake createFakePlayer(MinecraftServer server, ServerWorld worldIn, GameProfile profile,
+                                               //#if MC>=12002
+                                               //$$ SyncedClientOptions cli,
+                                               //#endif
+                                               boolean shadow) {
         throw new AssertionError();
     }
 }

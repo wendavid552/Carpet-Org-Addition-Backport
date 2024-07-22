@@ -25,13 +25,23 @@
 
 package org.carpet_org_addition.util.predicate;
 
+//#if MC>=12005
+//$$ import net.minecraft.component.ComponentMap;
+//#endif
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
-    public WithNbtItemStackPredicate(AbstractRegistryEntryPredicate predicate, @Nullable NbtCompound nbt) {
+    public WithNbtItemStackPredicate(AbstractRegistryEntryPredicate predicate,
+                                     @Nullable
+                                      //#if MC<12005
+                                      NbtCompound
+                                      //#else
+                                      //$$ ComponentMap
+                                      //#endif
+                                      nbt) {
         super(predicate, nbt);
     }
 

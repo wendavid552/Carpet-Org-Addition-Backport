@@ -25,6 +25,9 @@
 
 package org.carpet_org_addition.util.predicate;
 
+//#if MC>=12005
+//$$ import net.minecraft.component.ComponentMap;
+//#endif
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -56,7 +59,15 @@ public class RegistryTagEntryPredicate extends AbstractRegistryEntryPredicate {
                 //#endif
     }
 
-    public static record TagResult(TagKey<Item> tag, @Nullable NbtCompound nbt) {
+    public static record TagResult(TagKey<Item> tag,
+                                   @Nullable
+                                      //#if MC<12005
+                                      NbtCompound
+                                      //#else
+                                      //$$ ComponentMap
+                                      //#endif
+                                      nbt
+    ) {
 
     }
 }

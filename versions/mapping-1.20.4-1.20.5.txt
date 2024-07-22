@@ -6,3 +6,4 @@ net.minecraft.item.ItemStack canCombine() areItemsAndComponentsEqual()
 
 net.minecraft.village.TradeOffer getAdjustedFirstBuyItem() getDisplayedFirstBuyItem()
 net.minecraft.village.TradeOffer getSecondBuyItem() getDisplayedSecondBuyItem()
+

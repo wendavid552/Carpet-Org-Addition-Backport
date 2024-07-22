@@ -25,6 +25,9 @@
 
 package org.carpet_org_addition.util.predicate;
 
+//#if MC>=12005
+//$$ import net.minecraft.component.ComponentMap;
+//#endif
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.Nullable;
@@ -42,9 +45,20 @@ import java.util.function.Predicate;
 @SuppressWarnings("JavadocReference")
 public abstract class AbstractItemStackPredicate implements Predicate<ItemStack> {
     protected AbstractRegistryEntryPredicate predicate;
+    //#if MC<12005
     protected @Nullable NbtCompound nbt;
+    //#else
+    //$$ protected @Nullable ComponentMap nbt;
+    //#endif
 
-    public AbstractItemStackPredicate(AbstractRegistryEntryPredicate predicate, @Nullable NbtCompound nbt) {
+    public AbstractItemStackPredicate(AbstractRegistryEntryPredicate predicate,
+                                      @Nullable
+                                      //#if MC<12005
+                                      NbtCompound
+                                      //#else
+                                      //$$ ComponentMap
+                                      //#endif
+                                      nbt) {
         this.predicate = predicate;
         this.nbt = nbt;
     }

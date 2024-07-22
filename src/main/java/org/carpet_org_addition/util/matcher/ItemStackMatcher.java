@@ -25,6 +25,9 @@
 
 package org.carpet_org_addition.util.matcher;
 
+//#if MC>=12005
+//$$ import net.minecraft.component.ComponentMap;
+//#endif
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -91,7 +94,12 @@ public class ItemStackMatcher implements Matcher {
 
     @Override
     public int hashCode() {
-        NbtCompound nbt = this.itemStack.getNbt();
+        //#if MC>=12005
+        //$$ ComponentMap
+        //#else
+        NbtCompound
+        //#endif
+                nbt = this.itemStack.getNbt();
         return this.itemStack.getItem().hashCode() + (nbt == null || nbt.isEmpty() ? 0 : nbt.hashCode());
     }
 

@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(LightningRodBlock.class)
 public class LightningRodBlockMixin {
+    //#if MC<12100
     @WrapOperation(method = "onProjectileHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isThundering()Z"))
     //避雷针 击中避雷针时产生雷电
     private boolean isThundering(World world, Operation<Boolean> original) {
@@ -43,4 +44,6 @@ public class LightningRodBlockMixin {
         }
         return original.call(world);
     }
+
+    //#endifr
 }

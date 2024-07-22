@@ -25,7 +25,12 @@
 
 package org.carpet_org_addition.mixin.rule;
 
+//#if MC>=12100
+//$$ import net.minecraft.component.ComponentType;
+//$$ import net.minecraft.component.EnchantmentEffectComponentTypes;
+//#endif
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.item.ItemStack;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,10 +40,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 //绑定诅咒无效化
 @Mixin(EnchantmentHelper.class)
 public class BindingCurseEnchantmentMixin {
+    //#if MC<12100
     @Inject(method = "hasBindingCurse", at = @At("HEAD"), cancellable = true)
     private static void isCursed(CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.bindingCurseInvalidation) {
             cir.setReturnValue(false);
         }
     }
+    //#else
+    //$$ @Inject(method = "hasAnyEnchantmentsWith", at = @At("HEAD"), cancellable = true)
+    //$$ private static void hasAnyEnchantmentsWith(ItemStack stack, ComponentType<?> componentType, CallbackInfoReturnable<Boolean> cir) {
+    //$$     if (CarpetOrgAdditionSettings.bindingCurseInvalidation && EnchantmentEffectComponentTypes.PREVENT_ARMOR_CHANGE.equals(componentType)) {
+    //$$         cir.setReturnValue(false);
+    //$$     }
+    //$$ }
+    //#endif
 }

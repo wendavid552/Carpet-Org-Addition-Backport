@@ -45,13 +45,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
-import org.carpet_org_addition.mixin.compat.minecraft.PlayerEntityLastDeathPosition.PlayerEntityLastDeathPositionRecorder;
 import org.carpet_org_addition.util.CommandUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.WorldUtils;
 import org.carpet_org_addition.util.wheel.Waypoint;
 import org.carpet_org_addition.util.navigator.NavigatorInterface;
+import org.carpet_org_addition.util.compat.minecraft.PlayerEntityLastDeathPosition.PlayerEntityLastDeathPositionRecorder;
 
 import java.io.IOException;
 import java.util.Objects;

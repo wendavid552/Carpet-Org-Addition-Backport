@@ -23,10 +23,9 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.compat.minecraft.PlayerEntityLastDeathPosition;
+package org.carpet_org_addition.util.compat.minecraft.PlayerEntityLastDeathPosition;
 
 import net.minecraft.util.math.GlobalPos;
-import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Optional;
 

@@ -25,24 +25,19 @@
 
 package org.carpet_org_addition.mixin.compat.minecraft.PlayerEntityLastDeathPosition;
 
-import com.mojang.serialization.DataResult;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import org.carpet_org_addition.util.compat.minecraft.PlayerEntityLastDeathPosition.PlayerEntityLastDeathPositionRecorder;
 import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Mixin(PlayerEntity.class)

@@ -25,6 +25,10 @@
 
 package org.carpet_org_addition.util.wheel;
 
+//#if MC>=12005
+//$$ import net.minecraft.component.DataComponentTypes;
+//$$ import net.minecraft.component.type.ContainerComponent;
+//#endif
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
@@ -46,20 +50,10 @@ public class ShulkerBoxInventory implements Inventory {
     public ShulkerBoxInventory(List<ItemStack> shulkerBoxList) {
         this.shulkerBoxList = new ArrayList<>();
         ArrayList<ItemStack> list = new ArrayList<>();
-        for (ItemStack itemStack : shulkerBoxList) {
-            if (InventoryUtils.isShulkerBoxItem(itemStack)) {
-                if (InventoryUtils.isEmptyShulkerBox(itemStack)) {
-                    continue;
-                }
-                this.shulkerBoxList.add(itemStack);
-                // 获取潜影盒NBT
-                NbtCompound nbt = Objects.requireNonNull(itemStack.getNbt()).getCompound(InventoryUtils.BLOCK_ENTITY_TAG);
-                if (nbt != null && nbt.contains(InventoryUtils.ITEMS, NbtElement.LIST_TYPE)) {
-                    DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                    // 读取潜影盒NBT
-                    Inventories.readNbt(nbt, defaultedList);
-                    list.addAll(defaultedList);
-                }
+        for (ItemStack shulkerbox : shulkerBoxList) {
+            if (InventoryUtils.isNonEmptyShulkerBox(shulkerbox)) {
+                this.shulkerBoxList.add(shulkerbox);
+                list.addAll(InventoryUtils.getInventoryList(shulkerbox));
             }
         }
         this.stacks = DefaultedList.copyOf(ItemStack.EMPTY, list.toArray(value -> new ItemStack[0]));
@@ -126,11 +120,13 @@ public class ShulkerBoxInventory implements Inventory {
      * 清除空潜影盒的物品栏NBT
      */
     public void removeInventoryNbt() {
+        //#if MC<12005
         for (ItemStack itemStack : this.shulkerBoxList) {
             if (InventoryUtils.isEmptyShulkerBox(itemStack)) {
                 itemStack.removeSubNbt(InventoryUtils.BLOCK_ENTITY_TAG);
             }
         }
+        //#endif
     }
 
     /**
@@ -139,7 +135,10 @@ public class ShulkerBoxInventory implements Inventory {
     public void application() {
         int number = 0;
         for (ItemStack itemStack : this.shulkerBoxList) {
-            NbtCompound nbt = new NbtCompound();
+            /**
+             * 对每个潜影盒进行操作，将this.stacks中每27个物品视作一个潜影盒的物品栏
+             */
+
             DefaultedList<ItemStack> defaultedList;
             if (number < this.size()) {
                 List<ItemStack> list = this.stacks.subList(number, (number + 27) > this.size() ? this.size() : (number + 27));
@@ -149,8 +148,11 @@ public class ShulkerBoxInventory implements Inventory {
             } else {
                 defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
             }
-            nbt.put(InventoryUtils.BLOCK_ENTITY_TAG, Inventories.writeNbt(new NbtCompound(), defaultedList));
-            itemStack.setNbt(nbt);
+            //#if MC<12005
+            itemStack.setSubNbt(InventoryUtils.BLOCK_ENTITY_TAG, Inventories.writeNbt(new NbtCompound(), defaultedList));
+            //#else
+            //$$ itemStack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(defaultedList));
+            //#endif
         }
     }
 }

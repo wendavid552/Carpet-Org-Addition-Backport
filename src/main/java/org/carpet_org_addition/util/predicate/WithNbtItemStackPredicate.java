@@ -33,6 +33,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
     public WithNbtItemStackPredicate(AbstractRegistryEntryPredicate predicate,
                                      @Nullable
@@ -47,6 +49,11 @@ public class WithNbtItemStackPredicate extends AbstractItemStackPredicate {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return predicate.test(itemStack) && NbtHelper.matches(nbt, itemStack.getNbt(), true);
+        return predicate.test(itemStack) &&
+                //#if MC>=12005
+                //$$ Objects.equals(nbt, itemStack.getComponents());
+                //#else
+                NbtHelper.matches(nbt, itemStack.getNbt(), true);
+                //#endif
     }
 }

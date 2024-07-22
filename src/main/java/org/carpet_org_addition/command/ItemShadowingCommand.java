@@ -65,17 +65,12 @@ public class ItemShadowingCommand {
                             player.getDisplayName(), main.toHoverableText()));
             // 将玩家制作物品分身的消息写入日志
             if (InventoryUtils.isShulkerBoxItem(main)) {
-                try {
                     ImmutableInventory inventory = InventoryUtils.getInventory(main);
                     CarpetOrgAddition.LOGGER.info("{}制作了一个{}的物品分身，包含{}个物品，分别是：{}，在{}，坐标:[{}]",
                             GameUtils.getPlayerName(player), main.getItem().getName().getString(),
                             inventory.slotCount(), inventory, WorldUtils.getDimensionId(player.getWorld()),
                             WorldUtils.toPosString(player.getBlockPos()));
-                } catch (NoNbtException e) {
-                    CarpetOrgAddition.LOGGER.info("{}制作了一个空[{}]的物品分身，在{}，坐标:[{}]",
-                            GameUtils.getPlayerName(player), main.getItem().getName().getString(),
-                            WorldUtils.getDimensionId(player.getWorld()), WorldUtils.toPosString(player.getBlockPos()));
-                }
+
             } else {
                 CarpetOrgAddition.LOGGER.info("{}制作了一个[{}]的物品分身，在{}，坐标:[{}]",
                         GameUtils.getPlayerName(player), main.getItem().getName().getString(),

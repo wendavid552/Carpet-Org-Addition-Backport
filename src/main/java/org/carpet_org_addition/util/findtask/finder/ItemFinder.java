@@ -116,9 +116,9 @@ public class ItemFinder extends AbstractFinder {
             } else if (InventoryUtils.isShulkerBoxItem(itemStack)) {
                 // 检查潜影盒内的物品
                 ImmutableInventory immutableInventory;
-                try {
+                if (InventoryUtils.isShulkerBoxItem(itemStack)){
                     immutableInventory = InventoryUtils.getInventory(itemStack);
-                } catch (NoNbtException e) {
+                } else{
                     continue;
                 }
                 // 从潜影盒内查找物品

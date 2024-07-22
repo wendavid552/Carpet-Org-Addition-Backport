@@ -31,10 +31,14 @@ import net.minecraft.server.network.ServerPlayerInteractionManager;
 import org.carpet_org_addition.util.MathUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 //服务器最大玩家交互距离
 @Mixin(ServerPlayerInteractionManager.class)
 public class ServerPlayerInteractionManagerMixin {
+    //TODO: 根据1.18.2-的情况未来换用MixinExtras的@ModifyExpressionValue修改if里面的语句
+    //#if MC>=11904
     @WrapOperation(method = "processBlockBreakingAction", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
     private double processBlockBreakingAction(Operation<Double> original) {
         if (MathUtils.isDefaultDistance()) {
@@ -42,4 +46,13 @@ public class ServerPlayerInteractionManagerMixin {
         }
         return MathUtils.getMaxBreakSquaredDistance();
     }
+    //#else
+    //$$ @ModifyConstant(method = "processBlockBreakingAction", constant = @Constant(doubleValue = 36.0D))
+    //$$ private double processBlockBreakingAction(double original) {
+    //$$     if (MathUtils.isDefaultDistance()) {
+    //$$         return original;
+    //$$     }
+    //$$     return MathUtils.getMaxBreakSquaredDistance();
+    //$$ }
+    //#endif
 }

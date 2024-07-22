@@ -29,8 +29,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.BatEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.WorldAccess;
+//#if MC>=11904
+import net.minecraft.util.math.random.Random;
+//#endif
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,7 +44,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class BatEntityMixin {
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
     private static void canSpawn(EntityType<BatEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos,
-                                 Random random, CallbackInfoReturnable<Boolean> cir) {
+                                 //#if MC>=11904
+                                 Random
+                                 //#else
+                                 //$$ java.util.Random
+                                 //#endif
+                                 random, CallbackInfoReturnable<Boolean> cir) {
         if (CarpetOrgAdditionSettings.disableBatCanSpawn) {
             cir.setReturnValue(false);
         }

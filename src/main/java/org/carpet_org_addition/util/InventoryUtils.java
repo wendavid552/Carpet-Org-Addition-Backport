@@ -61,6 +61,70 @@ public class InventoryUtils {
     private InventoryUtils() {
     }
 
+
+    /**
+     * 获取潜影盒内物品列表，注意会去掉ItemStack.empty
+     * @param shulkerBox 当前要获取的潜影盒
+     * @return 潜影盒内的物品列表
+     */
+    public static Stream<ItemStack> getInventoryStream(ItemStack shulkerBox) {
+//        if (!InventoryUtils.isShulkerBoxItem(shulkerBox)) {
+//            // 物品不是潜影盒，自然不会有潜影盒的NBT
+//            throw new NoNbtException();
+//            //TODO: 相关异常处理，这里只是懒得改了
+//        }
+        Stream<ItemStack> containing = Stream.empty();
+        // 正常情况下有物品的潜影盒不可堆叠，所以可堆叠的潜影盒内部没有物品
+        if (shulkerBox.getCount() == 1 && isShulkerBoxItem(shulkerBox)) {
+            //#if MC<12005
+            NbtCompound blockEntityCompounds = shulkerBox.getSubNbt(BLOCK_ENTITY_TAG);
+            if(blockEntityCompounds != null) {
+                containing = blockEntityCompounds.getList(ITEMS, NbtElement.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt);
+            }
+            //#else
+            //$$  containing = shulkerBox.getComponents().get(DataComponentTypes.CONTAINER).stream();
+            //#endif
+        }
+        return containing;
+    }
+
+    public static List<ItemStack> getInventoryList(ItemStack shulkerBox) {
+        return getInventoryStream(shulkerBox).toList();
+    }
+
+    public static Stream<ItemStack> getInventoryNonEmptyStream(ItemStack shulkerBox) {
+        return getInventoryStream(shulkerBox).filter(itemStack -> !itemStack.isEmpty());
+    }
+
+    public static List<ItemStack> getNonemptyInventoryList(ItemStack shulkerBox) {
+        return getInventoryNonEmptyStream(shulkerBox).toList();
+    }
+
+        /**
+     * 判断当前潜影盒是否是空潜影盒
+     *
+     * @param shulkerBox 当前要检查是否为空的潜影盒物品
+     * @return 潜影盒内没有物品返回true，有物品返回false
+     */
+//    public static boolean isEmptyShulkerBox(ItemStack shulkerBox) {
+//        // 正常情况下有物品的潜影盒无法堆叠
+//        if (shulkerBox.getCount() != 1) {
+//            return true;
+//        }
+//
+//        return containing.isEmpty();
+//    }
+    public static boolean isNonEmptyShulkerBox(ItemStack shulkerBox) {
+        return shulkerBox.getCount() == 1
+                && isShulkerBoxItem(shulkerBox)
+                && !getInventoryNonEmptyStream(shulkerBox).allMatch(ItemStack::isEmpty);
+    }
+
+    public static boolean isEmptyShulkerBox(ItemStack shulkerBox) {
+        return shulkerBox.getCount() != 1 ||
+                (isShulkerBoxItem(shulkerBox) && getInventoryStream(shulkerBox).allMatch(ItemStack::isEmpty));
+    }
+
     /**
      * 取出并删除潜影盒内容物的第一个非空气物品，堆叠的潜影盒会被视为空潜影盒。<br/>
      * <br/>
@@ -73,45 +137,25 @@ public class InventoryUtils {
      * @return 潜影盒内第一个非空气物品，如果潜影盒内没有物品，返回ItemStack.EMPTY
      */
     //TODO:用Collectors写，提高性能
-    public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) throws NoNbtException {
-        if (!InventoryUtils.isShulkerBoxItem(shulkerBox)) {
-            // 物品不是潜影盒，自然不会有潜影盒的NBT
-            throw new NoNbtException();
-        }
-        // 正常情况下有物品的潜影盒不可堆叠，所以可堆叠的潜影盒内部没有物品
-        if (shulkerBox.getCount() != 1) {
-            return ItemStack.EMPTY;
-        }
-        List<ItemStack> containing = null;
-        //#if MC<12005
-        NbtCompound blockEntityCompounds = shulkerBox.getSubNbt(BLOCK_ENTITY_TAG);
-        if(blockEntityCompounds != null) {
-            containing = blockEntityCompounds.getList(ITEMS, NbtElement.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt).toList();
-        }
-        //#else
-        //$$  containing = shulkerBox.getComponents().get(DataComponentTypes.CONTAINER).stream().toList();
-        //#endif
-
+    public static ItemStack getShulkerBoxItem(ItemStack shulkerBox) {
         ItemStack firstStack = ItemStack.EMPTY;
-        if (containing != null) {
+        if (isNonEmptyShulkerBox(shulkerBox)) {
+            List<ItemStack> containing = getNonemptyInventoryList(shulkerBox);
             for (ItemStack itemStack : containing) {
-                if (!itemStack.isEmpty()) {
-                    //拷贝第一个ItemStack
-                    firstStack = itemStack.copy();
-                    containing.remove(itemStack);
-                    //从shulkerbox中删除找到的itemStack
-                    //#if MC<12005
-                    itemStack.setCount(0);
-                    if (isEmptyShulkerBox(shulkerBox)) {
-                        shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
-                    }
-                    //#else
-                    //$$ shulkerBox.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(containing));
-                    //#endif
-                    break;
+                //拷贝第一个ItemStack
+                firstStack = itemStack.copy();
+                containing.remove(itemStack);
+                //从shulkerbox中删除找到的itemStack
+                //#if MC<12005
+                itemStack.setCount(0);
+                if (isEmptyShulkerBox(shulkerBox)) {
+                    shulkerBox.removeSubNbt(BLOCK_ENTITY_TAG);
                 }
+                //#else
+                //$$ shulkerBox.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(containing));
+                //#endif
+                break;
             }
-
         }
         return firstStack;
     }
@@ -124,24 +168,11 @@ public class InventoryUtils {
      * @return 潜影盒中获取的指定物品
      */
     public static ItemStack pickItemFromShulkerBox(ItemStack shulkerBox, Matcher matcher) {
-        // 判断潜影盒是否为空，空潜影盒直接返回空物品
-        if (isEmptyShulkerBox(shulkerBox)) {
-            return ItemStack.EMPTY;
-        }
-        List<ItemStack> containing = null;
-        //#if MC<12005
-        NbtCompound blockEntityCompounds = shulkerBox.getSubNbt(BLOCK_ENTITY_TAG);
-        if(blockEntityCompounds != null) {
-            containing = blockEntityCompounds.getList(ITEMS, NbtElement.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt).toList();
-        }
-        //#else
-        //$$  containing = shulkerBox.getComponents().get(DataComponentTypes.CONTAINER).stream().toList();
-        //#endif
-
         ItemStack firstStack = ItemStack.EMPTY;
-        if (containing != null) {
+        if (isNonEmptyShulkerBox(shulkerBox)) {
+            List<ItemStack> containing = getNonemptyInventoryList(shulkerBox);
             for (ItemStack itemStack : containing) {
-                if (!itemStack.isEmpty() && matcher.test(itemStack)) {
+                if (matcher.test(itemStack)) {
                     //拷贝第一个ItemStack
                     firstStack = itemStack.copy();
                     containing.remove(itemStack);
@@ -157,37 +188,8 @@ public class InventoryUtils {
                     break;
                 }
             }
-
         }
         return firstStack;
-    }
-
-    /**
-     * 判断当前潜影盒是否是空潜影盒
-     *
-     * @param shulkerBox 当前要检查是否为空的潜影盒物品
-     * @return 潜影盒内没有物品返回true，有物品返回false
-     */
-    public static boolean isEmptyShulkerBox(ItemStack shulkerBox) {
-        // 正常情况下有物品的潜影盒无法堆叠
-        if (shulkerBox.getCount() != 1) {
-            return true;
-        }
-        Stream<ItemStack> containing = null;
-        //#if MC>=12005
-        //$$ containing = shulkerBox.getComponents().get(DataComponentTypes.CONTAINER).stream();
-        //#else
-        NbtCompound blockEntityCompounds = shulkerBox.getSubNbt(BLOCK_ENTITY_TAG);
-        if (blockEntityCompounds != null) {
-            containing = blockEntityCompounds.getList(ITEMS, NbtElement.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(ItemStack::fromNbt);
-        }
-        //#endif
-        if (containing != null) {
-            return containing.allMatch(ItemStack::isEmpty);
-        }
-        else{
-            return true;
-        }
     }
 
     /**
@@ -197,29 +199,30 @@ public class InventoryUtils {
      * @return 潜影盒内的物品栏
      * @throws NoNbtException 物品不是潜影盒，或者潜影盒没有NBT时抛出
      */
-    public static ImmutableInventory getInventory(ItemStack shulkerBox) throws NoNbtException {
-        try {
-            // 获取潜影盒NBT
-            //#if MC<12005
-            NbtCompound nbt = Objects.requireNonNull(shulkerBox.getNbt()).getCompound(BLOCK_ENTITY_TAG);
-            if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
-                DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                // 读取潜影盒NBT
-                Inventories.readNbt(nbt, defaultedList);
-                return new ImmutableInventory(defaultedList);
-            }
-            //#else
-            //$$ ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
-            //$$ if (component != null) {
-            //$$    List<ItemStack> list = component.stream().toList();
-            //$$    return new ImmutableInventory((DefaultedList<ItemStack>) list);
-            //$$ }
-            //#endif
-            throw new NoNbtException();
-        } catch (NullPointerException e) {
-            // 潜影盒物品没有NBT，说明该潜影盒物品为空
-            throw new NoNbtException();
-        }
+    public static ImmutableInventory getInventory(ItemStack shulkerBox) {
+//        try {
+//            // 获取潜影盒NBT
+//            //#if MC<12005
+//            NbtCompound nbt = Objects.requireNonNull(shulkerBox.getNbt()).getCompound(BLOCK_ENTITY_TAG);
+//            if (nbt != null && nbt.contains(ITEMS, NbtElement.LIST_TYPE)) {
+//                DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+//                // 读取潜影盒NBT
+//                Inventories.readNbt(nbt, defaultedList);
+//                return new ImmutableInventory(defaultedList);
+//            }
+//            //#else
+//            //$$ ContainerComponent component = shulkerBox.get(DataComponentTypes.CONTAINER);
+//            //$$ if (component != null) {
+//            //$$    List<ItemStack> list = component.stream().toList();
+//            //$$    return new ImmutableInventory((DefaultedList<ItemStack>) list);
+//            //$$ }
+//            //#endif
+//            throw new NoNbtException();
+//        } catch (NullPointerException e) {
+//            // 潜影盒物品没有NBT，说明该潜影盒物品为空
+//            throw new NoNbtException();
+//        }
+        return new ImmutableInventory((DefaultedList<ItemStack>) getInventoryList(shulkerBox));
     }
 
 //    /**

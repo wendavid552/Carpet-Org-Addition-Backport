@@ -33,10 +33,13 @@ import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.util.MathUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
     //修改方块最大可交互距离
+    //#if MC>=11904
     @WrapOperation(method = "onPlayerInteractBlock", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
     private double onPlayerInteractBlock(Operation<Double> original) {
         if (MathUtils.isDefaultDistance()) {
@@ -44,6 +47,15 @@ public class ServerPlayNetworkHandlerMixin {
         }
         return MathUtils.getMaxBreakSquaredDistance();
     }
+    //#else
+    //$$ @ModifyConstant(method = "onPlayerInteractBlock", constant = @Constant(doubleValue = 64.0D))
+    //$$ private double onPlayerInteractBlock(double original) {
+    //$$     if (MathUtils.isDefaultDistance()) {
+    //$$         return original;
+    //$$     }
+    //$$     return MathUtils.getMaxBreakSquaredDistance();
+    //$$ }
+    //#endif
 
     //修改方块交互距离第二次检测
     @WrapOperation(method = "onPlayerInteractBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;squaredDistanceTo(DDD)D"))
@@ -56,6 +68,7 @@ public class ServerPlayNetworkHandlerMixin {
     }
 
     //修改实体最大交互距离
+    //#if MC>=11904
     @WrapOperation(method = "onPlayerInteractEntity", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
     private double onPlayerInteractEntity(Operation<Double> original) {
         if (CarpetOrgAdditionSettings.maxBlockPlaceDistanceReferToEntity) {
@@ -63,4 +76,13 @@ public class ServerPlayNetworkHandlerMixin {
         }
         return original.call();
     }
+    //#else
+    //$$ @ModifyConstant(method = "onPlayerInteractEntity", constant = @Constant(doubleValue = 36.0D))
+    //$$ private double onPlayerInteractEntity(double original) {
+    //$$     if (MathUtils.isDefaultDistance()) {
+    //$$         return original;
+    //$$     }
+    //$$     return MathUtils.getMaxBreakSquaredDistance();
+    //$$ }
+    //#endif
 }

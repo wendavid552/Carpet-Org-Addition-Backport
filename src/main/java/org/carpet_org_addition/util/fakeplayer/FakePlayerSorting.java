@@ -84,17 +84,13 @@ public class FakePlayerSorting {
             // 一轮循环结束后，再重新将当前物品设置为物品栏中的潜影盒
             itemStack = inventory.getStack(index);
             //判断潜影盒是否为空
-            if (InventoryUtils.isEmptyShulkerBox(itemStack)) {
-                // 如果为空，将朝向设置为丢出非指定物品的方向，然后结束循环
-                // 设置当前朝向为丢出非指定物品朝向
-                fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, otherVec);
-                break;
-            } else {
+            if (InventoryUtils.isNonEmptyShulkerBox(itemStack)) {
                 // 获取潜影盒内第一个非空气物品，获取后，该物品会在潜影盒内删除
                 // 设置当前物品为潜影盒内容物的第一个非空物品
-                try {
+                if(InventoryUtils.isShulkerBoxItem(itemStack)) {
                     itemStack = InventoryUtils.getShulkerBoxItem(itemStack);
-                } catch (NoNbtException e) {
+                }
+                else {
                     // 空潜影盒异常，潜影盒可能没有NBT，如直接从创造模式物品栏中拿取出的潜影盒
                     // 丢出这个异常的潜影盒
                     itemStack = inventory.getStack(index);
@@ -105,6 +101,12 @@ public class FakePlayerSorting {
                 // 根据当前物品设置朝向
                 fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES,
                         itemStack.getItem() == item ? thisVec : otherVec);
+            }
+            else {
+                // 如果为空，将朝向设置为丢出非指定物品的方向，然后结束循环
+                // 设置当前朝向为丢出非指定物品朝向
+                fakePlayer.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, otherVec);
+                break;
             }
             // 丢弃潜影盒内物品堆栈
             FakePlayerUtils.dropItem(fakePlayer, itemStack);

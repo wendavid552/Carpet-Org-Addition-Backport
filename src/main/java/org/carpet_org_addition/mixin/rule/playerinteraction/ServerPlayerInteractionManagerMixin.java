@@ -27,7 +27,10 @@ package org.carpet_org_addition.mixin.rule.playerinteraction;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import org.carpet_org_addition.util.MathUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,7 +41,22 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(ServerPlayerInteractionManager.class)
 public class ServerPlayerInteractionManagerMixin {
     //TODO: 根据1.18.2-的情况未来换用MixinExtras的@ModifyExpressionValue修改if里面的语句
-    //#if MC>=11904
+    //#if MC>=12005
+    //$$ @WrapOperation(
+    //$$         method = "processBlockBreakingAction",
+    //$$         at = @At(
+    //$$                 value = "INVOKE",
+    //$$                 target = "Lnet/minecraft/server/network/ServerPlayerEntity;canInteractWithBlockAt (Lnet/minecraft/util/math/BlockPos;D)Z"
+    //$$         )
+    //$$ )
+    //$$ private boolean processBlockBreakingAction(ServerPlayerEntity instance, BlockPos blockPos, double v, Operation<Boolean> original) {
+    //$$     if (MathUtils.isDefaultDistance()) {
+    //$$         return original.call(instance, blockPos, v);
+    //$$     }
+    //$$     double d = MathUtils.getMaxBreakSquaredDistance();
+    //$$     return (new Box(blockPos)).squaredMagnitude(instance.getEyePos()) < d * d;
+    //$$ }
+    //#elseif MC>=11904
     @WrapOperation(method = "processBlockBreakingAction", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
     private double processBlockBreakingAction(Operation<Double> original) {
         if (MathUtils.isDefaultDistance()) {

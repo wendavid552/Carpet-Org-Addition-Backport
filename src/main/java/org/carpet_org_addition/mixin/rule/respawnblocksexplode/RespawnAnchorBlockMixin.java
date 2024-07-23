@@ -45,8 +45,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class RespawnAnchorBlockMixin {
     //禁止重生锚爆炸
     @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/RespawnAnchorBlock;isNether(Lnet/minecraft/world/World;)Z"), cancellable = true)
-    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit,
-                       CallbackInfoReturnable<ActionResult> cir) {
+    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player,
+                        //#if MC<12005
+                        Hand hand,
+                        //#endif
+            BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if (CarpetOrgAdditionSettings.disableRespawnBlocksExplode && !RespawnAnchorBlock.isNether(world)) {
             MessageUtils.sendTextMessageToHud(player, TextUtils.getTranslate("carpet.rule.message.disableRespawnBlocksExplode"));
             cir.setReturnValue(ActionResult.SUCCESS);

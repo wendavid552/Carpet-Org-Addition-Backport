@@ -38,6 +38,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
+    //#if MC<12005
     //修改方块最大可交互距离
     //#if MC>=11904
     @WrapOperation(method = "onPlayerInteractBlock", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
@@ -84,5 +85,6 @@ public class ServerPlayNetworkHandlerMixin {
     //$$     }
     //$$     return MathUtils.getMaxBreakSquaredDistance();
     //$$ }
+    //#endif
     //#endif
 }

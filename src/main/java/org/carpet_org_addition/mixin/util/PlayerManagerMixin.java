@@ -73,8 +73,20 @@ public class PlayerManagerMixin {
         //#endif
     }
 
-    @WrapWithCondition(method = "onPlayerConnect", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V"))
-    private boolean hide(Logger instance, String s, Object[] objects) {
+    @WrapWithCondition(method = "onPlayerConnect", remap = false, at = @At(value = "INVOKE", target =
+    //#if MC>=11800
+            "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V"
+    //#else
+    //$$    "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"
+    //#endif
+    ))
+    private boolean hide(Logger instance, String s,
+                         //#if MC>=11800
+                                Object[] objects
+                         //#else
+                         //$$   Object a, Object b, Object c, Object d, Object e, Object f
+                         //#endif
+    ) {
         return !CarpetOrgAddition.hiddenLoginMessages;
     }
 }

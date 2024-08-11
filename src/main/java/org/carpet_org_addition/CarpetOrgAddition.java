@@ -39,15 +39,14 @@ import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
 import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.settings.CarpetRuleRegistrar;
 import org.carpet_org_addition.translate.Translate;
 import org.carpet_org_addition.util.mixin.AutoMixinAuditExecutor;
 import org.carpet_org_addition.util.wheel.Waypoint;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -57,7 +56,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
      */
     public static boolean hiddenLoginMessages = false;
     // 日志
-    public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
+    public static final Logger LOGGER = LogManager.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
     public static MinecraftServer minecraftServer;
 

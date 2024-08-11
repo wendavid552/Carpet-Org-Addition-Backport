@@ -37,8 +37,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 //#if MC>11900
@@ -72,7 +70,27 @@ public class FinderCommand {
     /**
      * 最大统计数量
      */
-    public static final int MAXIMUM_STATISTICS = 300000;
+    public static final int MAXIMUM_STATISTICAL_COUNT = 300000;
+    /**
+     * 最大反馈消息数量
+     */
+    public static final int MAX_FEEDBACK_COUNT = 10;
+    /**
+     * 每个游戏刻最大查找时间
+     */
+    public static final long MAX_FIND_TIME = 200;
+    /**
+     * 任务执行的最大游戏刻数
+     */
+    public static final int MAX_TICK_COUNT = 50;
+    /**
+     * 村民的游戏内名称
+     */
+    public static final MutableText VILLAGER = TextUtils.getTranslate("entity.minecraft.villager");
+    /**
+     * 查找超时时抛出异常的反馈消息
+     */
+    public static final String TIME_OUT = "carpet.commands.finder.timeout";
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, Object commandBuildContext
                                 ) {
@@ -142,7 +160,7 @@ public class FinderCommand {
             MessageUtils.sendCommandFeedback(context.getSource(), "carpet.commands.finder.item.find.not_item",
                     matcher.toText());
             return 0;
-        } else if (list.size() > MAXIMUM_STATISTICS) {
+        } else if (list.size() > MAXIMUM_STATISTICAL_COUNT) {
             // 容器太多，无法统计
             throw CommandUtils.createException("carpet.commands.finder.item.too_much_container",
                     matcher.toText(), list.size());

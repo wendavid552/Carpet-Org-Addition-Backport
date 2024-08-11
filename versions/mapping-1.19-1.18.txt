@@ -24,6 +24,8 @@ net.minecraft.registry.RegistryKeys WORLD net.minecraft.util.registry.Registry W
 net.minecraft.registry.RegistryKeys net.minecraft.util.registry.Registry
 net.minecraft.registry.Registries net.minecraft.util.registry.Registry
 
+net.minecraft.entity.vehicle.VehicleInventory net.minecraft.entity.vehicle.StorageMinecartEntity
+
 net.minecraft.entity.Entity getControllingPassenger() getFirstPassenger()
 net.minecraft.entity.Entity canHit() collides()
 net.minecraft.server.network.ServerPlayerEntity onHandledScreenClosed() closeScreenHandler()

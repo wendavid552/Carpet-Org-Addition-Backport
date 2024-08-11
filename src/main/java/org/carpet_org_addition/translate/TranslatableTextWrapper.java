@@ -23,8 +23,13 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.rulevalue;
+package org.carpet_org_addition.translate;
 
-public enum ReusableSmithingTemplate {
-    TRUE, FALSE, UPGRADE
+import net.minecraft.text.TranslatableTextContent;
+import org.jetbrains.annotations.Nullable;
+
+public class TranslatableTextWrapper extends TranslatableTextContent {
+    public TranslatableTextWrapper(String key, @Nullable String fallback, Object[] args) {
+        super(key, fallback, args);
+    }
 }

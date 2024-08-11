@@ -1,3 +1,28 @@
+/*
+ * This file is part of the Carpet Org Addition project, licensed under the
+ * MIT License
+ *
+ * Copyright (c) 2024 cdqtzrc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.carpet_org_addition.util.task.findtask;
 
 import carpet.patches.EntityPlayerMPFake;
@@ -108,9 +133,9 @@ public class ItemFinderTask extends ServerTask {
             if (blockEntity instanceof Inventory inventory) {
                 // 获取容器名称
                 MutableText containerName
-                        = inventory instanceof LockableContainerBlockEntity lockableContainer
+                        = (MutableText) (inventory instanceof LockableContainerBlockEntity lockableContainer
                         ? lockableContainer.getName().copy()
-                        : this.world.getBlockState(blockPos).getBlock().getName();
+                        : this.world.getBlockState(blockPos).getBlock().getName());
                 this.count(inventory, blockPos, containerName);
             }
         }
@@ -136,12 +161,12 @@ public class ItemFinderTask extends ServerTask {
             }
             // 假玩家
             if (entity instanceof EntityPlayerMPFake fakePlayer) {
-                this.count(fakePlayer.getInventory(), fakePlayer.getBlockPos(), fakePlayer.getName().copy());
+                this.count(fakePlayer.getInventory(), fakePlayer.getBlockPos(), (MutableText) (fakePlayer.getName().copy()));
                 continue;
             }
             // 容器实体
             if (entity instanceof VehicleInventory inventory) {
-                this.count(inventory, entity.getBlockPos(), entity.getName().copy());
+                this.count(inventory, entity.getBlockPos(), (MutableText) (entity.getName().copy()));
             }
         }
         this.findState = FindState.SORT;

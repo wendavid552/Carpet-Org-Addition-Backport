@@ -61,6 +61,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     // 日志
     public static final Logger LOGGER = LoggerFactory.getLogger("CarpetOrgAddition");
     public static final String MOD_NAME_LOWER_CASE = "carpetorgaddition";
+    public static MinecraftServer minecraftServer;
 
     /**
      * Runs the mod initializer.
@@ -99,6 +100,7 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         CarpetExtension.super.onServerLoaded(server);
         // 服务器启动时自动将旧的路径点替换成新的
         Waypoint.replaceWaypoint(server);
+        minecraftServer = server;
     }
 
     // 设置模组翻译

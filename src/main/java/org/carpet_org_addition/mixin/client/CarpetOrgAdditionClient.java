@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.client;
+package org.carpet_org_addition.mixin.client;
 
 import net.fabricmc.api.ClientModInitializer;
 

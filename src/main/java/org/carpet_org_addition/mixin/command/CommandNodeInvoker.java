@@ -23,21 +23,19 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.compat.minecraft.PlayerEntityLastDeathPosition;
+package org.carpet_org_addition.mixin.command;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+
+import com.mojang.brigadier.tree.CommandNode;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(Entity.class)
-public interface EntityInvoker {
-    @Accessor("world")
-    World getWorld();
+import java.util.function.Predicate;
 
-    @Invoker("getBlockPos")
-    BlockPos getBlockPos();
+@Mixin(value = CommandNode.class,remap = false)
+public interface CommandNodeInvoker<S> {
+    @Mutable
+    @Accessor("requirement")
+    void setRequirement(Predicate<S> requirement);
 }

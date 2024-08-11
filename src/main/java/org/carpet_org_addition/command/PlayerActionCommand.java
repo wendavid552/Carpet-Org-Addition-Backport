@@ -300,20 +300,11 @@ public class PlayerActionCommand {
         if (CarpetSettings.ctrlQCraftingFix) {
             return;
         }
-        //判断当前命令执行者是否有足够的权限
-        boolean hasPermission = source.hasPermissionLevel(getCarpetPermissionLevel(source));
-        MutableText suggest;
-        if (hasPermission) {
-            suggest = TextUtils.suggest(TextUtils.getTranslate("carpet.commands.playerAction.set.here")
-                            .getString(), "/carpet ctrlQCraftingFix true",
-                    TextUtils.getTranslate("carpet.commands.playerAction.set.has_permission"),
-                    Formatting.AQUA);
-        } else {
-            suggest = TextUtils.suggest(
-                    TextUtils.getTranslate("carpet.commands.playerAction.set.here").getString(),
-                    null, TextUtils.getTranslate("carpet.commands.playerAction.set.no_permission"),
-                    Formatting.RED);
-        }
+        String command = "/carpet ctrlQCraftingFix true";
+        MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
+        // [这里]的悬停提示
+        MutableText hoverText = TextUtils.getTranslate("carpet.command.text.click.input", command);
+        MutableText suggest = TextUtils.suggest(here, command, hoverText, Formatting.AQUA);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 
@@ -325,14 +316,4 @@ public class PlayerActionCommand {
         return actionManager;
     }
 
-    //获取执行carpet命令需要的权限等级
-    private static int getCarpetPermissionLevel(ServerCommandSource source) {
-        if (CarpetOrgAdditionSettings.openCarpetPermissions && source.getServer().isSingleplayer()) {
-            return 0;
-        }
-        if ("4".equals(CarpetSettings.carpetCommandPermissionLevel)) {
-            return 4;
-        }
-        return 2;
-    }
 }

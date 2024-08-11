@@ -50,10 +50,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
-    static {
-        CarpetServer.manageExtension(new CarpetOrgAddition());
-    }
-
     /**
      * 控制玩家登录登出的消息是否显示
      */
@@ -64,11 +60,11 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     public static MinecraftServer minecraftServer;
 
     /**
-     * Runs the mod initializer.
+     * 模组初始化
      */
-    // 模组初始化
     @Override
     public void onInitialize() {
+        CarpetServer.manageExtension(new CarpetOrgAddition());
         AutoMixinAuditExecutor.run();
     }
 
@@ -86,11 +82,13 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
         // 假玩家生成时不保留上一次的击退，着火时间，摔落高度
         if (CarpetOrgAdditionSettings.fakePlayerSpawnNoKnockback && player instanceof EntityPlayerMPFake) {
             // 清除速度
-            player.setVelocity(0, 0, 0);
+            player.setVelocity(Vec3d.ZERO);
             // 清除着火时间
             player.setFireTicks(0);
             // 清除摔落高度
             player.fallDistance = 0;
+            // 清除负面效果
+            player.getStatusEffects().removeIf(effect -> effect.getEffectType().getCategory() == StatusEffectCategory.HARMFUL);
         }
     }
 

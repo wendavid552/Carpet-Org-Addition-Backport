@@ -33,6 +33,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.text.Text;
 import org.carpet_org_addition.CarpetOrgAddition;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -69,5 +70,10 @@ public class PlayerManagerMixin {
         //#else
         //$$ original.call(instance, message, type, sender);
         //#endif
+    }
+
+    @WrapWithCondition(method = "onPlayerConnect", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V"))
+    private boolean hide(Logger instance, String s, Object[] objects) {
+        return !CarpetOrgAddition.hiddenLoginMessages;
     }
 }

@@ -152,12 +152,12 @@ public class MessageUtils {
     /**
      * 发送一条可以被翻译的消息做为命令的执行反馈，消息内容仅消息发送者可见
      */
-    public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
-        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
-    }
-
     public static void sendCommandFeedback(CommandContext<ServerCommandSource> context, String key, Object... obj) {
         MessageUtils.sendCommandFeedback(context.getSource(), key, obj);
+    }
+
+    public static void sendCommandFeedback(ServerCommandSource source, String key, Object... obj) {
+        MessageUtils.sendTextMessage(source, TextUtils.getTranslate(key, obj));
     }
 
     public static void sendCommandFeedback(ServerCommandSource source, Text text) {

@@ -50,7 +50,12 @@ import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
 import org.carpet_org_addition.util.constant.CommandSyntaxExceptionConstants;
 import org.carpet_org_addition.util.fakeplayer.FakePlayerSerial;
-import org.carpet_org_addition.util.task.*;
+import org.carpet_org_addition.util.task.ServerTask;
+import org.carpet_org_addition.util.task.ServerTaskManagerInterface;
+import org.carpet_org_addition.util.task.playerscheduletask.DelayedLoginTask;
+import org.carpet_org_addition.util.task.playerscheduletask.DelayedLogoutTask;
+import org.carpet_org_addition.util.task.playerscheduletask.PlayerScheduleTask;
+import org.carpet_org_addition.util.task.playerscheduletask.ReLoginTask;
 import org.carpet_org_addition.util.wheel.WorldFormat;
 import org.jetbrains.annotations.NotNull;
 
@@ -368,7 +373,7 @@ public class PlayerManagerCommand {
         list.forEach(task -> {
             // 删除任务，发送命令反馈
             tasks.remove(task);
-            MessageUtils.sendTextMessage(context.getSource(), task.getCancelMessage());
+            task.onCancel(context);
         });
         return list.size();
     }

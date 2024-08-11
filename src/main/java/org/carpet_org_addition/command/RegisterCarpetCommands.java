@@ -25,10 +25,9 @@
 
 package org.carpet_org_addition.command;
 
-import carpet.CarpetServer;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import org.carpet_org_addition.util.CommandNodeFactory;
 //#if MC>11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
@@ -36,13 +35,17 @@ import net.minecraft.command.CommandRegistryAccess;
 public class RegisterCarpetCommands {
     //注册Carpet命令
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher
-                                              //#if MC>11900
-                                              ,CommandRegistryAccess commandBuildContext
-                                              //#endif
-                                              ) {
-        //#if MC<11904
-        //$$ Object commandBuildContext = null;
-        //#endif
+                                                //#if MC>11900
+                                                ,CommandRegistryAccess commandBuildContext
+                                                //#endif
+                                                ) {
+        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
+                //#if MC>=11904
+                commandBuildContext
+                //#else
+                //$$ null
+                //#endif
+        );
 
         //物品分身命令
         ItemShadowingCommand.register(dispatcher);
@@ -54,7 +57,7 @@ public class RegisterCarpetCommands {
         PlayerToolsCommand.register(dispatcher);
 
         //发送消息命令
-        SendMessageCommand.register(dispatcher, commandBuildContext);
+        SendMessageCommand.register(dispatcher, commandNodeFactory);
 
         //苦力怕音效命令
         CreeperCommand.register(dispatcher);
@@ -66,7 +69,7 @@ public class RegisterCarpetCommands {
         SpectatorCommand.register(dispatcher);
 
         //查找器命令
-        FinderCommand.register(dispatcher, commandBuildContext);
+        FinderCommand.register(dispatcher, commandNodeFactory);
 
         //自杀命令
         KillMeCommand.register(dispatcher);
@@ -78,7 +81,7 @@ public class RegisterCarpetCommands {
         ParticleLineCommand.register(dispatcher);
 
         // 假玩家动作命令
-        PlayerActionCommand.register(dispatcher, commandBuildContext);
+        PlayerActionCommand.register(dispatcher, commandNodeFactory);
 
         // 预设管理器命令
         // PresetsCommand.register(dispatcher);

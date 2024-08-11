@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.util.task;
+package org.carpet_org_addition.util.task.playerscheduletask;
 
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.context.CommandContext;

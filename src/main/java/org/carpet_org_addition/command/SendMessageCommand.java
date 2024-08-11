@@ -49,8 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class SendMessageCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, @Nullable Object commandBuildContext) {
-        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(commandBuildContext);
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandNodeFactory commandNodeFactory) {
         dispatcher.register(CommandManager.literal("sendMessage")
                 .requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandSendMessage))
                 .then(CommandManager.literal("copy")

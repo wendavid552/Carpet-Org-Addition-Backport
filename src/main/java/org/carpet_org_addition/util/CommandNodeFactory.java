@@ -27,10 +27,15 @@ package org.carpet_org_addition.util;
 
 //#if MC>11900
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.command.argument.RegistryEntryArgumentType;
+//#else
+//$$ import net.minecraft.command.argument.EnchantmentArgumentType;
 //#endif
 import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.enchantment.Enchantment;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandNodeFactory {
@@ -63,5 +68,19 @@ public class CommandNodeFactory {
                     (CommandRegistryAccess) this.context
                     //#endif
             );
+        }
+
+        public
+        //#if MC>=11904
+        RegistryEntryArgumentType<Enchantment>
+        //#else
+        //$$ EnchantmentArgumentType
+        //#endif
+        enchantment() {
+            //#if MC>=11904
+            return RegistryEntryArgumentType.registryEntry((CommandRegistryAccess) this.context, RegistryKeys.ENCHANTMENT);
+            //#else
+            //$$ return EnchantmentArgumentType.enchantment();
+            //#endif
         }
     }

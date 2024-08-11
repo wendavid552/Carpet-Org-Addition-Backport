@@ -28,7 +28,9 @@ package org.carpet_org_addition.util.matcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 
-public interface SimpleMatcher {
+import java.util.function.Predicate;
+
+public interface SimpleMatcher extends Predicate<ItemStack> {
     /**
      * 检查当前物品堆栈是否与匹配器匹配
      *

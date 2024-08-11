@@ -37,8 +37,11 @@ dependencies {
 	modImplementation "carpet:fabric-carpet:${project.carpet_core_version}" // masa
 
 	// library mods
-	include(modImplementation("com.github.1024-byteeeee:AnnotationToolBox:${project.annotationtoolbox_version}"))
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
+
+	// Conditional Mixin, for conditional compatability with other mods
+	modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2'
+	testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
 
 loom {

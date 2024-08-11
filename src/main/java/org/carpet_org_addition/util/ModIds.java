@@ -23,19 +23,15 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.util;
+package org.carpet_org_addition.util;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import org.carpet_org_addition.CarpetOrgAddition;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
-@Mixin(ServerPlayNetworkHandler.class)
-public class ServerPlayNetworkHandlerMixin {
-    @WrapWithCondition(method = "onDisconnected", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
-    private boolean hide(Logger instance, String s, Object o1, Object o2) {
-        return !CarpetOrgAddition.hiddenLoginMessages;
-    }
+public class ModIds {
+    public static final String carpet = "carpet";
+    public static final String carpet_extra = "carpet-extra";
+    public static final String lithium = "lithium";
+    public static final String malilib = "malilib";
+    public static final String mc_tester = "mctester";
+    public static final String minecraft = "minecraft";
+    public static final String tic_tacs = "tic_tacs";
+    public final static String fabric_networking_api = "fabric-networking-api-v1";
 }

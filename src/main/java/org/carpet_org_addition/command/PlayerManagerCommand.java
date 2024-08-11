@@ -26,7 +26,6 @@
 package org.carpet_org_addition.command;
 
 import carpet.patches.EntityPlayerMPFake;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
@@ -153,9 +152,11 @@ public class PlayerManagerCommand {
         return (context, builder) -> {
             MinecraftServer server = context.getSource().getServer();
             ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
+            // 所有正在周期性上下线的玩家
             List<String> taskList = instance.getTaskList().stream()
                     .filter(task -> task instanceof ReLoginTask)
                     .map(task -> ((ReLoginTask) task).getPlayerName()).toList();
+            // 所有在线玩家
             List<String> onlineList = server.getPlayerManager().getPlayerList().stream()
                     .map(player -> player.getName().getString()).toList();
             HashSet<String> players = new HashSet<>();
@@ -168,7 +169,13 @@ public class PlayerManagerCommand {
     // 列出每一个玩家
     private static int list(CommandContext<ServerCommandSource> context) {
         WorldFormat worldFormat = new WorldFormat(context.getSource().getServer(), FakePlayerSerial.PLAYER_DATA);
-        return FakePlayerSerial.list(context, worldFormat);
+        int count = FakePlayerSerial.list(context, worldFormat);
+        if (count == 0) {
+            // 没有玩家被保存
+            MessageUtils.sendCommandFeedback(context, "carpet.commands.playerManager.list.no_player");
+            return 0;
+        }
+        return count;
     }
 
     // 保存假玩家数据
@@ -284,19 +291,18 @@ public class PlayerManagerCommand {
     }
 
     // 停止重新上线下线
-    private static int stopReLogin(CommandContext<ServerCommandSource> context) {
+    private static int stopReLogin(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         // 获取目标假玩家名
         String name = StringArgumentType.getString(context, "name");
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(context.getSource().getServer());
-        instance.getTaskList().stream()
-                .filter(task -> task instanceof ReLoginTask)
-                .map(task -> (ReLoginTask) task)
-                .filter(reLoginTask -> Objects.equals(name, reLoginTask.getPlayerName()))
-                .forEach(task -> {
-                    // 停止并发送消息
-                    task.stop();
-                    MessageUtils.sendCommandFeedback(context.getSource(), task.getCancelMessage());
-                });
+        List<ReLoginTask> list = instance.findTask(ReLoginTask.class, task -> Objects.equals(task.getPlayerName(), name));
+        if (list.isEmpty()) {
+            throw CommandUtils.createException("carpet.commands.playerManager.schedule.cancel.fail");
+        }
+        list.forEach(task -> {
+            instance.getTaskList().remove(task);
+            task.onCancel(context);
+        });
         return 1;
     }
 
@@ -363,12 +369,15 @@ public class PlayerManagerCommand {
     }
 
     // 取消任务
-    private static int cancelScheduleTask(CommandContext<ServerCommandSource> context) {
+    private static int cancelScheduleTask(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         MinecraftServer server = context.getSource().getServer();
         ServerTaskManagerInterface instance = ServerTaskManagerInterface.getInstance(server);
         String name = StringArgumentType.getString(context, "name");
         // 获取符合条件的任务列表
         List<PlayerScheduleTask> list = instance.findTask(PlayerScheduleTask.class, task -> Objects.equals(task.getPlayerName(), name));
+        if (list.isEmpty()) {
+            throw CommandUtils.createException("carpet.commands.playerManager.schedule.cancel.fail");
+        }
         ArrayList<ServerTask> tasks = instance.getTaskList();
         list.forEach(task -> {
             // 删除任务，发送命令反馈
@@ -414,33 +423,23 @@ public class PlayerManagerCommand {
 
         // 获取单位名称
         private String getName() {
-            switch (this) {
-                case TICK:
-                    return "t";
-                case SECOND:
-                    return "s";
-                case MINUTE:
-                    return "min";
-                case HOUR:
-                    return "h";
-            }
-            throw new IllegalStateException("Unexpected value: " + this);
+            return switch (this) {
+                case TICK -> "t";
+                case SECOND -> "s";
+                case MINUTE -> "min";
+                case HOUR -> "h";
+            };
         }
 
         // 将游戏刻转化为对应单位
         private long getDelayed(CommandContext<ServerCommandSource> context) {
             int delayed = IntegerArgumentType.getInteger(context, "delayed");
-            switch (this) {
-                case TICK:
-                    return delayed;
-                case SECOND:
-                    return delayed * 20L;
-                case MINUTE:
-                    return delayed * 1200L;
-                case HOUR:
-                    return delayed * 72000L;
-            }
-            throw new IllegalStateException("Unexpected value: " + this);
+            return switch (this) {
+                case TICK -> delayed;
+                case SECOND -> delayed * 20L;
+                case MINUTE -> delayed * 1200L;
+                case HOUR -> delayed * 72000L;
+            };
         }
     }
 }

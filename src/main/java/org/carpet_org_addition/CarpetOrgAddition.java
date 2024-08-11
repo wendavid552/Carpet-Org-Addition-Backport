@@ -30,6 +30,7 @@ import carpet.CarpetServer;
 import carpet.patches.EntityPlayerMPFake;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -37,11 +38,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
+import net.minecraft.util.math.Vec3d;
 import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.settings.CarpetRuleRegistrar;
 import org.carpet_org_addition.translate.Translate;
-import org.carpet_org_addition.util.AutoMixinAuditExecutor;
+import org.carpet_org_addition.util.mixin.AutoMixinAuditExecutor;
 import org.carpet_org_addition.util.wheel.Waypoint;
 
 import org.slf4j.Logger;
@@ -88,7 +90,11 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
             // 清除摔落高度
             player.fallDistance = 0;
             // 清除负面效果
-            player.getStatusEffects().removeIf(effect -> effect.getEffectType().getCategory() == StatusEffectCategory.HARMFUL);
+            player.getStatusEffects().removeIf(effect -> effect.getEffectType()
+                    //#if MC>=12005
+                    //$$ .value()
+                    //#endif
+                    .getCategory() == StatusEffectCategory.HARMFUL);
         }
     }
 

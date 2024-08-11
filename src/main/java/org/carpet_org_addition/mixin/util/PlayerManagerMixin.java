@@ -25,6 +25,7 @@
 
 package org.carpet_org_addition.mixin.util;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 //#if MC<11904

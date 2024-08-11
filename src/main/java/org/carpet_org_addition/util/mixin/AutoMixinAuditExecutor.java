@@ -18,11 +18,12 @@
  * along with Carpet AMS Addition.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.carpet_org_addition.util;
+package org.carpet_org_addition.util.mixin;
 
 import org.carpet_org_addition.CarpetOrgAddition;
 
 import net.fabricmc.loader.api.FabricLoader;
+import org.carpet_org_addition.util.MixinUtil;
 
 public class AutoMixinAuditExecutor {
     private static final String KEYWORD_PROPERTY = "carpetorgaddition.mixin_audit";

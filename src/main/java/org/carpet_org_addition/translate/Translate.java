@@ -44,23 +44,27 @@ public class Translate {
     private static final HashMap<String, Map<String, String>> TRANSLATE = new HashMap<>();
     private static final String TRANSLATE_KEY_PREFIX = "carpet.";
 
-    // 获取翻译
     public static Map<String, String> getTranslate() {
+        return getTranslate(CarpetSettings.language);
+    }
+
+    // 获取翻译
+    public static Map<String, String> getTranslate(String language) {
         // 每种语言只从文件读取一次
-        if (TRANSLATE.containsKey(CarpetSettings.language)) {
-            return TRANSLATE.get(CarpetSettings.language);
+        if (TRANSLATE.containsKey(language)) {
+            return TRANSLATE.get(language);
         }
         String translateJson;
         ClassLoader classLoader = Translate.class.getClassLoader();
         try {
             // 从文件读取翻译
-            String path = "assets/carpet-org-addition/lang/%s.json".formatted(CarpetSettings.language);
+            String path = "assets/carpet-org-addition/lang/%s.json".formatted(language);
             InputStream resourceAsStream = classLoader.getResourceAsStream(path);
             // 如果指定语言不存在，返回英文语言
             if (resourceAsStream == null) {
                 if (TRANSLATE.containsKey("en_us")) {
                     Map<String, String> enUs = TRANSLATE.get("en_us");
-                    TRANSLATE.put(CarpetSettings.language, enUs);
+                    TRANSLATE.put(language, enUs);
                     return enUs;
                 }
                 resourceAsStream = classLoader.getResourceAsStream("assets/carpet-org-addition/lang/en_us.json");
@@ -82,7 +86,7 @@ public class Translate {
         //$$         .collect(Collectors.toMap(entry -> entry.getKey().substring(TRANSLATE_KEY_PREFIX.length()), Map.Entry::getValue));
         //#endif
 
-        TRANSLATE.put(CarpetSettings.language, translate);
+        TRANSLATE.put(language, translate);
         return translate;
     }
 }

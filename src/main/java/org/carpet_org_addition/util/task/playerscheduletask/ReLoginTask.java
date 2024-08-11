@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.util.task;
+package org.carpet_org_addition.util.task.playerscheduletask;
 
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;

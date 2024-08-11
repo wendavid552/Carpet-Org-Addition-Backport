@@ -70,8 +70,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class PlayerActionCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher,@Nullable Object commandBuildContext) {
-        CommandNodeFactory commandNodeFactory = new CommandNodeFactory(commandBuildContext);
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandNodeFactory commandNodeFactory) {
         dispatcher.register(CommandManager.literal("playerAction").requires(source -> CommandUtils.canUseCommand(source, CarpetOrgAdditionSettings.commandPlayerAction))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
                         .then(CommandManager.literal("sorting")
@@ -304,7 +303,7 @@ public class PlayerActionCommand {
         MutableText here = TextUtils.getTranslate("carpet.command.text.click.here");
         // [这里]的悬停提示
         MutableText hoverText = TextUtils.getTranslate("carpet.command.text.click.input", command);
-        MutableText suggest = TextUtils.suggest(here, command, hoverText, Formatting.AQUA);
+        MutableText suggest = TextUtils.suggest(here.toString(), command, hoverText, Formatting.AQUA);
         MessageUtils.sendCommandFeedback(source, "carpet.commands.playerAction.set", suggest);
     }
 

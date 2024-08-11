@@ -25,11 +25,18 @@
 
 package org.carpet_org_addition.mixin.rule;
 
+import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
+import org.carpet_org_addition.util.ModIds;
 import org.spongepowered.asm.mixin.Mixin;
 import org.carpet_org_addition.util.compat.DummyClass;
-import top.byteeeee.annotationtoolbox.annotation.GameVersion;
 
-@GameVersion(version="Minecraft < 1.19")
+@Restriction(
+        require = @Condition(
+                value = ModIds.minecraft,
+                versionPredicates = "<1.19"
+        )
+)
 @Mixin(DummyClass.class)
 public class SculkShriekerBlockMixin {
 }

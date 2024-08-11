@@ -1,3 +1,28 @@
+/*
+ * This file is part of the Carpet Org Addition project, licensed under the
+ * MIT License
+ *
+ * Copyright (c) 2024 cdqtzrc
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.carpet_org_addition.util.task.findtask;
 
 import com.mojang.brigadier.context.CommandContext;
@@ -111,7 +136,7 @@ public class TradeFindTask extends ServerTask {
                     // 村民所在坐标
                     BlockPos blockPos = merchant.getBlockPos();
                     // 村民或流浪商人的名称
-                    MutableText villagerName = TextUtils.command(merchant.getName().copy(),
+                    MutableText villagerName = TextUtils.command((MutableText) merchant.getName().copy(),
                             "/particleLine ~ ~1 ~ " + merchant.getUuid(), null, null, true);
                     // 如果交易的输出物品与指定的物品匹配，则将该选项添加到集合
                     Result result = switch (this.predicate.taskType) {
@@ -241,7 +266,7 @@ public class TradeFindTask extends ServerTask {
 
         public TradePredicate(ItemStackMatcher itemStackMatcher) {
             this.taskType = TaskType.ITEM;
-            this.tradeName = itemStackMatcher.getName().copy();
+            this.tradeName = (MutableText) itemStackMatcher.getName().copy();
             this.predicate = itemStackMatcher;
             this.supplier = () -> {
                 throw new UnsupportedOperationException();
@@ -257,24 +282,28 @@ public class TradeFindTask extends ServerTask {
             this.tradeName = TextUtils.appendAll(text, Items.ENCHANTED_BOOK.getName());
             this.predicate = enchantedBook -> {
                 if (enchantedBook.isOf(Items.ENCHANTED_BOOK)) {
-                    // 获取附魔的注册id
-                    Identifier registryId = EnchantmentHelper.getEnchantmentId(enchantment);
-                    // 获取附魔书所有的附魔
-                    NbtList nbtList = EnchantedBookItem.getEnchantmentNbt(enchantedBook);
-                    for (int i = 0; i < nbtList.size(); i++) {
-                        // 获取每一个附魔的复合NBT标签
-                        NbtCompound nbt = nbtList.getCompound(i);
-                        // 获取这本附魔书上附魔的id
-                        Identifier enchantmentId = EnchantmentHelper.getIdFromNbt(nbt);
-                        if (enchantmentId != null && enchantmentId.equals(registryId)) {
-                            // 如果附魔书上附魔的id与指定id相同，获取等级
-                            final int level = EnchantmentHelper.getLevelFromNbt(nbt);
-                            if (level > 0) {
-                                this.supplier = () -> new Pair<>(enchantment, level);
-                                return true;
-                            }
-                        }
+                    final int level = EnchantmentHelper.getLevel(enchantment, enchantedBook);
+                    if (level > 0) {
+                        this.supplier = () -> new Pair<>(enchantment, level);
                     }
+//                    // 获取附魔的注册id
+//                    Identifier registryId = EnchantmentHelper.getEnchantmentId(enchantment);
+//                    // 获取附魔书所有的附魔
+//                    NbtList nbtList = EnchantedBookItem.getEnchantmentNbt(enchantedBook);
+//                    for (int i = 0; i < nbtList.size(); i++) {
+//                        // 获取每一个附魔的复合NBT标签
+//                        NbtCompound nbt = nbtList.getCompound(i);
+//                        // 获取这本附魔书上附魔的id
+//                        Identifier enchantmentId = EnchantmentHelper.getIdFromNbt(nbt);
+//                        if (enchantmentId != null && enchantmentId.equals(registryId)) {
+//                            // 如果附魔书上附魔的id与指定id相同，获取等级
+//                            final int level = EnchantmentHelper.getLevelFromNbt(nbt);
+//                            if (level > 0) {
+//                                this.supplier = () -> new Pair<>(enchantment, level);
+//                                return true;
+//                            }
+//                        }
+//                    }
                 }
                 // 当前物品不是附魔书或者附魔书上没有指定附魔
                 this.supplier = () -> {
@@ -294,7 +323,7 @@ public class TradeFindTask extends ServerTask {
 
         private MutableText getEnchantmentName() {
             Pair<Enchantment, Integer> pair = this.supplier.get();
-            return pair.getLeft().getName(pair.getRight()).copy();
+            return (MutableText) pair.getLeft().getName(pair.getRight()).copy();
         }
 
 

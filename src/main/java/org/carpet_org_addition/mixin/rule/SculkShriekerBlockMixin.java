@@ -25,20 +25,27 @@
 
 package org.carpet_org_addition.mixin.rule;
 
+import me.fallenbreath.conditionalmixin.api.annotation.Condition;
+import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SculkShriekerBlock;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
+import org.carpet_org_addition.util.ModIds;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import top.byteeeee.annotationtoolbox.annotation.GameVersion;
 
 // 让玩家手动放置的幽匿尖啸体可以生成监守者
-@GameVersion(version = "Minecraft >= 1.19")
+@Restriction(
+        require = @Condition(
+                value = ModIds.minecraft,
+                versionPredicates = ">=1.19"
+        )
+)
 @Mixin(SculkShriekerBlock.class)
 public class SculkShriekerBlockMixin {
     @Inject(method = "getPlacementState", at = @At("HEAD"), cancellable = true)

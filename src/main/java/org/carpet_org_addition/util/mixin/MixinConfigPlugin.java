@@ -23,19 +23,27 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.util;
+package org.carpet_org_addition.util.mixin;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import org.carpet_org_addition.CarpetOrgAddition;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
+import me.fallenbreath.conditionalmixin.api.mixin.RestrictiveMixinConfigPlugin;
 
-@Mixin(ServerPlayNetworkHandler.class)
-public class ServerPlayNetworkHandlerMixin {
-    @WrapWithCondition(method = "onDisconnected", remap = false, at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
-    private boolean hide(Logger instance, String s, Object o1, Object o2) {
-        return !CarpetOrgAddition.hiddenLoginMessages;
+import java.util.List;
+import java.util.Set;
+
+public class MixinConfigPlugin extends RestrictiveMixinConfigPlugin {
+
+    @Override
+    public String getRefMapperConfig() {
+        return null;
+    }
+
+    @Override
+    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
+
+    }
+
+    @Override
+    public List<String> getMixins() {
+        return null;
     }
 }

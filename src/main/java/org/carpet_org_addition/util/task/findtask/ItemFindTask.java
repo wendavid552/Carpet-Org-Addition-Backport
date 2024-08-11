@@ -47,7 +47,6 @@ import org.carpet_org_addition.exception.TaskExecutionException;
 import org.carpet_org_addition.util.InventoryUtils;
 import org.carpet_org_addition.util.MessageUtils;
 import org.carpet_org_addition.util.TextUtils;
-import org.carpet_org_addition.util.findtask.feedback.AbstractFindFeedback;
 import org.carpet_org_addition.util.matcher.Matcher;
 import org.carpet_org_addition.util.task.ServerTask;
 import org.carpet_org_addition.util.wheel.Counter;
@@ -57,7 +56,7 @@ import org.carpet_org_addition.util.wheel.SelectionArea;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ItemFinderTask extends ServerTask {
+public class ItemFindTask extends ServerTask {
     private final World world;
     private final SelectionArea selectionArea;
     private final CommandContext<ServerCommandSource> context;
@@ -78,7 +77,7 @@ public class ItemFinderTask extends ServerTask {
     private static final long MAX_FIND_TIME = 200;
     private final ArrayList<Result> results = new ArrayList<>();
 
-    public ItemFinderTask(World world, Matcher matcher, SelectionArea selectionArea, CommandContext<ServerCommandSource> context) {
+    public ItemFindTask(World world, Matcher matcher, SelectionArea selectionArea, CommandContext<ServerCommandSource> context) {
         this.world = world;
         this.selectionArea = selectionArea;
         this.findState = FindState.BLOCK;
@@ -93,7 +92,7 @@ public class ItemFinderTask extends ServerTask {
         this.tickCount++;
         if (tickCount > 50) {
             // 任务超时
-            MessageUtils.sendCommandErrorFeedback(context, AbstractFindFeedback.TIME_OUT);
+            MessageUtils.sendCommandErrorFeedback(context, FinderCommand.TIME_OUT);
             this.findState = FindState.END;
             return;
         }
@@ -256,7 +255,7 @@ public class ItemFinderTask extends ServerTask {
     }
 
     @Override
-    public boolean isEndOfExecution() {
+    public boolean stopped() {
         return this.findState == FindState.END;
     }
 
@@ -270,6 +269,11 @@ public class ItemFinderTask extends ServerTask {
                     TextUtils.command(containerName, command, null, null, true),
                     FinderCommand.showCount(item.getDefaultStack(), count, shulkerBox));
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Item Find Task";    //TODO: Translatable Text here
     }
 
     private enum FindState {

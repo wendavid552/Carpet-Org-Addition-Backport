@@ -46,6 +46,7 @@ public class RegisterCarpetCommands {
                 //$$ null
                 //#endif
         );
+        CarpetIntegratedServerCommand.onRegisterCarpetCommands(dispatcher);
 
         //物品分身命令
         ItemShadowingCommand.register(dispatcher);

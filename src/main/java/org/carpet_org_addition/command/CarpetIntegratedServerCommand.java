@@ -23,43 +23,20 @@
  * SOFTWARE.
  */
 
-package org.carpet_org_addition.mixin.client.carpet;
+package org.carpet_org_addition.command;
 
-import carpet.CarpetServer;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.integrated.IntegratedServer;
 import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.mixin.command.CommandNodeInvoker;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-//#if MC>=11904
-import net.minecraft.command.CommandRegistryAccess;
-//#endif
 
 
 import java.util.function.Predicate;
 
-@Mixin(value = CarpetServer.class,remap = false)
-public class CarpetServerMixin {
-    @Inject(
-            //#if MC>=11904
-            method = "registerCarpetCommands",
-            //#else
-            //$$ method = "Lcarpet/CarpetServer;registerCarpetCommands(Lcom/mojang/brigadier/CommandDispatcher;Lnet/minecraft/server/command/CommandManager$RegistrationEnvironment;)V",
-            //#endif
-            at = @At("TAIL")
-    )
-    private static void onRegisterCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandManager.RegistrationEnvironment environment
-            //#if MC>=11904
-            ,CommandRegistryAccess commandBuildContext
-            //#endif
-            ,CallbackInfo ci) {
+public class CarpetIntegratedServerCommand {
+    public static void onRegisterCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         if (CarpetOrgAddition.minecraftServer instanceof IntegratedServer) {
             CarpetOrgAddition.LOGGER.info("[ORG] Has changed permission requirement of /carpet for integrated server");
             Predicate<ServerCommandSource> carpetRequirement = dispatcher.getRoot().getChild("carpet").getRequirement();

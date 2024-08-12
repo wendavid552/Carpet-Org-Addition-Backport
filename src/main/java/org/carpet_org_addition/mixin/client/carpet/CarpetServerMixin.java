@@ -31,6 +31,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.integrated.IntegratedServer;
+import org.carpet_org_addition.CarpetOrgAddition;
 import org.carpet_org_addition.CarpetOrgAdditionSettings;
 import org.carpet_org_addition.mixin.command.CommandNodeInvoker;
 import org.spongepowered.asm.mixin.Mixin;
@@ -59,8 +60,8 @@ public class CarpetServerMixin {
             ,CommandRegistryAccess commandBuildContext
             //#endif
             ,CallbackInfo ci) {
-        IntegratedServer clientServer = MinecraftClient.getInstance().getServer();
-        if (clientServer != null) {
+        if (CarpetOrgAddition.minecraftServer instanceof IntegratedServer) {
+            CarpetOrgAddition.LOGGER.info("[ORG] Has changed permission requirement of /carpet for integrated server");
             Predicate<ServerCommandSource> carpetRequirement = dispatcher.getRoot().getChild("carpet").getRequirement();
             ((CommandNodeInvoker<ServerCommandSource>) dispatcher.getRoot().getChild("carpet")).setRequirement(carpetRequirement.or(source -> CarpetOrgAdditionSettings.openCarpetPermissions));
         }

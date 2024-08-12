@@ -277,7 +277,7 @@ public class CarpetOrgAdditionSettings {
     @Rule(
             categories = {ORG, RuleCategory.COMMAND, RuleCategory.CLIENT}
     )
-    public static boolean openCarpetPermissions = false;
+    public static boolean openCarpetPermissions = true;
 
     // 开放/gamerule命令权限
     @Rule(

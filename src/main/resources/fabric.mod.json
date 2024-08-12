@@ -18,7 +18,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "org.carpet_org_addition.mixin.client.CarpetOrgAdditionClient"
+      "org.carpet_org_addition.CarpetOrgAdditionClient"
     ],
     "main": [
       "org.carpet_org_addition.CarpetOrgAddition"

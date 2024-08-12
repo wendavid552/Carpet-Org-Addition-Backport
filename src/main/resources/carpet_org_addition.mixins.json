@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "org.carpet_org_addition.util.mixin.MixinConfigPlugin",
   "mixins": [
+    "client.carpet.CarpetServerMixin",
     "command.CommandNodeInvoker",
     "command.EntityPlayerMPFakeMixin",
     "command.MinecraftServerMixin",
@@ -85,7 +86,6 @@
     "util.PlayerManagerMixin"
   ],
   "client": [
-    "client.carpet.CarpetServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

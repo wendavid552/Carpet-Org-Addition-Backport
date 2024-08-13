@@ -1,4 +1,7 @@
-# Carpet-Org-Addition
+# Carpet-Org-Addition-Backport
+
+> 本Github Repo对应的是`Carpet-Org-Addition`的多版本构建，目前范围从1.17.1~1.20.6，会尽可能与主分支功能进行同步，另外也有部分额外功能
+> 请注意：使用本Repo的发行版出现任何问题请不要打扰Carpet Org Addition的原作者！
 
 [![License](https://img.shields.io/github/license/cdqtzrc/carpet-org-addition)](https://choosealicense.com/licenses/mit/)
 [![Modrinth](https://img.shields.io/modrinth/dt/carpet-org-addition?color=00AF5C&label=Modrinth%20downloads&logo=modrinth)](https://modrinth.com/mod/carpet-org-addition)

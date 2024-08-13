@@ -38,10 +38,13 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// mods
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
 	//modImplementation("maven.modrinth:Carpet:${project.carpet_core_version}") // modrinth
 	modImplementation "carpet:fabric-carpet:${project.carpet_core_version}" // masa
 
 	// library mods
+
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 
 	// Conditional Mixin, for conditional compatability with other mods

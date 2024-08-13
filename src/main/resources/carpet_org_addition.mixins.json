@@ -10,6 +10,8 @@
     "command.MinecraftServerMixin",
     "command.ServerPlayerEntityMixin",
     "compat.carpet.EntityPlayerMPFakeManiplater.EntityPlayerMPFakeInvoker",
+    "compat.fabricapi.AbstractChanneledNetworkAddonInvoker",
+    "compat.fabricapi.GlobalReceiverRegistryMixin",
     "logger.HUDControllerMixin",
     "logger.LoggerAccessor",
     "logger.WanderingTraderManagerMixin",

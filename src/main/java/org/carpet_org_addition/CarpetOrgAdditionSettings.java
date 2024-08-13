@@ -560,4 +560,9 @@ public class CarpetOrgAdditionSettings {
             validators = FakePlayerMaxCraftCountValidator.class
     )
     public static int fakePlayerMaxCraftCount = 3;
+
+    @Rule(
+            categories = {ORG, RuleCategory.FEATURE}
+    )
+    public static boolean fakePlayerSpawnMemoryLeakFix = true;
 }

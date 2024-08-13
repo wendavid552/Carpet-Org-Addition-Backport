@@ -70,7 +70,7 @@ jobs:
           fi
 
           unzip -q "$JAR_FILE" -d unzipped_contents
-          JAR_BASENAME=$(basename "$JAR_FILE" .jar)
+          JAR_BASENAME=$(basename "$JAR_FILE")
           echo "JAR_BASENAME=${JAR_BASENAME}" >> $GITHUB_ENV
 
       - name: Upload unzipped contents

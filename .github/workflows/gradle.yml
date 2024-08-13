@@ -63,13 +63,13 @@ jobs:
         run: |
           mkdir -p unzipped_contents
           JAR_FILE=$(find build-artifacts/${{ matrix.subproject_dir }}/build/libs/ -name '*.jar' | grep -Ev '(-dev|-sources).jar')
-
+          echo "JAR_FILE=${JAR_FILE}" >> $GITHUB_ENV
+          
           if [ -z "$JAR_FILE" ]; then
             echo "No valid JAR file found" >&2
             exit 1
           fi
 
-          unzip -q "$JAR_FILE" -d unzipped_contents
           JAR_BASENAME=$(basename "$JAR_FILE")
           echo "JAR_BASENAME=${JAR_BASENAME}" >> $GITHUB_ENV
 
@@ -77,4 +77,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.JAR_BASENAME }}
-          path: unzipped_contents/
+          path: ${{ env.JAR_FILE }}

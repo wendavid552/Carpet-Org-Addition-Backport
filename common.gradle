@@ -11,6 +11,9 @@ preprocess {
 
 repositories {
 	maven {
+		url 'https://maven.fallenbreath.me/releases'
+	}
+	maven {
 		url = 'https://api.modrinth.com/maven'
 	}
 	maven {
@@ -19,6 +22,8 @@ repositories {
 	maven {
 		url = 'https://jitpack.io'
 	}
+	mavenCentral()
+	mavenLocal()
 }
 
 // https://github.com/FabricMC/fabric-loader/issues/783
@@ -41,6 +46,9 @@ dependencies {
 
 	// Conditional Mixin, for conditional compatability with other mods
 	modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2'
+	// Mixin Auditor just for mixin audits
+	modRuntimeOnly 'me.fallenbreath:mixin-auditor:0.1.0'
+
 	testImplementation(group: 'junit', name: 'junit', version: junit_version)
 }
 
@@ -53,16 +61,17 @@ loom {
 	}
 
 	runs {
-        mixinAudit {
+        // run server, but with mixin auditor enabled
+        serverMixinAudit {
             server()
-            vmArgs '-Dcarpetorgaddition.mixin_audit=true'
-            ideConfigGenerated false
+            vmArgs '-DmixinAuditor.audit=true'
         }
-        mixinAuditClient {
+
+        // run client, but with mixin auditor enabled
+        clientMixinAudit {
             client()
-            vmArgs '-Dcarpetorgaddition.mixin_audit=true'
-            ideConfigGenerated false
-        }
+            vmArgs('-DmixinAuditor.audit=true', '-DmixinAuditor.when=game_init')
+    	}
     }
 
 	accessWidenerPath = file("carpetorgaddition.accesswidener")

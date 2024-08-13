@@ -45,7 +45,6 @@ import org.carpet_org_addition.command.RegisterCarpetCommands;
 import org.carpet_org_addition.logger.WanderingTraderSpawnLogger;
 import org.carpet_org_addition.settings.CarpetRuleRegistrar;
 import org.carpet_org_addition.translate.Translate;
-import org.carpet_org_addition.util.mixin.AutoMixinAuditExecutor;
 import org.carpet_org_addition.util.wheel.Waypoint;
 
 import java.util.Map;
@@ -66,7 +65,6 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
     @Override
     public void onInitialize() {
         CarpetServer.manageExtension(new CarpetOrgAddition());
-        AutoMixinAuditExecutor.run();
     }
 
     // 在游戏开始时

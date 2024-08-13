@@ -72,7 +72,6 @@
     "rule.knockbackStick.EnchantmentMixin",
     "rule.knockbackStick.KnockbackEnchantmentMixin",
     "rule.pickaxeMinedBedrock.MiningToolItemMixin",
-    "rule.playerinteraction.GameRendererMixin",
     "rule.playerinteraction.PlayerEntityMixin",
     "rule.playerinteraction.ServerPlayerInteractionManagerMixin",
     "rule.playerinteraction.ServerPlayNetworkHandlerMixin",
@@ -85,6 +84,7 @@
     "util.PlayerManagerMixin"
   ],
   "client": [
+    "rule.playerinteraction.GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

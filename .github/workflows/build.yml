@@ -8,7 +8,7 @@ on:
         required: false
         default: false
       target_subproject:
-        description: see release.yml, leave it empty to build all
+        description: see release.yml.disabled, leave it empty to build all
         type: string
         required: false
         default: ''

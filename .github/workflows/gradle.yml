@@ -62,7 +62,13 @@ jobs:
       - name: Extract and prepare JAR contents
         run: |
           mkdir -p unzipped_contents
-          JAR_FILE=$(find build-artifacts/${{ matrix.subproject_dir }}/build/libs/ -name '!(*-@(dev|sources)).jar')
+          JAR_FILE=$(find build-artifacts/${{ matrix.subproject_dir }}/build/libs/ -name '*.jar' | grep -Ev '(-dev|-sources).jar')
+
+          if [ -z "$JAR_FILE" ]; then
+            echo "No valid JAR file found" >&2
+            exit 1
+          fi
+
           unzip -q "$JAR_FILE" -d unzipped_contents
           JAR_BASENAME=$(basename "$JAR_FILE" .jar)
           echo "JAR_BASENAME=${JAR_BASENAME}" >> $GITHUB_ENV

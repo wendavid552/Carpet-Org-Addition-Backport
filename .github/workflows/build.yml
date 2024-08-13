@@ -12,12 +12,9 @@ on:
         type: string
         required: false
         default: ''
-#      # [FEATURE] MIXIN_AUDITOR
-#      mixin_audit:
-#        description: run mixin audit for Minecraft server after build
-#        type: boolean
-#        required: false
-#        default: false
+      build_version_type:
+        type: string
+        required: true
 
 jobs:
   build:
@@ -32,6 +29,7 @@ jobs:
           java-version: 21
 
       - name: Cache gradle files
+        if: ${{ inputs.build_version_type != 'PULL_REQUEST' }}
         uses: actions/cache@v4
         with:
           path: |
@@ -56,10 +54,11 @@ jobs:
         env:
           BUILD_ID: ${{ github.run_number }}
           BUILD_RELEASE: ${{ inputs.release }}
+          BUILD_TYPE: ${{ inputs.build_version_type }}
 
       # [FEATURE] MIXIN_AUDITOR
       - name: Run mixin audit check for Minecraft server
-        if: ${{ inputs.mixin_audit }}
+        if: ${{ inputs.build_version_type != 'RELEASE' }}   # build if a dev build
         timeout-minutes: 10
         run: |
           mkdir -p ./run

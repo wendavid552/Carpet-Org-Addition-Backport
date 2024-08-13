@@ -106,7 +106,7 @@ public class TextUtils {
     /**
      * 获取一个可以单击并在聊天框输入文本的可变文本组件
      *
-     * @param text  原始文本，直接显示在聊天页面上
+     * @param original  原始文本，直接显示在聊天页面上
      * @param input     点击后输入在聊天框里的文本
      * @param hoverText 光标放在原始文本上显示的内容，如果为null，不显示悬停文本
      * @param color     文本的颜色，如果为null，默认为白色
@@ -338,12 +338,13 @@ public class TextUtils {
      * @return 可翻译文本
      */
     public static MutableText getTranslate(String key, Object... obj) {
-        String value;
-        try {
-            value = Objects.requireNonNull(Translate.getTranslate()).get(key);
-        } catch (NullPointerException e) {
-            value = null;
-        }
-        return (MutableText) translatableText(key, value, obj);
+        //没有Fallback了
+//        String value;
+//        try {
+//            value = Objects.requireNonNull(Translate.getTranslate()).get(key);
+//        } catch (NullPointerException e) {
+//            value = null;
+//        }
+        return translatableText(key, obj);
     }
 }

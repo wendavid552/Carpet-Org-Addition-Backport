@@ -70,7 +70,7 @@ jobs:
             exit 1
           fi
 
-          JAR_BASENAME=$(basename "$JAR_FILE")
+          JAR_BASENAME=$(basename "$JAR_FILE" jar)
           echo "JAR_BASENAME=${JAR_BASENAME}" >> $GITHUB_ENV
 
       - name: Upload unzipped contents

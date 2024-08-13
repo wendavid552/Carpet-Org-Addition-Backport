@@ -70,7 +70,7 @@ jobs:
           id: properties_v
           uses: christian-draeger/read-properties@1.1.1
           with:
-            path: ${{ format('versions/{0}/gradle.properties', publish_target_subproject) }}
+            path: ${{ format('versions/{0}/gradle.properties', inputs.publish_target_subproject) }}
             properties: 'minecraft_version game_versions'
 
         - name: Fix game version

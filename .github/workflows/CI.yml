@@ -8,9 +8,6 @@ run-name: |-
 
 on:
   push:
-    branches: # 这里下面待会改成对应判断，这几个分支push的时候额外出publish
-      - 'dev/**'
-      - 'exp/**'
     paths:
       - '*.gradle'
       - '**/gradle.properties'
@@ -144,7 +141,8 @@ jobs:
       build_version_type: ${{ needs.prepare_build_info.outputs.build_version_type }}
 
   publish:
-    if: ${{ github.event_name != 'pull_request' }}
+    # 当pr或者push到非exp/dev分支的时候，不会触发CI publish
+    if: ${{ !(github.event_name == 'pull_request' || (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/exp/') || startsWith(github.ref, 'refs/heads/dev/')))) }}
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     needs:

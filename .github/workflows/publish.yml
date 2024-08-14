@@ -103,7 +103,7 @@ jobs:
         - name: Prepare changelog (Dev Channel)
           if: ${{ inputs.publish_channel == 'dev' }}
           uses: actions/github-script@v7
-          id: changelog
+          id: changelog_dev
           with:
             script: return process.env.CHANGELOG
             result-encoding: string
@@ -126,7 +126,7 @@ jobs:
         - name: Prepare changelog (Stable Channel)
           if: ${{ inputs.publish_channel == 'stable' }}
           uses: actions/github-script@v7
-          id: changelog
+          id: changelog_stable
           with:
             script: return process.env.CHANGELOG
             result-encoding: string
@@ -171,6 +171,7 @@ jobs:
           with:
             github-tag: ${{ steps.release_info.outputs.tag_name }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
+            github-generate-changelog: true
 
             files: ${{ steps.file_info.outputs.path }}
 
@@ -183,8 +184,9 @@ jobs:
             game-version-filter: any
             dependencies: ''  # declare the dependencies explicitly, so mc-publish won't try to load from fabric.mod.json
 
-            modrinth-changelog: ${{ steps.changelog.outputs.result }}
-            curseforge-changelog: ${{ steps.changelog.outputs.result }}
+            github-changelog: ${{ format('{0}{1}', github.event.release.body, steps.get_release.outputs.body) }}
+#            modrinth-changelog: ${{ steps.changelog_stable.outputs.result }}
+#            curseforge-changelog: ${{ steps.changelog_stable.outputs.result }}
 
             retry-attempts: 3
             retry-delay: 10000

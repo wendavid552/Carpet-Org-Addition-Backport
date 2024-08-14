@@ -142,7 +142,7 @@ jobs:
 
   publish:
     # 当pr或者push到非exp/dev分支的时候，不会触发CI publish
-    if: ${{ !(github.event_name == 'pull_request' || (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/exp/') || startsWith(github.ref, 'refs/heads/dev/')))) }}
+    if: ${{ !(github.event_name == 'pull_request' || (github.event_name == 'push' && (startsWith(github.ref_name, 'exp/') || startsWith(github.ref_name, 'dev/')))) }}
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     needs:

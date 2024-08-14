@@ -83,7 +83,7 @@ jobs:
                   echo Will make CI release for push to ${{ github.ref_name }}
                   build_publish=true
               else
-                  echo Will not make CI release for push to ${{ github.ref_name }}
+                  echo Will NOT make CI release for push to ${{ github.ref_name }}
                   build_publish=false
               fi
               build_version_type=BETA

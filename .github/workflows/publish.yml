@@ -145,7 +145,7 @@ jobs:
 
             files: ${{ steps.file_info.outputs.path }}
 
-            name: ${{ format('CI#[{0}]{1} {2}.{3}', github.run_number, steps.properties_g.outputs.mod_name, steps.properties_g.outputs.mod_version, steps.get_git_info.outputs.commit_count, steps.get_git_info.outputs.short_sha) }}
+            name: ${{ format('CI#[{0}]{1} {2}.{3} {4}', github.run_number, steps.properties_g.outputs.mod_name, steps.properties_g.outputs.mod_version, steps.get_git_info.outputs.commit_count, steps.get_git_info.outputs.short_sha) }}
             version: ${{ format('v{0}.{1}-mc{2}', steps.properties_g.outputs.mod_version, steps.get_git_info.outputs.commit_count, steps.properties_v.outputs.minecraft_version) }}
             version-type: alpha
 

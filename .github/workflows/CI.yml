@@ -8,9 +8,11 @@ run-name: |-
 
 on:
   push:
-    branches: # 这里下面待会改成对应判断，这几个分支push的时候额外出publish
-      - 'dev/**'
-      - 'exp/**'
+    branches:
+      - "multi"
+      - "multi/**"
+      - "exp/**"
+      - "dev/**"
     paths:
       - '*.gradle'
       - '**/gradle.properties'
@@ -82,7 +84,11 @@ jobs:
         run: |
           if [ ${{ github.event_name }} == 'push' ]
           then
-              build_publish=true
+              if [[ "${{ startsWith(github.ref_name, 'exp/') }}" == "true" || "${{ startsWith(github.ref_name, 'dev/') }}" == "true" ]]; then
+                  build_publish=true
+              else
+                  build_publish=false
+              fi
               build_version_type=BETA
               publish_channel=dev
           elif [ ${{ github.event_name }} == 'release' ]
@@ -132,7 +138,7 @@ jobs:
         uses: actions/checkout@v4
 
   build:
-    if: ${{ contains(github.event.head_commit.message, '[build skip]') == false }}
+    if: ${{ contains(github.event.head_commit.message, '[skip]') == false }}
     needs:
       - prepare_build_info
       - validate_release
@@ -144,12 +150,14 @@ jobs:
       build_version_type: ${{ needs.prepare_build_info.outputs.build_version_type }}
 
   publish:
-    if: ${{ github.event_name != 'pull_request' }}
+    # 当pr或者push到非exp/dev分支的时候，不会触发CI publish
+    if: ${{ needs.prepare_build_info.outputs.build_publish }}
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     needs:
       - matrix_prep
       - build
+      - prepare_build_info
       - prepare_publish_info
     uses: ./.github/workflows/publish.yml
     secrets: inherit

@@ -34,6 +34,13 @@ jobs:
           with:
             name: build-artifacts
             path: build-artifacts
+        - name: Get git info
+          id: get_git_info
+          run: |
+            short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)
+            commit_count=$(git log | grep -e '^commit [a-zA-Z0-9]*' | wc -l)
+            echo "short_sha=$short_sha" >> $GITHUB_OUTPUT
+            echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
 
         - name: Get github release information
           if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -43,21 +50,6 @@ jobs:
             GITHUB_TOKEN: ${{ github.token }}
           with:
             tag: ${{ inputs.publish_target_release_tag }}
-
-        - name: Generate publish related information
-          id: release_info
-          run: |
-            if [ $GITHUB_EVENT_NAME == 'release' ]
-            then
-                # Leave an empty value here, so Kir-Antipov/mc-publish will infer the tag from the action context
-                echo "tag_name=" >> $GITHUB_OUTPUT
-            elif [ $GITHUB_EVENT_NAME == 'workflow_dispatch' ]
-            then
-                echo "tag_name=${{ inputs.publish_target_release_tag }}" >> $GITHUB_OUTPUT
-            else
-                echo Unknown github event name $GITHUB_EVENT_NAME
-                exit 1
-            fi
 
         - name: Read common properties
           id: properties_g
@@ -70,7 +62,7 @@ jobs:
           id: properties_v
           uses: christian-draeger/read-properties@1.1.1
           with:
-            path: ${{ format('versions/{0}/gradle.properties', publish_target_subproject) }}
+            path: ${{ format('versions/{0}/gradle.properties', inputs.publish_target_subproject) }}
             properties: 'minecraft_version game_versions'
 
         - name: Fix game version
@@ -85,7 +77,7 @@ jobs:
           id: file_info
           run: |
             shopt -s extglob
-            FILE_PATHS=$(ls ${{ format('build-artifacts/{0}/build/libs/!(*-@(dev|sources|shadow)).jar', publish_target_subproject) }})
+            FILE_PATHS=$(ls ${{ format('build-artifacts/{0}/build/libs/!(*-@(dev|sources|shadow)).jar', inputs.publish_target_subproject) }})
             if (( ${#FILE_PATHS[@]} != 1 )); then
                 echo "Error: Found ${#FILE_PATHS[@]} files, expected exactly 1"
                 exit 1
@@ -103,7 +95,7 @@ jobs:
         - name: Prepare changelog (Dev Channel)
           if: ${{ inputs.publish_channel == 'dev' }}
           uses: actions/github-script@v7
-          id: changelog
+          id: changelog_dev
           with:
             script: return process.env.CHANGELOG
             result-encoding: string
@@ -126,7 +118,7 @@ jobs:
         - name: Prepare changelog (Stable Channel)
           if: ${{ inputs.publish_channel == 'stable' }}
           uses: actions/github-script@v7
-          id: changelog
+          id: changelog_stable
           with:
             script: return process.env.CHANGELOG
             result-encoding: string
@@ -146,14 +138,14 @@ jobs:
           if: ${{ inputs.publish_channel == 'dev' }}
           uses: Kir-Antipov/mc-publish@v3.3
           with:
-            github-tag: ${{ steps.release_info.outputs.tag_name }}
+            github-tag: ${{ github.ref_name }}.${{ steps.get_git_info.outputs.commit_count }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
             github-prerelease: true
             github-generate-changelog: true
 
             files: ${{ steps.file_info.outputs.path }}
 
-            name: ${{ format('CI#[{0}]{1} {2}.{3}', github.run_number, steps.properties_g.outputs.mod_name, steps.properties_g.outputs.mod_version, steps.get_git_info.outputs.commit_count, steps.get_git_info.outputs.short_sha) }}
+            name: ${{ format('CI#[{0}]{1} {2}.{3} {4}', github.run_number, steps.properties_g.outputs.mod_name, steps.properties_g.outputs.mod_version, steps.get_git_info.outputs.commit_count, steps.get_git_info.outputs.short_sha) }}
             version: ${{ format('v{0}.{1}-mc{2}', steps.properties_g.outputs.mod_version, steps.get_git_info.outputs.commit_count, steps.properties_v.outputs.minecraft_version) }}
             version-type: alpha
 
@@ -169,8 +161,9 @@ jobs:
           if: ${{ inputs.publish_channel == 'stable' }}
           uses: Kir-Antipov/mc-publish@v3.3
           with:
-            github-tag: ${{ steps.release_info.outputs.tag_name }}
+            github-tag: ${{ inputs.publish_target_release_tag }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
+            github-generate-changelog: true
 
             files: ${{ steps.file_info.outputs.path }}
 
@@ -183,8 +176,9 @@ jobs:
             game-version-filter: any
             dependencies: ''  # declare the dependencies explicitly, so mc-publish won't try to load from fabric.mod.json
 
-            modrinth-changelog: ${{ steps.changelog.outputs.result }}
-            curseforge-changelog: ${{ steps.changelog.outputs.result }}
+            github-changelog: ${{ format('{0}{1}', github.event.release.body, steps.get_release.outputs.body) }}
+#            modrinth-changelog: ${{ steps.changelog_stable.outputs.result }}
+#            curseforge-changelog: ${{ steps.changelog_stable.outputs.result }}
 
             retry-attempts: 3
             retry-delay: 10000

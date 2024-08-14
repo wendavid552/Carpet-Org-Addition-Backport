@@ -142,7 +142,22 @@ jobs:
 
   publish:
     # 当pr或者push到非exp/dev分支的时候，不会触发CI publish
-    if: ${{ !(github.event_name == 'pull_request' || (github.event_name == 'push' && (startsWith(github.ref_name, 'exp/') || startsWith(github.ref_name, 'dev/')))) }}
+    if: ${{ github.event_name != 'pull_request' && (github.event_name != 'push' || !(startsWith(github.ref_name, 'exp/') || startsWith(github.ref_name, 'dev/'))) }}
+    strategy:
+      matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
+    needs:
+      - matrix_prep
+      - build
+      - prepare_publish_info
+    uses: ./.github/workflows/publish.yml
+    secrets: inherit
+    with:
+      publish_channel: ${{ needs.prepare_publish_info.outputs.publish_channel }}
+      publish_target_subproject: ${{ matrix.subproject }}
+      publish_target_release_tag: ${{ needs.prepare_publish_info.outputs.publish_target_release_tag }}
+  publish_test:
+    # 当pr或者push到非exp/dev分支的时候，不会触发CI publish
+    if: ${{ github.event_name != 'pull_request' }}
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     needs:

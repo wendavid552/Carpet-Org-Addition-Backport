@@ -79,7 +79,13 @@ jobs:
         run: |
           if [ ${{ github.event_name }} == 'push' ]
           then
-              build_publish=true
+              if [[ "${{ startsWith(github.ref_name, 'exp/') }}" == "true" || "${{ startsWith(github.ref_name, 'dev/') }}" == "true" ]]; then
+                  echo Will make CI release for push to ${{ github.ref_name }}
+                  build_publish=true
+              else
+                  echo Will not make CI release for push to ${{ github.ref_name }}
+                  build_publish=false
+              fi
               build_version_type=BETA
               publish_channel=dev
           elif [ ${{ github.event_name }} == 'release' ]
@@ -157,12 +163,13 @@ jobs:
       publish_target_release_tag: ${{ needs.prepare_publish_info.outputs.publish_target_release_tag }}
   publish_test:
     # 当pr或者push到非exp/dev分支的时候，不会触发CI publish
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ needs.prepare_build_info.outputs.build_publish }}
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     needs:
       - matrix_prep
       - build
+      - prepare_build_info
       - prepare_publish_info
     uses: ./.github/workflows/publish.yml
     secrets: inherit

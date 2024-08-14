@@ -34,6 +34,13 @@ jobs:
           with:
             name: build-artifacts
             path: build-artifacts
+        - name: Get git info
+          id: get_git_info
+          run: |
+            short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)
+            commit_count=$(git log | grep -e '^commit [a-zA-Z0-9]*' | wc -l)
+            echo "short_sha=$short_sha" >> $GITHUB_OUTPUT
+            echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
 
         - name: Get github release information
           if: ${{ github.event_name == 'workflow_dispatch' }}

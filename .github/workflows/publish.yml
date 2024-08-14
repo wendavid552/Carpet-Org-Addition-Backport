@@ -44,21 +44,6 @@ jobs:
           with:
             tag: ${{ inputs.publish_target_release_tag }}
 
-        - name: Generate publish related information
-          id: release_info
-          run: |
-            if [ $GITHUB_EVENT_NAME == 'release' ]
-            then
-                # Leave an empty value here, so Kir-Antipov/mc-publish will infer the tag from the action context
-                echo "tag_name=" >> $GITHUB_OUTPUT
-            elif [ $GITHUB_EVENT_NAME == 'workflow_dispatch' ]
-            then
-                echo "tag_name=${{ inputs.publish_target_release_tag }}" >> $GITHUB_OUTPUT
-            else
-                echo Unknown github event name $GITHUB_EVENT_NAME
-                exit 1
-            fi
-
         - name: Read common properties
           id: properties_g
           uses: christian-draeger/read-properties@1.1.1
@@ -146,7 +131,7 @@ jobs:
           if: ${{ inputs.publish_channel == 'dev' }}
           uses: Kir-Antipov/mc-publish@v3.3
           with:
-            github-tag: ${{ steps.release_info.outputs.tag_name }}
+            github-tag: ${{ github.ref_name }}.${{ steps.get_git_info.outputs.commit_count }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
             github-prerelease: true
             github-generate-changelog: true
@@ -169,7 +154,7 @@ jobs:
           if: ${{ inputs.publish_channel == 'stable' }}
           uses: Kir-Antipov/mc-publish@v3.3
           with:
-            github-tag: ${{ steps.release_info.outputs.tag_name }}
+            github-tag: ${{ inputs.publish_target_release_tag }}
             github-token: ${{ secrets.GITHUB_TOKEN }}
             github-generate-changelog: true
 

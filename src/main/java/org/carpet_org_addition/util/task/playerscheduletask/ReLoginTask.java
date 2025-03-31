@@ -208,7 +208,7 @@ public class ReLoginTask extends PlayerScheduleTask {
                 //$$ SyncedClientOptions.createDefault(),
                 //#endif
                 false
-                //#if MC>=11900
+                //#if MC>=11900 && MC<11904
                 //$$ ,null
                 //#endif
         );

@@ -69,7 +69,7 @@ public class ServerPlayNetworkHandlerMixin {
     }
 
     //修改实体最大交互距离
-    //#if MC>=11904
+    //#if MC>=11900
     @WrapOperation(method = "onPlayerInteractEntity", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
     private double onPlayerInteractEntity(Operation<Double> original) {
         if (CarpetOrgAdditionSettings.maxBlockPlaceDistanceReferToEntity) {

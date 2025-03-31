@@ -207,7 +207,11 @@ public class ReLoginTask extends PlayerScheduleTask {
                 //#if MC>=12002
                 //$$ SyncedClientOptions.createDefault(),
                 //#endif
-                false);
+                false
+                //#if MC>=11900
+                //$$ ,null
+                //#endif
+        );
         fakePlayer.fixStartingPosition = GameUtils::pass;
 
 

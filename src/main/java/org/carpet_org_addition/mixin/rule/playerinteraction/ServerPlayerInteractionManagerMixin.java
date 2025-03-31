@@ -56,7 +56,7 @@ public class ServerPlayerInteractionManagerMixin {
     //$$     double d = MathUtils.getMaxBreakSquaredDistance();
     //$$     return (new Box(blockPos)).squaredMagnitude(instance.getEyePos()) < d * d;
     //$$ }
-    //#elseif MC>=11904
+    //#elseif MC>=11900
     @WrapOperation(method = "processBlockBreakingAction", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D"))
     private double processBlockBreakingAction(Operation<Double> original) {
         if (MathUtils.isDefaultDistance()) {

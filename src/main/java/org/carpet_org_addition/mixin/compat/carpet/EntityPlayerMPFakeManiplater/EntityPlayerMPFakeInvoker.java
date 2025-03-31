@@ -34,6 +34,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 //#if MC>=12002
 //$$ import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 //#endif
+//#if MC>=11900 && MC<11904
+import net.minecraft.network.encryption.PlayerPublicKey;
+//#endif
 
 @Mixin(EntityPlayerMPFake.class)
 public interface EntityPlayerMPFakeInvoker {
@@ -42,7 +45,11 @@ public interface EntityPlayerMPFakeInvoker {
                                                //#if MC>=12002
                                                //$$ SyncedClientOptions cli,
                                                //#endif
-                                               boolean shadow) {
+                                               boolean shadow
+                                               //#if MC>=11900 && MC<11904
+                                               //$$ ,PlayerPublicKey profilePublicKey
+                                               //#endif
+    ) {
         throw new AssertionError();
     }
 }

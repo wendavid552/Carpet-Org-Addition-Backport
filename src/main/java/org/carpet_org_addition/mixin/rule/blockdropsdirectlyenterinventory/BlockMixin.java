@@ -65,7 +65,7 @@ public abstract class BlockMixin {
                     Block.dropStack(world, pos, itemStack);
                 }
                 state.onStacksDropped(serverWorld, pos, tool
-                //#if MC>=11904
+                //#if MC>=11900
                         ,true
                 //#endif
                 );

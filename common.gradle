@@ -48,7 +48,7 @@ dependencies {
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 
 	// Conditional Mixin, for conditional compatability with other mods
-	modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.2'
+	modImplementation 'com.github.Fallen-Breath.conditional-mixin:conditional-mixin-fabric:0.6.4'
 	// Mixin Auditor just for mixin audits
 	modRuntimeOnly 'me.fallenbreath:mixin-auditor:0.1.0'
 

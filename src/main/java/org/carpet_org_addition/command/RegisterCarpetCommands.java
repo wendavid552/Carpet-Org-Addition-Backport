@@ -28,19 +28,19 @@ package org.carpet_org_addition.command;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.ServerCommandSource;
 import org.carpet_org_addition.util.CommandNodeFactory;
-//#if MC>11900
+//#if MC>=11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
 public class RegisterCarpetCommands {
     //注册Carpet命令
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher
-                                                //#if MC>11900
+                                                //#if MC>=11900
                                                 ,CommandRegistryAccess commandBuildContext
                                                 //#endif
                                                 ) {
         CommandNodeFactory commandNodeFactory = new CommandNodeFactory(
-                //#if MC>=11904
+                //#if MC>=11900
                 commandBuildContext
                 //#else
                 //$$ null

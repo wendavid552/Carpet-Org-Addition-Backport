@@ -30,7 +30,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-//#if MC>=11900
+//#if MC>=11903
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 import net.minecraft.command.argument.ItemPredicateArgumentType;
@@ -153,7 +153,7 @@ public class CraftPresets {
                 StringReader stringReader = new StringReader(itemOrTag);
                 // 从字符串读取器获取物品标签
                 Predicate<ItemStack> parse = commandNodeFactory.itemPredicate().parse(stringReader)
-                        //#if MC<11904
+                        //#if MC<11900
                         //$$ .create(commandRegistryAccess)
                         //#endif
                         ;

@@ -52,6 +52,9 @@ public class EntityPlayerMPFakeMixin extends ServerPlayerEntity {
         //#endif
     ) {
         super(server, world, profile
+                //#if MC>=11900 && MC<=11902
+                //$$ ,null
+                //#endif
                 //#if MC>=12002
                 //$$ ,clientOptions
                 //#endif

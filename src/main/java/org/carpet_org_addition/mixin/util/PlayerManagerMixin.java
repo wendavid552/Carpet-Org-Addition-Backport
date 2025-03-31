@@ -28,7 +28,7 @@ package org.carpet_org_addition.mixin.util;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-//#if MC<11904
+//#if MC<11900
 //$$ import net.minecraft.network.MessageType;
 //#endif
 import net.minecraft.server.PlayerManager;
@@ -49,7 +49,7 @@ public class PlayerManagerMixin {
             at = @At(
                     value = "INVOKE",
                     target =
-                            //#if MC>=11904
+                            //#if MC>=11900
                             "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"
                             //#else
                             //$$ "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Lnet/minecraft/network/MessageType;Ljava/util/UUID;)V"
@@ -57,7 +57,7 @@ public class PlayerManagerMixin {
             )
     )
     private void onPlayerConnect(PlayerManager instance,
-                                 //#if MC>=11904
+                                 //#if MC>=11900
                                  Text message, boolean overlay,
                                  //#else
                                  //$$ Text message, MessageType type, UUID sender,
@@ -66,7 +66,7 @@ public class PlayerManagerMixin {
         if (CarpetOrgAddition.hiddenLoginMessages) {
             return;
         }
-        //#if MC>=11904
+        //#if MC>=11900
         original.call(instance, message, overlay);
         //#else
         //$$ original.call(instance, message, type, sender);

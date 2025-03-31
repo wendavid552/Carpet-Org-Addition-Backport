@@ -61,13 +61,13 @@ public abstract class SpawnerBlockMixin extends BlockWithEntity {
     @Inject(method = "onStacksDropped", at = @At("HEAD"), cancellable = true)
     // 使用精准采集工具挖掘时不会掉落经验
     private void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack tool
-                //#if MC>=11904
+                //#if MC>=11900
                 ,boolean dropExperience
                 //#endif
             , CallbackInfo ci) {
         if (CarpetOrgAdditionSettings.canMineSpawner && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH,tool) > 0) {
             super.onStacksDropped(state, world, pos, tool
-                    //#if MC>=11904
+                    //#if MC>=11900
                     ,dropExperience
                     //#endif
             );

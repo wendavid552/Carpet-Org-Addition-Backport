@@ -9,10 +9,10 @@ run-name: |-
 on:
   push:
     branches:
-      - "multi"
-      - "multi/**"
-      - "exp/**"
-      - "dev/**"
+      - "multi"   # 正式release，如加版本号
+      - "dev"     # 预构建branch，这里发测试版
+      - "exp/**"  # 新特性branch
+      - "dev/**"  # 修bug的branch
     paths:
       - '*.gradle'
       - '**/gradle.properties'
@@ -84,7 +84,7 @@ jobs:
         run: |
           if [ ${{ github.event_name }} == 'push' ]
           then
-              if [[ "${{ startsWith(github.ref_name, 'exp/') }}" == "true" || "${{ startsWith(github.ref_name, 'dev/') }}" == "true" ]]; then
+              if [[ ${{ github.ref_name }} == 'dev' ]]; then
                   build_publish=true
               else
                   build_publish=false

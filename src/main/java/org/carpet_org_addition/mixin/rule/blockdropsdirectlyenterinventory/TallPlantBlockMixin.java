@@ -65,7 +65,7 @@ public class TallPlantBlockMixin {
                     Block.dropStack(world, blockPos, itemStack);
                 }
                 blockState.onStacksDropped(serverWorld, blockPos, tool
-                        //#if MC>=11904
+                        //#if MC>=11900
                         ,true
                         //#endif
                 );

@@ -76,7 +76,7 @@ public class CarpetRuleRegistrar {
                     this.settingsManager.registerRuleObserver(
                             (source, parsedRule, value) -> {
                                 if (parsedRule.
-                                        //#if MC<11904
+                                        //#if MC<11900
                                         //$$ name
                                         //#else
                                         name()

@@ -1,0 +1,33 @@
+name: draft_release
+
+# release: <default> (release title)
+# dispatch (all): Manual release for $target_release_tag
+# dispatch (specified): Manual release for $target_release_tag (subproject: $target_subproject)
+run-name: |-
+  ${{ github.event_name == 'workflow_dispatch' && format('Draft release generation for {0}{1}', inputs.target_release_tag) || '' }}
+
+on:
+  push:
+    branches:
+      - "multi"
+    paths:
+      - 'gradle.properties'
+  workflow_dispatch:
+    inputs:
+      target_release_tag:
+        description: The tag of the release you want to draft
+        type: string
+        required: true
+
+
+jobs:
+  show_action_parameters:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show action parameters
+        run: |
+          cat <<EOF > $GITHUB_STEP_SUMMARY
+          ## Action Parameters
+          - target_release_tag: \`${{ github.event.inputs.target_release_tag }}\`
+          EOF
+  

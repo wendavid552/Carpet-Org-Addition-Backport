@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(SettingsManager.class)
 public interface SettingsManagerAccessor {
     @Invoker("displayInteractiveSetting")
-    //#if MC<11904
+    //#if MC<11900
     //$$ BaseText
     //#else
     Text

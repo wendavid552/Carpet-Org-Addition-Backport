@@ -65,7 +65,7 @@ public class CreeperCommand {
         // 创建苦力怕对象
         CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
         // 产生爆炸
-        //#if MC<11900
+        //#if MC<11904
         //$$ Explosion.DestructionType destructionType = world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) ? Explosion.DestructionType.DESTROY : Explosion.DestructionType.NONE;
         //$$ targetPlayer.getWorld().createExplosion(creeper,
         //$$                targetPlayer.getX() + MathUtils.randomInt(-3, 3),

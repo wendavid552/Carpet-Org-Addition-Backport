@@ -34,7 +34,7 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-//#if MC>=11904
+//#if MC>=11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
@@ -119,13 +119,13 @@ public class CarpetOrgAddition implements ModInitializer, CarpetExtension {
 
     @Override
     public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher
-                //#if MC>=11904
+                //#if MC>=11900
                 ,final CommandRegistryAccess commandBuildContext
                 //#endif
     ) {
         // 注册Carpet命令
         RegisterCarpetCommands.registerCarpetCommands(dispatcher
-                //#if MC>=11904
+                //#if MC>=11900
                 ,commandBuildContext
                 //#endif
         );

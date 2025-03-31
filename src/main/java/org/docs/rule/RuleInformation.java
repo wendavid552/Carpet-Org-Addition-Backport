@@ -50,7 +50,7 @@ class RuleInformation {
             throw new IllegalArgumentException();
         }
         this.categories = annotation.
-                //#if MC>=11904
+                //#if MC>=11900
                 categories();
                 //#else
                 //$$ category();

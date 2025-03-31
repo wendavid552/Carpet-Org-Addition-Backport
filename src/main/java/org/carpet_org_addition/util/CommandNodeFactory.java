@@ -25,9 +25,11 @@
 
 package org.carpet_org_addition.util;
 
-//#if MC>11900
+//#if MC>=11900
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.registry.RegistryKeys;
+//#endif
+//#if MC>=11904
 import net.minecraft.command.argument.RegistryEntryArgumentType;
 //#else
 //$$ import net.minecraft.command.argument.EnchantmentArgumentType;
@@ -48,7 +50,7 @@ public class CommandNodeFactory {
 
         public ItemStackArgumentType itemStack() {
             return ItemStackArgumentType.itemStack(
-                    //#if MC>11900
+                    //#if MC>=11900
                     (CommandRegistryAccess) this.context
                     //#endif
             );
@@ -56,7 +58,7 @@ public class CommandNodeFactory {
 
         public ItemPredicateArgumentType itemPredicate() {
             return ItemPredicateArgumentType.itemPredicate(
-                    //#if MC>11900
+                    //#if MC>=11900
                     (CommandRegistryAccess) this.context
                     //#endif
             );
@@ -64,20 +66,20 @@ public class CommandNodeFactory {
 
         public BlockStateArgumentType blockState() {
             return BlockStateArgumentType.blockState(
-                    //#if MC>11900
+                    //#if MC>=11900
                     (CommandRegistryAccess) this.context
                     //#endif
             );
         }
 
         public
-        //#if MC>=11904
+        //#if MC>=11903
         RegistryEntryArgumentType<Enchantment>
         //#else
         //$$ EnchantmentArgumentType
         //#endif
         enchantment() {
-            //#if MC>=11904
+            //#if MC>=11903
             return RegistryEntryArgumentType.registryEntry((CommandRegistryAccess) this.context, RegistryKeys.ENCHANTMENT);
             //#else
             //$$ return EnchantmentArgumentType.enchantment();

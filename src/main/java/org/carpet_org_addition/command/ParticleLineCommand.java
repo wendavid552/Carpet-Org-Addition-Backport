@@ -26,7 +26,7 @@
 package org.carpet_org_addition.command;
 
 import carpet.helpers.ParticleDisplay;
-//#if MC>11900
+//#if MC>=11904
 import carpet.script.utils.ParticleParser;
 import net.minecraft.registry.RegistryKeys;
 //#endif
@@ -83,7 +83,7 @@ public class ParticleLineCommand {
         }
         // 获取粒子的效果类型
         ParticleEffect mainParticle =
-        //#if MC>11900
+        //#if MC>=11904
         ParticleParser.getEffect("dust 0 0 0 1",
                 //#if MC<12005
                 player.getWorld().createCommandRegistryWrapper(RegistryKeys.PARTICLE_TYPE)

@@ -36,7 +36,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-//#if MC>11900
+//#if MC>=11904
 import net.minecraft.registry.tag.DamageTypeTags;
 //#endif
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -82,7 +82,7 @@ public class LivingEntityMixin {
         if (CarpetOrgAdditionSettings.betterTotemOfUndying) {
             LivingEntity thisLivingEntity = (LivingEntity) (Object) this;
             if (source.
-                    //#if MC>11900
+                    //#if MC>=11904
                     isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)
                     //#else
                     //$$ isOutOfWorld()
@@ -100,7 +100,8 @@ public class LivingEntityMixin {
                 break;
             }
             // 从玩家物品栏寻找不死图腾
-            if (itemStack == null && thisLivingEntity instanceof PlayerEntity playerEntity) {
+            if (itemStack == null && thisLivingEntity instanceof PlayerEntity) {
+                PlayerEntity playerEntity = (PlayerEntity) thisLivingEntity;
                 DefaultedList<ItemStack> mainInventory = playerEntity.getInventory().main;
                 for (ItemStack totemOfUndying : mainInventory) {
                     if (totemOfUndying.isOf(Items.TOTEM_OF_UNDYING)) {
@@ -111,7 +112,8 @@ public class LivingEntityMixin {
                 }
             }
             if (itemStack != null) {
-                if (thisLivingEntity instanceof ServerPlayerEntity serverPlayerEntity) {
+                if (thisLivingEntity instanceof ServerPlayerEntity) {
+                    ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) thisLivingEntity;
                     serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(Items.TOTEM_OF_UNDYING));
                     Criteria.USED_TOTEM.trigger(serverPlayerEntity, itemStack);
                 }
